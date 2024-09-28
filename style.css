@@ -33,19 +33,7 @@ A {
     cursor: pointer;
 }
 
-H1 {
-    text-align: center;
-}
-
-H2 {
-    text-align: center;
-}
-
-H3 {
-    text-align: center;
-}
-
-H4, H5, H6 {
+H1, H2, H3, H4, H5, H6 {
     text-align: center;
 }
 
@@ -185,4 +173,23 @@ TR:hover {
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+    H1 {
+        font-size: 1.5em;
+    }
+    H2 {
+        font-size: 1.3em;
+    }
+    H3 {
+        font-size: 1.1em;
+    }
+    BODY {
+        font-size: 0.9em;
+    }
+    TABLE {
+        font-size: 0.9em;
+    }
 }

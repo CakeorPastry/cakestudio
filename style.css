@@ -6,6 +6,7 @@ BODY {
     background: radial-gradient(circle at top left, pink, purple, #9000ff);
     color: black;
     transition: background 1s, color 1s;
+    font-family: 'Courier New', monospace;
 }
 
 .dark-mode {
@@ -19,7 +20,7 @@ BODY {
 }
 
 .dark-mode .marquee, .dark-mode .table {
-    color: black;
+    color: white;
 }
 
 A {
@@ -45,6 +46,7 @@ TABLE {
     border: 5px solid #333;
     border-color: rgb(0, 0, 0);
     box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    font-size: 1em;
 }
 
 TH {
@@ -60,7 +62,7 @@ TD {
     padding: 10px 20px;
     border: 1px solid #ddd;
     text-align: left;
-    font-size: 1.2em;
+    font-size: 1em;
 }
 
 TR:nth-child(even) {
@@ -166,5 +168,5 @@ TR:hover {
     height: 50px;
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
 }

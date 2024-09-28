@@ -1,3 +1,7 @@
+* {
+    font-family: sans-serif; /* Default browser font */
+}
+
 HTML {
     scroll-behavior: smooth;
 }

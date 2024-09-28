@@ -30,6 +30,12 @@ A {
     cursor: pointer;
 }
 
+A.emoji {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
 H1, H2, H3, H4, H5, H6 {
     text-align: center;
 }

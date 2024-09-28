@@ -91,21 +91,11 @@ TR:hover {
     }
 }
 
-.moving-sort {
-display: flex;
-align-items: center;
-justify-content: center;
-gap: 10px;
-}
-
-.moving-sort img {
+.move-left, .move-right {
 width: 30px;
 height: auto;
-}
-
-H2 {
-font-size: 2em;
-margin: 0;
+display: inline-block;
+vertical-align: middle;
 }
 
 .move-left {

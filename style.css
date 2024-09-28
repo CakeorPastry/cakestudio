@@ -103,10 +103,10 @@ width: 30px;
 height: auto;
 }
 
-/*H2 {
+H2 {
 font-size: 2em;
 margin: 0;
-}*/
+}
 
 .move-left {
     animation: move-left 2s infinite ease-in-out;

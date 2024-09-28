@@ -1,0 +1,39 @@
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Textbox Example</title>
+    <style>
+        * {
+            font-family: sans-serif;
+        }
+        body {
+            background: radial-gradient(circle at top left, pink, purple, #9000ff);
+            color: black;
+            transition: background 1s, color 1s;
+        }
+        .dark-mode {
+            background: black;
+            color: white;
+            transition: background 1s, color 1s;
+        }
+        #output {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <input type="text" id="question" placeholder="Type your question here...">
+        <button id="send">Send</button>
+    </div>
+    <H4>
+    <div id="response"></div>
+    
+    <script src="script.js"></script> <!-- Link to your JavaScript file -->
+    </H4>
+</body>
+</html>

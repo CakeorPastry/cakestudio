@@ -193,3 +193,21 @@ TR:hover {
         font-size: 0.9em;
     }
 }
+
+@media (max-width: 393px) {
+    h1 {
+        font-size: 1.5em;
+    }
+    h2 {
+        font-size: 1.3em;
+    }
+    h3 {
+        font-size: 1.1em;
+    }
+    body {
+        font-size: 0.9em;
+    }
+    table {
+        font-size: 0.9em;
+    }
+}

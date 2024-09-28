@@ -7,6 +7,7 @@ BODY {
     color: black;
     transition: background 1s, color 1s;
     font-family: 'Courier New', monospace;
+    font-size: 16px;
 }
 
 .dark-mode {
@@ -29,7 +30,23 @@ A {
     cursor: pointer;
 }
 
-H1, H2, H3, H4, H5, H6 {
+H1 {
+    font-size: 2.5em;
+    text-align: center;
+}
+
+H2 {
+    font-size: 2em;
+    text-align: center;
+}
+
+H3 {
+    font-size: 1.75em;
+    text-align: center;
+}
+
+H4, H5, H6 {
+    font-size: 1.5em;
     text-align: center;
 }
 

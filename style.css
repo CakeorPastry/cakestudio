@@ -7,7 +7,7 @@ BODY {
     color: black;
     transition: background 1s, color 1s;
     font-family: sans-serif;
-    font-size: 16px;
+    font-size: 14px;
 }
 
 .dark-mode {

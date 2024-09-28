@@ -1,5 +1,5 @@
 * {
-    font-family: sans-serif; /* Default browser font */
+    font-family: sans-serif;
 }
 
 HTML {
@@ -25,7 +25,7 @@ BODY {
 }
 
 .dark-mode .marquee, .dark-mode .table {
-    color: white;
+    color: black;
 }
 
 A {

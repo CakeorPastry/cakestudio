@@ -92,16 +92,21 @@ TR:hover {
 }
 
 .moving-sort {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
 }
 
 .moving-sort img {
-    width: 20px;
-    height: auto;
+width: 30px;
+height: auto;
 }
+
+/*H2 {
+font-size: 2em;
+margin: 0;
+}*/
 
 .move-left {
     animation: move-left 2s infinite ease-in-out;

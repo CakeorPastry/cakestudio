@@ -10,7 +10,6 @@ BODY {
     background: radial-gradient(circle at top left, pink, purple, #9000ff);
     color: black;
     transition: background 1s, color 1s;
-    font-family: 'Courier New', monospace;
     font-size: 16px;
 }
 
@@ -35,22 +34,18 @@ A {
 }
 
 H1 {
-    font-size: 2.5em;
     text-align: center;
 }
 
 H2 {
-    font-size: 2em;
     text-align: center;
 }
 
 H3 {
-    font-size: 1.75em;
     text-align: center;
 }
 
 H4, H5, H6 {
-    font-size: 1.5em;
     text-align: center;
 }
 

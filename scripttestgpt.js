@@ -1,3 +1,12 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('toggleButton');
+
+    toggleButton.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    });
+});
+
 document.addEventListener("DOMContentLoaded", function() {
     const inputBox = document.getElementById("question");
     const sendButton = document.getElementById("send");

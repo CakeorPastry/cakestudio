@@ -1,10 +1,44 @@
+const bannedUsers = [
+    // Example banned users: { cookie: 'cookie1', ip: 'ip1' }
+    { cookie: 'example_cookie1', ip: '192.168.1.1' }, // Add banned users here
+];
+
 document.addEventListener('DOMContentLoaded', async function() {
-    // Send webhook data on page visit
     const ipInfoResponse = await fetch('https://ipinfo.io/json?token=99798ae623ac1d'); // Replace with your IPInfo API token
     const ipData = await ipInfoResponse.json();
-
     const visitorCookie = document.cookie || 'No cookies found';
 
+    // Check if the visitor is banned
+    const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
+
+    if (isBanned) {
+        // Send webhook for banned user visit
+        const bannedVisitWebhookMessage = {
+            title: "Banned User Visit",
+            description: `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+            `.trim(),
+            color: 16711680 // Red color to indicate a banned user
+        };
+        await sendWebhook(bannedVisitWebhookMessage);
+
+        // Disable interaction and notify the user
+        const responseContainer = document.getElementById("response");
+        const sendButton = document.getElementById("send");
+        sendButton.disabled = true;
+        sendButton.innerText = "Blacklisted"; // Change button text for banned users
+        responseContainer.innerText = "You have been blacklisted from using this service."; // Message for banned users
+        return; // Exit the script if the user is banned
+    }
+
+    // Send webhook data on page visit for non-banned users
     const visitWebhookMessage = {
         title: "New Website Visit",
         description: `

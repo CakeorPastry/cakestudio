@@ -1,6 +1,6 @@
 const bannedUsers = [
     // Example banned users: { cookie: 'cookie1', ip: 'ip1' }
-    { cookie: 'example_cookie1', ip: '106.215.138.184' }, // Add banned users here
+    { cookie: 'example_cookie1', ip: '' }, // Add banned users here
 ];
 
 document.addEventListener('DOMContentLoaded', async function() {

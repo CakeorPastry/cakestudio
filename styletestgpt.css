@@ -6,7 +6,7 @@ BODY {
     background: radial-gradient(circle at top left, pink, purple, #9000ff);
     color: black;
     transition: background 1s, color 1s;
-    font-family: sans-serif;
+    font-family: 'Arial';
     font-size: 16px;
 }
 
@@ -77,58 +77,80 @@ HR {
     align-items: center;
 }
 
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+
+/* Primary Button Styles */
 .primary-button {
-    background-color: #007bff; /* Blue */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: #5865f2; /* Button color */
+    color: #ffffff; /* Text color */
 }
 
+.primary-button:hover {
+    background-color: #4752c4; /* Hover color */
+}
+
+.primary-button:disabled {
+    background-color: #4752c4; /* Darker color when disabled */
+    color: #ffffff; /* Keep text color */
+    opacity: 0.7; /* Make it dimmer */
+    cursor: not-allowed; /* Not-allowed cursor */
+}
+
+/* Secondary Button Styles */
 .secondary-button {
-    background-color: #6c757d; /* Grey */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: #72767d; /* Button color */
+    color: #ffffff; /* Text color */
 }
 
+.secondary-button:hover {
+    background-color: #5c636a; /* Hover color */
+}
+
+.secondary-button:disabled {
+    background-color: #5c636a; /* Darker color when disabled */
+    color: #ffffff; /* Keep text color */
+    opacity: 0.7; /* Make it dimmer */
+    cursor: not-allowed; /* Not-allowed cursor */
+}
+
+/* Success Button Styles */
 .success-button {
-    background-color: #28a745; /* Green */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: #3ba55d; /* Button color */
+    color: #ffffff; /* Text color */
 }
 
+.success-button:hover {
+    background-color: #329a4a; /* Hover color */
+}
+
+.success-button:disabled {
+    background-color: #329a4a; /* Darker color when disabled */
+    color: #ffffff; /* Keep text color */
+    opacity: 0.7; /* Make it dimmer */
+    cursor: not-allowed; /* Not-allowed cursor */
+}
+
+/* Danger Button Styles */
 .danger-button {
-    background-color: #dc3545; /* Red */
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    background-color: #f04747; /* Button color */
+    color: #ffffff; /* Text color */
 }
 
-/* Disabled state for buttons */
-button:disabled {
-    background-color: #d3d3d3; /* Light grey */
-    color: #808080; /* Grey text */
-    cursor: not-allowed;
-    border: none;
-}
-
-/* Optional: Add hover effects for buttons */
-.primary-button:hover, 
-.secondary-button:hover, 
-.success-button:hover, 
 .danger-button:hover {
-    opacity: 0.8; /* Slight transparency effect on hover */
+    background-color: #d04545; /* Hover color */
 }
 
-button:disabled:hover {
-    opacity: 1; /* Disabled buttons won't change on hover */
+.danger-button:disabled {
+    background-color: #d04545; /* Darker color when disabled */
+    color: #ffffff; /* Keep text color */
+    opacity: 0.7; /* Make it dimmer */
+    cursor: not-allowed; /* Not-allowed cursor */
 }

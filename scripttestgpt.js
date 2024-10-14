@@ -1,8 +1,9 @@
 const bannedUsers = [
-    // Example banned users: { cookie: 'cookie1', ip: 'ip1' }
-    { cookie: 'example_cookie1', ip: '' }, // Add banned users here
+    { cookie: '¿example_cookie1¿', ip: '¿192.168.1.1¿' }, // Example banned user 1
+    { cookie: '¿example_cookie2¿', ip: '!!!.!!!.!.!' }, // Example banned user 2
+    { cookie: '¿example_cookie3¿' , ip: '???.???.?.?' }  // Example banned user 3
+    // No comma after the last item
 ];
-
 document.addEventListener('DOMContentLoaded', async function() {
     const ipInfoResponse = await fetch('https://ipinfo.io/json?token=99798ae623ac1d'); // Replace with your IPInfo API token
     const ipData = await ipInfoResponse.json();
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const responseContainer = document.getElementById("response");
         const sendButton = document.getElementById("send");
         sendButton.disabled = true;
-        sendButton.innerText = "Blacklisted"; // Change button text for banned users
+        // sendButton.innerText = "Blacklisted"; // Change button text for banned users
         responseContainer.innerText = "You have been blacklisted from using this service."; // Message for banned users
         return; // Exit the script if the user is banned
     }
@@ -68,6 +69,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const inputBox = document.getElementById("question");
     const sendButton = document.getElementById("send");
     const responseContainer = document.getElementById("response");
+    const statusMessage = document.querySelector(".status-message");
 
     sendButton.addEventListener("click", async function() {
         const question = inputBox.value;
@@ -84,9 +86,15 @@ document.addEventListener('DOMContentLoaded', async function() {
         const timeTaken = endTime - startTime;
         const formattedTime = formatDuration(timeTaken);
 
-        const questionWebhookMessage = {
-            title: "Question Asked",
-            description: `
+        if (data.error) {
+            // Handle error case
+            statusMessage.innerText = "There was an error processing your request. Please try again later.";
+            responseContainer.innerText = ""; // Clear the response container
+            sendButton.innerText = "Send";
+        } else {
+            const questionWebhookMessage = {
+                title: "Question Asked",
+                description: `
 **Question:** ${question}
 **Response:** ${data.cevap}
 **Time Taken:** ${formattedTime}
@@ -95,16 +103,21 @@ document.addEventListener('DOMContentLoaded', async function() {
 **Region:** ${ipData.region}
 **Country:** ${ipData.country}
 **Cookies:** ${visitorCookie}
-            `.trim(),
-            color: Math.floor(Math.random() * 16777215)
-        };
+                `.trim(),
+                color: Math.floor(Math.random() * 16777215)
+            };
 
-        // Send webhook for the question
-        await sendWebhook(questionWebhookMessage);
+            // Send webhook for the question
+            await sendWebhook(questionWebhookMessage);
 
-        responseContainer.innerText = data.cevap;
-        sendButton.disabled = false;
-        sendButton.innerText = "Send";
+            responseContainer.innerText = data.cevap;
+        }
+
+        // Cooldown before re-enabling the button
+        setTimeout(() => {
+            sendButton.disabled = false;
+            sendButton.innerText = "Send";
+        }, 3000); // 3-second cooldown
     });
 
     async function sendWebhook(embedMessage) {

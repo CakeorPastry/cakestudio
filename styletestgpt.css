@@ -186,3 +186,34 @@ input::placeholder {
     color: #b9bbbe; /* Placeholder color */
     opacity: 1; /* Ensure full opacity */
 }
+
+.status-box {
+  background-color: #1d1f22; /* Dark background similar to the image */
+  border-radius: 10px;       /* Rounded corners */
+  padding: 20px;             /* Padding inside the box */
+  color: white;              /* Text color */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  width: 300px;              /* Width of the box */
+  margin: 20px auto;         /* Center it horizontally */
+}
+
+.status-box h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.status-box p {
+  font-size: 16px;
+}
+
+.status-message {
+  font-weight: bold;         /* Highlight status */
+}
+
+.status-image {
+  width: 100px; /* Adjust width */
+  height: 100px; /* Adjust height */
+  border-radius: 50%; /* Make it round like Discord avatars */
+  display: block;
+  margin: 10px auto; /* Center it horizontally */
+}

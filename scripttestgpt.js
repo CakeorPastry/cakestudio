@@ -58,8 +58,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     await sendWebhook(visitWebhookMessage);
 
     // Toggle dark mode functionality
-    const toggleButton = document.getElementById('toggleButton');
-    toggleButton.addEventListener('click', function() {
+    const toggleDarkModeButton = document.getElementById('toggleDarkModeButton');
+    toggleDarkModeButton.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
         this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });

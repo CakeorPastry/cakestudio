@@ -1,13 +1,34 @@
 const bannedUsers = [
     { cookie: '¿example_cookie1¿', ip: '¿192.168.1.1¿' }, // Example banned user 1
     { cookie: '¿example_cookie2¿', ip: '!!!.!!!.!.!' }, // Example banned user 2
-    { cookie: '¿example_cookie3¿' , ip: '???.???.?.?' }  // Example banned user 3
+    { cookie: '¿example_cookie3¿', ip: '???.???.?.?' }  // Example banned user 3
     // No comma after the last item
 ];
+
+// Emoji list
+const statusEmojis = {
+    check: 'https://link-to-check-emoji.png',
+    empty: 'https://link-to-empty-emoji.png',
+    cross: 'https://link-to-cross-emoji.png',
+    warning: 'https://link-to-warning-emoji.png',
+    yellowAlert: 'https://link-to-yellow-alert-emoji.png',
+    orangeAlert: 'https://link-to-orange-alert-emoji.png',
+    redAlert: 'https://link-to-red-alert-emoji.png',
+    space: 'https://link-to-space-emoji.png',
+    ellipsis: 'https://link-to-ellipsis-emoji.png',
+    rage: 'https://link-to-rage-emoji.png',
+};
+
 document.addEventListener('DOMContentLoaded', async function() {
     const ipInfoResponse = await fetch('https://ipinfo.io/json?token=99798ae623ac1d'); // Replace with your IPInfo API token
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
+
+    // Set status to loading
+    const statusImage = document.querySelector('.status-image');
+    const statusMessage = document.querySelector('.status-message');
+    statusImage.src = statusEmojis.space; // Space emoji during check
+    statusMessage.innerText = "Loading...";
 
     // Check if the visitor is banned
     const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
@@ -34,8 +55,10 @@ document.addEventListener('DOMContentLoaded', async function() {
         const responseContainer = document.getElementById("response");
         const sendButton = document.getElementById("send");
         sendButton.disabled = true;
-        // sendButton.innerText = "Blacklisted"; // Change button text for banned users
-        responseContainer.innerText = "You have been blacklisted from using this service."; // Message for banned users
+        // Update status image and message for banned users
+        statusImage.src = statusEmojis.cross; // Cross emoji for banned users
+        statusMessage.innerText = "You have been blacklisted from using this service."; // Message for banned users
+        responseContainer.innerText = ""; // Clear response container
         return; // Exit the script if the user is banned
     }
 
@@ -69,7 +92,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     const inputBox = document.getElementById("question");
     const sendButton = document.getElementById("send");
     const responseContainer = document.getElementById("response");
-    const statusMessage = document.querySelector(".status-message");
 
     sendButton.addEventListener("click", async function() {
         const question = inputBox.value;
@@ -77,6 +99,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         sendButton.disabled = true;
         sendButton.innerText = "...";
+
+        // Set loading state
+        statusImage.src = statusEmojis.space; // Set status image to loading
+        statusMessage.innerText = "Loading..."; // Update status message
 
         const startTime = Date.now();
         const response = await fetch(`https://tilki.dev/api/hercai?soru=${encodeURIComponent(question)}`);
@@ -88,10 +114,15 @@ document.addEventListener('DOMContentLoaded', async function() {
 
         if (data.error) {
             // Handle error case
+            statusImage.src = statusEmojis.cross; // Change image to cross on error
             statusMessage.innerText = "There was an error processing your request. Please try again later.";
             responseContainer.innerText = ""; // Clear the response container
             sendButton.innerText = "Send";
         } else {
+            // Successful response
+            statusImage.src = statusEmojis.check; // Change image to check on success
+            statusMessage.innerText = "The API is all good!"; // Update status message
+
             const questionWebhookMessage = {
                 title: "Question Asked",
                 description: `

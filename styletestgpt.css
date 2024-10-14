@@ -77,3 +77,58 @@ HR {
     align-items: center;
 }
 
+.primary-button {
+    background-color: #007bff; /* Blue */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.secondary-button {
+    background-color: #6c757d; /* Grey */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.success-button {
+    background-color: #28a745; /* Green */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.danger-button {
+    background-color: #dc3545; /* Red */
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Disabled state for buttons */
+button:disabled {
+    background-color: #d3d3d3; /* Light grey */
+    color: #808080; /* Grey text */
+    cursor: not-allowed;
+    border: none;
+}
+
+/* Optional: Add hover effects for buttons */
+.primary-button:hover, 
+.secondary-button:hover, 
+.success-button:hover, 
+.danger-button:hover {
+    opacity: 0.8; /* Slight transparency effect on hover */
+}
+
+button:disabled:hover {
+    opacity: 1; /* Disabled buttons won't change on hover */
+}

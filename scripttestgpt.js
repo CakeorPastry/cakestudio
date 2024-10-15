@@ -23,18 +23,18 @@ document.addEventListener('DOMContentLoaded', async function () {
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
 
-    // Check if the visitor is banned
-    const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
-
     // Elements
     const responseContainer = document.getElementById("response");
     const sendButton = document.getElementById("send");
-    const statusMessage = document.querySelector("#status-message");
-    const statusImage = document.querySelector("#status-image");
+    const statusMessage = document.getElementById("status-message"); // Changed to ID
+    const statusImage = document.getElementById("status-image");
 
     // Default status before checking
     statusImage.src = statusEmojis.space;
     statusMessage.innerText = "Loading...";
+
+    // Check if the visitor is banned
+    const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
 
     if (isBanned) {
         // Send webhook for banned user visit
@@ -96,26 +96,53 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (!question) return;
 
         sendButton.disabled = true;
-        sendButton.innerText = "...";
+        statusMessage.innerText = "Waiting..."; // Change to "Waiting..."
+        statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
 
         const startTime = Date.now();
-        const response = await fetch(`https://tilki.dev/api/hercai?soru=${encodeURIComponent(question)}`);
-        const data = await response.json();
-        const endTime = Date.now();
+        try {
+            const response = await fetch(`https://tilki.dev/api/hercai?soru=${encodeURIComponent(question)}`);
+            
+            // Check if the response is OK (status code in the range 200-299)
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
 
-        const timeTaken = endTime - startTime;
-        const formattedTime = formatDuration(timeTaken);
+            const data = await response.json(); // Try to parse as JSON
+            const endTime = Date.now();
 
-        if (data.error) {
-            // Handle error case
-            statusMessage.innerText = "You have an adblocker, VPN, or another issue.";
-            responseContainer.innerText = ""; // Clear the response container
-            statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
-            sendButton.disabled = true; // Keep button disabled
-        } else {
-            const questionWebhookMessage = {
-                title: "Question Asked",
-                description: `
+            const timeTaken = endTime - startTime;
+            const formattedTime = formatDuration(timeTaken);
+
+            if (data.error) {
+                // Handle error case
+                statusMessage.innerText = "You have an adblocker, VPN, or another issue.";
+                responseContainer.innerText = ""; // Clear the response container
+                statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
+                sendButton.disabled = true; // Keep button disabled
+
+                // Send error details to the webhook
+                const errorWebhookMessage = {
+                    title: "API Error",
+                    description: `
+**Question:** ${question}
+**Error Message:** You have an adblocker, VPN, or another issue.
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+                    `.trim(),
+                    color: 16711680 // Red color for errors
+                };
+                await sendWebhook(errorWebhookMessage);
+            } else {
+                const questionWebhookMessage = {
+                    title: "Question Asked",
+                    description: `
 **Question:** ${question}
 **Response:** ${data.cevap}
 **Time Taken:** ${formattedTime}
@@ -123,17 +150,46 @@ document.addEventListener('DOMContentLoaded', async function () {
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
 **Country:** ${ipData.country}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+                    `.trim(),
+                    color: Math.floor(Math.random() * 16777215)
+                };
+
+                // Send webhook for the question
+                await sendWebhook(questionWebhookMessage);
+
+                responseContainer.innerText = data.cevap;
+                statusImage.src = statusEmojis.check; // Set to check emoji
+                statusMessage.innerText = "The API is all good!";
+            }
+        } catch (error) {
+            console.error('Fetch error:', error); // Log the error to the console
+
+            // Send error details to the webhook
+            const fetchErrorWebhookMessage = {
+                title: "Fetch Error",
+                description: `
+**Question:** ${question}
+**Error Message:** ${error.message}
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
                 `.trim(),
-                color: Math.floor(Math.random() * 16777215)
+                color: 16711680 // Red color for errors
             };
+            await sendWebhook(fetchErrorWebhookMessage);
 
-            // Send webhook for the question
-            await sendWebhook(questionWebhookMessage);
-
-            responseContainer.innerText = data.cevap;
-            statusImage.src = statusEmojis.check; // Set to check emoji
-            statusMessage.innerText = "The API is all good!";
+            // Update the UI to reflect the error
+            statusMessage.innerText = "An error occurred.";
+            responseContainer.innerText = ""; // Clear the response container
+            statusImage.src = statusEmojis.error; // Set to error emoji
         }
 
         // Cooldown before re-enabling the button

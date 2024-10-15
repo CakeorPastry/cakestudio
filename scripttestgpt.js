@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Elements
     const responseContainer = document.getElementById("response");
     const sendButton = document.getElementById("send");
-    const statusMessage = document.getElementById("status-message"); // Changed to ID
+    const statusMessage = document.getElementById("status-message");
     const statusImage = document.getElementById("status-image");
 
     // Default status before checking
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     // If not banned, show waiting message and ellipsis image
-    statusMessage.innerText = "Waiting..."; // Change to "Waiting..."
+    statusMessage.innerText = "Waiting...";
     statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
 
     // Send webhook data on page visit for non-banned users
@@ -100,16 +100,17 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (!question) return;
 
         sendButton.disabled = true;
-        statusMessage.innerText = "Waiting..."; // Change to "Waiting..."
+        statusMessage.innerText = "Waiting...";
         statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
 
         const startTime = Date.now();
         try {
             const response = await fetch(`https://tilki.dev/api/hercai?soru=${encodeURIComponent(question)}`);
-            
+
             // Check if the response is OK (status code in the range 200-299)
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                const errorMessage = getHttpErrorMessage(response.status);
+                throw new Error(`HTTP Error! Code: ${response.status} - ${errorMessage}`);
             }
 
             const data = await response.json(); // Try to parse as JSON
@@ -119,10 +120,10 @@ document.addEventListener('DOMContentLoaded', async function () {
             const formattedTime = formatDuration(timeTaken);
 
             if (data.error) {
-                // Handle error case
-                setErrorStatus("You have an adblocker, VPN, or another issue.");
+                // Handle error case related to adblockers or similar issues
+                statusMessage.innerText = "You have an ad blocker, VPN, or another issue.";
                 responseContainer.innerText = ""; // Clear the response container
-                statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
+                statusImage.src = statusEmojis.cross; // Set to cross emoji
                 sendButton.disabled = true; // Keep button disabled
 
                 // Send error details to the webhook
@@ -130,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                     title: "API Error",
                     description: `
 **Question:** ${question}
-**Error Message:** You have an adblocker, VPN, or another issue.
+**Error Message:** You have an ad blocker, VPN, or another issue.
 **IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
@@ -171,9 +172,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         } catch (error) {
             console.error('Fetch error:', error); // Log the error to the console
 
-            // Update the UI to reflect the error
-            setErrorStatus(error.message); // Set the status to the error message
-
             // Send error details to the webhook
             const fetchErrorWebhookMessage = {
                 title: "Fetch Error",
@@ -192,6 +190,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 color: 16711680 // Red color for errors
             };
             await sendWebhook(fetchErrorWebhookMessage);
+
+            // Update the UI to reflect the error
+            statusMessage.innerText = "An error occurred.";
+            responseContainer.innerText = ""; // Clear the response container
+            statusImage.src = statusEmojis.error; // Set to error emoji
         }
 
         // Cooldown before re-enabling the button
@@ -200,13 +203,6 @@ document.addEventListener('DOMContentLoaded', async function () {
             sendButton.innerText = "Send";
         }, 3000); // 3-second cooldown
     });
-
-    // Function to set the status message to an error
-    function setErrorStatus(message) {
-        statusMessage.innerText = message; // Set status message to the error
-        responseContainer.innerText = ""; // Clear the response container
-        statusImage.src = statusEmojis.error; // Set to error emoji
-    }
 
     async function sendWebhook(embedMessage) {
         const webhookUrl = 'https://discord.com/api/webhooks/1289960861028454481/wXuSMQSu71G0XjJouR2MtLJSupMuRcRZo0CNSVpyfw3Hma5uaiOO3R0KomuissnxXH5F'; // Replace with your actual webhook URL
@@ -223,7 +219,6 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
-    
     function formatDuration(ms) {
         if (ms < 1000) {
             return `${ms} ms`;
@@ -231,6 +226,29 @@ document.addEventListener('DOMContentLoaded', async function () {
             return `${Math.floor(ms / 1000)} seconds`;
         } else {
             return `${Math.floor(ms / 60000)} minutes`;
+        }
+    }
+
+    function getHttpErrorMessage(statusCode) {
+        switch (statusCode) {
+            case 400:
+                return 'Bad Request';
+            case 401:
+                return 'Unauthorized';
+            case 403:
+                return 'Forbidden';
+            case 404:
+                return 'Not Found';
+            case 500:
+                return 'Internal Server Error';
+            case 502:
+                return 'Bad Gateway';
+            case 503:
+                return 'Service Unavailable';
+            case 504:
+                return 'Gateway Timeout';
+            default:
+                return 'Unknown Error';
         }
     }
 });

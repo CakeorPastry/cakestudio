@@ -247,6 +247,8 @@ document.addEventListener('DOMContentLoaded', async function () {
                 return 'Service Unavailable';
             case 504:
                 return 'Gateway Timeout';
+            case 522:
+                return 'Timed Out';
             default:
                 return 'Unknown Error';
         }

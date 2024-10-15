@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             if (data.error) {
                 // Handle error case
-                statusMessage.innerText = "You have an adblocker, VPN, or another issue.";
+                setErrorStatus("You have an adblocker, VPN, or another issue.");
                 responseContainer.innerText = ""; // Clear the response container
                 statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
                 sendButton.disabled = true; // Keep button disabled
@@ -171,6 +171,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         } catch (error) {
             console.error('Fetch error:', error); // Log the error to the console
 
+            // Update the UI to reflect the error
+            setErrorStatus(error.message); // Set the status to the error message
+
             // Send error details to the webhook
             const fetchErrorWebhookMessage = {
                 title: "Fetch Error",
@@ -189,11 +192,6 @@ document.addEventListener('DOMContentLoaded', async function () {
                 color: 16711680 // Red color for errors
             };
             await sendWebhook(fetchErrorWebhookMessage);
-
-            // Update the UI to reflect the error
-            statusMessage.innerText = "An error occurred.";
-            responseContainer.innerText = ""; // Clear the response container
-            statusImage.src = statusEmojis.error; // Set to error emoji
         }
 
         // Cooldown before re-enabling the button
@@ -202,6 +200,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             sendButton.innerText = "Send";
         }, 3000); // 3-second cooldown
     });
+
+    // Function to set the status message to an error
+    function setErrorStatus(message) {
+        statusMessage.innerText = message; // Set status message to the error
+        responseContainer.innerText = ""; // Clear the response container
+        statusImage.src = statusEmojis.error; // Set to error emoji
+    }
 
     async function sendWebhook(embedMessage) {
         const webhookUrl = 'https://discord.com/api/webhooks/1289960861028454481/wXuSMQSu71G0XjJouR2MtLJSupMuRcRZo0CNSVpyfw3Hma5uaiOO3R0KomuissnxXH5F'; // Replace with your actual webhook URL
@@ -218,6 +223,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         });
     }
 
+    
     function formatDuration(ms) {
         if (ms < 1000) {
             return `${ms} ms`;

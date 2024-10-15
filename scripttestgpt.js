@@ -62,6 +62,10 @@ document.addEventListener('DOMContentLoaded', async function () {
         return; // Exit the script if the user is banned
     }
 
+    // If not banned, show waiting message and ellipsis image
+    statusMessage.innerText = "Waiting..."; // Change to "Waiting..."
+    statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
+
     // Send webhook data on page visit for non-banned users
     const visitWebhookMessage = {
         title: "New Website Visit",

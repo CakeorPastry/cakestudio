@@ -194,7 +194,7 @@ input::placeholder {
   color: white;              /* Text color */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
   width: 300px;              /* Width of the box */
-  margin: 20px auto;         /* Center it horizontally */
+  /*margin: 20px auto;         /* Center it horizontally */
 }
 
 .status-box h2 {

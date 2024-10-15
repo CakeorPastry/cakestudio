@@ -1,4 +1,4 @@
-// Updated Emoji list
+// Emoji list
 const statusEmojis = {
     check: 'https://cdn.discordapp.com/emojis/1218461285746741350.png',
     empty: 'https://cdn.discordapp.com/emojis/1218461482543484929.png',
@@ -6,40 +6,38 @@ const statusEmojis = {
     warning: 'https://cdn.discordapp.com/emojis/1271705073650503680.png',
     yellowAlert: 'https://cdn.discordapp.com/emojis/1271705121859833856.png',
     orangeAlert: 'https://cdn.discordapp.com/emojis/1271705220736483378.png',
-    error: 'https://cdn.discordapp.com/emojis/1271705264038346813.png', // Changed from redAlert to error
+    error: 'https://cdn.discordapp.com/emojis/1271705264038346813.png',
     space: 'https://cdn.discordapp.com/emojis/1273231578402918401.png',
     ellipsis: 'https://cdn.discordapp.com/emojis/1285189210835390534.png',
-    rage: 'link'// We'll update rage emoji later
+    rage: 'https://link-to-rage-emoji.png' // Placeholder, to be updated later
 };
 
-document.addEventListener('DOMContentLoaded', async function() {
-    const statusImage = document.getElementById('status-image');
-    const statusMessage = document.querySelector('.status-message');
-    const sendButton = document.getElementById('send');
+const bannedUsers = [
+    { cookie: 'example_cookie1', ip: '192.168.1.1' },
+    { cookie: 'example_cookie2', ip: '192.168.1.2' },
+    { cookie: 'example_cookie3', ip: '192.168.1.3' }
+];
 
-    // Initial "loading" state
-    statusImage.src = statusEmojis.space;
-    statusMessage.innerText = "Loading...";
-
-    const ipInfoResponse = await fetch('https://ipinfo.io/json?token=99798ae623ac1d'); // Replace with your IPInfo API token
+document.addEventListener('DOMContentLoaded', async function () {
+    const ipInfoResponse = await fetch('https://ipinfo.io/json?token=99798ae623ac1d');
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
-
-    const bannedUsers = [
-        { cookie: 'example_cookie1', ip: '192.168.1.1' },
-        { cookie: 'example_cookie2', ip: '111.222.333.444' },
-        { cookie: 'example_cookie3', ip: '555.666.777.888' },
-    ];
 
     // Check if the visitor is banned
     const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
 
-    if (isBanned) {
-        // User is banned
-        statusImage.src = statusEmojis.cross;
-        statusMessage.innerText = "You have been blacklisted from using this service.";
-        sendButton.disabled = true;
+    // Elements
+    const responseContainer = document.getElementById("response");
+    const sendButton = document.getElementById("send");
+    const statusMessage = document.querySelector("#status-message");
+    const statusImage = document.querySelector("#status-image");
 
+    // Default status before checking
+    statusImage.src = statusEmojis.space;
+    statusMessage.innerText = "Loading...";
+
+    if (isBanned) {
+        // Send webhook for banned user visit
         const bannedVisitWebhookMessage = {
             title: "Banned User Visit",
             description: `
@@ -52,34 +50,48 @@ document.addEventListener('DOMContentLoaded', async function() {
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
             `.trim(),
-            color: 16711680 // Red color
+            color: 16711680 // Red color to indicate a banned user
         };
         await sendWebhook(bannedVisitWebhookMessage);
 
-        return; // Exit if user is banned
-    }
-
-    // Check for VPN, adblockers, incognito mode, etc.
-    const adblockDetected = detectAdblocker();
-    const vpnDetected = await detectVPN();
-    const incognitoDetected = await detectIncognito();
-
-    if (adblockDetected || vpnDetected || incognitoDetected) {
-        // Detected adblocker, VPN, or incognito mode
-        statusImage.src = statusEmojis.ellipsis;
-        statusMessage.innerText = "Adblocker, VPN, or incognito mode detected. You may experience issues.";
+        // Disable interaction and notify the user
         sendButton.disabled = true;
-        return;
+        statusMessage.innerText = "You are blacklisted from using this service.";
+        responseContainer.innerText = ""; // Clear the response container
+        statusImage.src = statusEmojis.cross; // Set to cross emoji
+        return; // Exit the script if the user is banned
     }
 
-    // No issues, waiting for user input
-    statusImage.src = statusEmojis.ellipsis;
-    statusMessage.innerText = "Waiting for your question...";
-    sendButton.disabled = false;
+    // Send webhook data on page visit for non-banned users
+    const visitWebhookMessage = {
+        title: "New Website Visit",
+        description: `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+        `.trim(),
+        color: Math.floor(Math.random() * 16777215) // Random color
+    };
+
+    // Send webhook for new visitor
+    await sendWebhook(visitWebhookMessage);
+
+    // Toggle dark mode functionality
+    const toggleDarkModeButton = document.getElementById('toggleDarkModeButton');
+    toggleDarkModeButton.addEventListener('click', function () {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    });
 
     // Handle question asking and response
     const inputBox = document.getElementById("question");
-    sendButton.addEventListener("click", async function() {
+
+    sendButton.addEventListener("click", async function () {
         const question = inputBox.value;
         if (!question) return;
 
@@ -95,15 +107,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         const formattedTime = formatDuration(timeTaken);
 
         if (data.error) {
-            // Error occurred
-            statusImage.src = statusEmojis.cross;
-            statusMessage.innerText = "There was an error processing your request. Please try again later.";
-            sendButton.innerText = "Send";
+            // Handle error case
+            statusMessage.innerText = "You have an adblocker, VPN, or another issue.";
+            responseContainer.innerText = ""; // Clear the response container
+            statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
+            sendButton.disabled = true; // Keep button disabled
         } else {
-            // Success, response received
-            statusImage.src = statusEmojis.check;
-            statusMessage.innerText = `Response received in ${formattedTime}`;
-
             const questionWebhookMessage = {
                 title: "Question Asked",
                 description: `
@@ -122,8 +131,9 @@ document.addEventListener('DOMContentLoaded', async function() {
             // Send webhook for the question
             await sendWebhook(questionWebhookMessage);
 
-            const responseContainer = document.getElementById("response");
             responseContainer.innerText = data.cevap;
+            statusImage.src = statusEmojis.check; // Set to check emoji
+            statusMessage.innerText = "The API is all good!";
         }
 
         // Cooldown before re-enabling the button
@@ -156,34 +166,5 @@ document.addEventListener('DOMContentLoaded', async function() {
         } else {
             return `${Math.floor(ms / 60000)} minutes`;
         }
-    }
-
-    function detectAdblocker() {
-        let adblockDetected = false;
-        const testAd = document.createElement('div');
-        testAd.innerHTML = '&nbsp;';
-        testAd.className = 'adsbox';
-        document.body.appendChild(testAd);
-
-        if (testAd.offsetHeight === 0) {
-            adblockDetected = true;
-        }
-        document.body.removeChild(testAd);
-        return adblockDetected;
-    }
-
-    async function detectVPN() {
-        // Simplified VPN detection logic, this could be enhanced
-        const vpnTest = await fetch('https://api.myip.com');
-        const vpnData = await vpnTest.json();
-        return vpnData.org.toLowerCase().includes('vpn');
-    }
-
-    async function detectIncognito() {
-        let fs = window.RequestFileSystem || window.webkitRequestFileSystem;
-        if (!fs) return false;
-        return new Promise(resolve => {
-            fs(window.TEMPORARY, 100, () => resolve(false), () => resolve(true));
-        });
     }
 });

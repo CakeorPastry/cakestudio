@@ -23,7 +23,11 @@ app.use(cors({
 
 // Route for the root path
 app.get('/', (req, res) => {
-    res.send('Nice try diddy');
+    res.status(400).json({ error: 'Nice try diddy.' });
+});
+
+app.get('/api', (req, res) => {
+    res.status(400).json({ error: 'Please specify a valid API endpoint.' });
 });
 
 // Route for IP info

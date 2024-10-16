@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const toggleButton = document.getElementById('toggleButton');
+    const toggleButton = document.getElementById('toggleDarkModeButton');
 
     toggleButton.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');

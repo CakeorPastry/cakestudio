@@ -22,6 +22,15 @@ const bannedUsers = [
     { cookie: 'locale=en-US', ip: '' }
 ];
 
+document.addEventListener('DOMContentLoaded', function() {
+    const toggleButton = document.getElementById('toggleButton');
+
+    toggleButton.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    });
+});
+
 document.addEventListener('DOMContentLoaded', async function () {
     // Fetch IP information from your API
     const ipInfoResponse = await fetch(`${apiUrl}/ipinfo`); // Use the base API URL

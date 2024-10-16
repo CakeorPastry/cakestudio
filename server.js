@@ -12,10 +12,11 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS
 
 app.use(cors({
     origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true); // Allow the request
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true); // Allow request
         } else {
-            callback(new Error(origin)); // Deny the request
+            console.log(`Blocked request from origin: ${origin}`); // Log the blocked origin
+            callback(new Error('CORS Error: This origin is not allowed by CORS policy.')); // Send a clear error message
         }
     }
 }));

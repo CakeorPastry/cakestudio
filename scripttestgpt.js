@@ -1,7 +1,7 @@
 // Base API URL
 const apiUrl = 'https://cakestudio.onrender.com/api';
 
-// Emoji list
+// Emoji list (same as your original code)
 const statusEmojis = {
     check: 'https://cdn.discordapp.com/emojis/1218461285746741350.png',
     empty: 'https://cdn.discordapp.com/emojis/1218461482543484929.png',
@@ -15,7 +15,7 @@ const statusEmojis = {
     rage: 'https://link-to-rage-emoji.png' // Placeholder, to be updated later
 };
 
-// List of banned users
+// List of banned users (same as your original code)
 const bannedUsers = [
     { cookie: 'example_cookie1', ip: '192.168.1.1' },
     { cookie: 'example_cookie2', ip: '192.168.1.2' },
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // This function will handle error display in dark mode
-    function handleErrorInDarkMode(errorMessage) {
+    window.handleErrorInDarkMode = function(errorMessage) {
         const originalStatusMessage = statusMessage.innerText;
         statusMessage.innerText = `❌ An error occurred: ${errorMessage}. Please try again.`;
         
@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', function() {
             statusMessage.innerText = originalStatusMessage;
             statusMessage.style.color = ""; // Reset text color
         }, 2000); // Change back after 2 seconds
-    }
+    };
 });
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -58,7 +58,6 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Elements
     const responseContainer = document.getElementById("response");
     const sendButton = document.getElementById("send");
-    const statusMessage = document.getElementById("status-message");
     const statusImage = document.getElementById("status-image");
 
     // Default status before checking
@@ -143,6 +142,9 @@ document.addEventListener('DOMContentLoaded', async function () {
             statusMessage.innerText = "The API is all good!";
         } catch (error) {
             console.error('Fetch error:', error); // Log the error to the console
+
+            // Call the error handling function with the error message
+            handleErrorInDarkMode(error.message);
 
             // Send error details to the webhook
             const fetchErrorWebhookMessage = {

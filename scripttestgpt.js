@@ -25,14 +25,10 @@ const bannedUsers = [
 document.addEventListener('DOMContentLoaded', function() {
     const toggleButton = document.getElementById('toggleDarkModeButton');
 
-    try {
-        toggleButton.addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-            this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
-        });
-    } catch (error) {
-        alert(`An error occurred: ${error.message}`);
-    }
+    toggleButton.addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
+    });
 });
 
 document.addEventListener('DOMContentLoaded', async function () {

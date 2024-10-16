@@ -10,16 +10,15 @@ app.use(express.json()); // Middleware to parse JSON bodies
 // Configure allowed origins from environment variable
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
-// CORS middleware
-//app.use(cors({
- //   origin: (origin, callback) => {
-//        if (!origin || allowedOrigins.includes(origin)) {
-         //   callback(null, true); // Allow the request
-   //     } else {
-//          callback(new Error('Not allowed by CORS')); // Deny the request
-       // }
- //   
-//}));
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true); // Allow the request
+        } else {
+            callback(new Error('Not allowed by CORS')); // Deny the request
+        }
+    }
+}));
 
 // Route for the root path
 app.get('/', (req, res) => {

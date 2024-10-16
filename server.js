@@ -10,6 +10,11 @@ app.use(express.json()); // Middleware to parse JSON bodies
 // Configure allowed origins from environment variable
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
+// Route for the root path
+app.get('/', (req, res) => {
+    res.status(400).json({ error: 'Nice try diddy.' });
+});
+
 app.use(cors({
     origin: (origin, callback) => {
         if (allowedOrigins.includes(origin)) {
@@ -20,11 +25,6 @@ app.use(cors({
         }
     }
 }));
-
-// Route for the root path
-app.get('/', (req, res) => {
-    res.status(400).json({ error: 'Nice try diddy.' });
-});
 
 app.get('/api', (req, res) => {
     res.status(400).json({ error: 'Please specify a valid API endpoint.' });

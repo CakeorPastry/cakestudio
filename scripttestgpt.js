@@ -24,29 +24,11 @@ const bannedUsers = [
 
 document.addEventListener('DOMContentLoaded', function() {
     const toggleButton = document.getElementById('toggleDarkModeButton');
-    const statusMessage = document.getElementById("status-message"); // Ensure you have this reference
 
     toggleButton.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
         this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
-
-    // This function will handle error display in dark mode
-    window.handleErrorInDarkMode = function(errorMessage) {
-        const originalStatusMessage = statusMessage.innerText;
-        statusMessage.innerText = `❌ An error occurred: ${errorMessage}. Please try again.`;
-        
-        // Check if dark mode is active
-        if (document.body.classList.contains('dark-mode')) {
-            statusMessage.style.color = "red"; // Change text color to red for visibility
-        }
-
-        // Reset status message after a timeout
-        setTimeout(() => {
-            statusMessage.innerText = originalStatusMessage;
-            statusMessage.style.color = ""; // Reset text color
-        }, 2000); // Change back after 2 seconds
-    };
 });
 
 document.addEventListener('DOMContentLoaded', async function () {

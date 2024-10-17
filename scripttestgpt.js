@@ -162,16 +162,25 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     async function sendWebhook(embedMessage) {
-        const payload = {
-            embeds: [embedMessage]
-        };
+    const payload = {
+        embeds: [embedMessage]
+    };
 
-        await fetch(`${apiUrl}/webhooksend`, { // Use base API URL for sending webhooks
+    try {
+        const response = await fetch(`${apiUrl}/webhooksend`, { // Use base API URL for sending webhooks
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
         });
+
+        if (!response.ok) {
+            const errorText = await response.text(); // Get error details
+            throw new Error(`Error sending webhook: ${errorText}`);
+        }
+    } catch (error) {
+        console.error('Webhook Error:', error); // Log the error to the console
+        alert(`Failed to send webhook: ${error.message}`); // Show the error message in an alert
     }
-});
+    }

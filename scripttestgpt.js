@@ -178,6 +178,6 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     } catch (error) {
         console.error('Error during initialization:', error);
-        alert('Failed to initialize the application.');
+        alert('Failed to initialize the application.', error);
     }
 });

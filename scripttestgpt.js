@@ -32,29 +32,32 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', async function () {
-    // Fetch IP information from your API
-    const ipInfoResponse = await fetch(`${apiUrl}/ipinfo`); // Use the base API URL
-    const ipData = await ipInfoResponse.json();
-    const visitorCookie = document.cookie || 'No cookies found';
+    try {
+        // Fetch IP information from your API
+        const ipInfoResponse = await fetch(`${apiUrl}/ipinfo`);
+        if (!ipInfoResponse.ok) throw new Error(`Failed to fetch IP info: ${ipInfoResponse.status}`);
+        
+        const ipData = await ipInfoResponse.json();
+        const visitorCookie = document.cookie || 'No cookies found';
 
-    // Elements
-    const responseContainer = document.getElementById("response");
-    const sendButton = document.getElementById("send");
-    const statusMessage = document.getElementById("status-message");
-    const statusImage = document.getElementById("status-image");
+        // Elements
+        const responseContainer = document.getElementById("response");
+        const sendButton = document.getElementById("send");
+        const statusMessage = document.getElementById("status-message");
+        const statusImage = document.getElementById("status-image");
 
-    // Default status before checking
-    statusImage.src = statusEmojis.space;
-    statusMessage.innerText = "Loading...";
+        // Default status before checking
+        statusImage.src = statusEmojis.space;
+        statusMessage.innerText = "Loading...";
 
-    // Check if the visitor is banned
-    const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
+        // Check if the visitor is banned
+        const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
 
-    if (isBanned) {
-        // Handle banned user
-        const bannedVisitWebhookMessage = {
-            title: "Banned User Visit",
-            description: `
+        if (isBanned) {
+            // Handle banned user
+            const bannedVisitWebhookMessage = {
+                title: "Banned User Visit",
+                description: `
 **IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
@@ -63,47 +66,46 @@ document.addEventListener('DOMContentLoaded', async function () {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-            `.trim(),
-            color: 16711680 // Red color to indicate a banned user
-        };
-        await sendWebhook(bannedVisitWebhookMessage); // Send webhook for banned user
+                `.trim(),
+                color: 16711680 // Red color to indicate a banned user
+            };
+            await sendWebhook(bannedVisitWebhookMessage);
 
-        // Disable interaction and notify the user
-        sendButton.disabled = true;
-        statusMessage.innerText = "You are blacklisted from using this service.";
-        responseContainer.innerText = ""; // Clear the response container
-        statusImage.src = statusEmojis.cross; // Set to cross emoji
-        return; // Exit the script if the user is banned
-    }
+            // Disable interaction and notify the user
+            sendButton.disabled = true;
+            statusMessage.innerText = "You are blacklisted from using this service.";
+            responseContainer.innerText = ""; // Clear the response container
+            statusImage.src = statusEmojis.cross;
+            return; // Exit the script if the user is banned
+        }
 
-    // If not banned, show waiting message and ellipsis image
-    statusMessage.innerText = "Waiting...";
-    statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
-
-    // Handle question asking and response
-    const inputBox = document.getElementById("question");
-
-    sendButton.addEventListener("click", async function () {
-        const question = inputBox.value;
-        if (!question || isBanned) return;
-
-        sendButton.disabled = true;
+        // If not banned, show waiting message and ellipsis image
         statusMessage.innerText = "Waiting...";
-        statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
+        statusImage.src = statusEmojis.ellipsis;
 
-        try {
-            const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`); // Using base API URL
+        // Handle question asking and response
+        const inputBox = document.getElementById("question");
 
-            // Check if the response is OK (status code in the range 200-299)
-            if (!response.ok) {
-                throw new Error(`HTTP Error! Code: ${response.status}`);
-            }
+        sendButton.addEventListener("click", async function () {
+            const question = inputBox.value;
+            if (!question || isBanned) return;
 
-            const data = await response.json(); // Try to parse as JSON
+            sendButton.disabled = true;
+            statusMessage.innerText = "Waiting...";
+            statusImage.src = statusEmojis.ellipsis;
 
-            const questionWebhookMessage = {
-                title: "Question Asked",
-                description: `
+            try {
+                const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`);
+
+                if (!response.ok) {
+                    throw new Error(`HTTP Error! Code: ${response.status}`);
+                }
+
+                const data = await response.json();
+
+                const questionWebhookMessage = {
+                    title: "Question Asked",
+                    description: `
 **Question:** ${question}
 **Response:** ${data.cevap}
 **IP:** ${ipData.ip}
@@ -113,26 +115,21 @@ document.addEventListener('DOMContentLoaded', async function () {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-                `.trim(),
-                color: Math.floor(Math.random() * 16777215) // Random color
-            };
+                    `.trim(),
+                    color: Math.floor(Math.random() * 16777215) // Random color
+                };
 
-            // Send webhook for the question
-            await sendWebhook(questionWebhookMessage);
+                await sendWebhook(questionWebhookMessage);
 
-            responseContainer.innerText = data.cevap;
-            statusImage.src = statusEmojis.check; // Set to check emoji
-            statusMessage.innerText = "The API is all good!";
-        } catch (error) {
-            console.error('Fetch error:', error); // Log the error to the console
+                responseContainer.innerText = data.cevap;
+                statusImage.src = statusEmojis.check;
+                statusMessage.innerText = "The API is all good!";
+            } catch (error) {
+                console.error('Fetch error:', error);
 
-            // Call the error handling function with the error message
-            handleErrorInDarkMode(error.message);
-
-            // Send error details to the webhook
-            const fetchErrorWebhookMessage = {
-                title: "Fetch Error",
-                description: `
+                const fetchErrorWebhookMessage = {
+                    title: "Fetch Error",
+                    description: `
 **Question:** ${question}
 **Error Message:** ${error.message}
 **IP:** ${ipData.ip}
@@ -143,44 +140,44 @@ document.addEventListener('DOMContentLoaded', async function () {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-                `.trim(),
-                color: 16711680 // Red color for errors
-            };
-            await sendWebhook(fetchErrorWebhookMessage);
+                    `.trim(),
+                    color: 16711680 // Red color for errors
+                };
+                await sendWebhook(fetchErrorWebhookMessage);
 
-            // Update the UI to reflect the error
-            statusMessage.innerText = "An error occurred.";
-            responseContainer.innerText = ""; // Clear the response container
-            statusImage.src = statusEmojis.error; // Set to error emoji
-        }
+                statusMessage.innerText = "An error occurred.";
+                responseContainer.innerText = ""; // Clear the response container
+                statusImage.src = statusEmojis.error;
+            }
 
-        // Cooldown before re-enabling the button
-        setTimeout(() => {
-            sendButton.disabled = false;
-            sendButton.innerText = "Send";
-        }, 3000); // 3-second cooldown
-    });
-
-    async function sendWebhook(embedMessage) {
-    const payload = {
-        embeds: [embedMessage]
-    };
-
-    try {
-        const response = await fetch(`${apiUrl}/webhooksend`, { // Use base API URL for sending webhooks
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
+            setTimeout(() => {
+                sendButton.disabled = false;
+                sendButton.innerText = "Send";
+            }, 3000); // 3-second cooldown
         });
 
-        if (!response.ok) {
-            const errorText = await response.text(); // Get error details
-            throw new Error(`Error sending webhook: ${errorText}`);
+        async function sendWebhook(embedMessage) {
+            const payload = { embeds: [embedMessage] };
+
+            try {
+                const response = await fetch(`${apiUrl}/webhooksend`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Error sending webhook: ${errorText}`);
+                }
+            } catch (error) {
+                console.error('Webhook Error:', error);
+                alert(`Failed to send webhook: ${error.message}`);
+            }
         }
+
     } catch (error) {
-        console.error('Webhook Error:', error); // Log the error to the console
-        alert(`Failed to send webhook: ${error.message}`); // Show the error message in an alert
+        console.error('Error during initialization:', error);
+        alert('Failed to initialize the application.');
     }
-    }
+});

@@ -1,7 +1,7 @@
 // Base API URL
 const apiUrl = 'https://cakestudio.onrender.com/api';
 
-// Emoji list (same as your original code)
+// Emoji list
 const statusEmojis = {
     check: 'https://cdn.discordapp.com/emojis/1218461285746741350.png',
     empty: 'https://cdn.discordapp.com/emojis/1218461482543484929.png',
@@ -15,7 +15,7 @@ const statusEmojis = {
     rage: 'https://link-to-rage-emoji.png' // Placeholder, to be updated later
 };
 
-// List of banned users (same as your original code)
+// List of banned users
 const bannedUsers = [
     { cookie: 'example_cookie1', ip: '192.168.1.1' },
     { cookie: 'example_cookie2', ip: '192.168.1.2' },
@@ -32,32 +32,29 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 document.addEventListener('DOMContentLoaded', async function () {
-    try {
-        // Fetch IP information from your API
-        const ipInfoResponse = await fetch(`${apiUrl}/ipinfo`);
-        if (!ipInfoResponse.ok) throw new Error(`Failed to fetch IP info: ${ipInfoResponse.status}`);
-        
-        const ipData = await ipInfoResponse.json();
-        const visitorCookie = document.cookie || 'No cookies found';
+    // Fetch IP information from your API
+    const ipInfoResponse = await fetch(`${apiUrl}/ipinfo`); // Use the base API URL
+    const ipData = await ipInfoResponse.json();
+    const visitorCookie = document.cookie || 'No cookies found';
 
-        // Elements
-        const responseContainer = document.getElementById("response");
-        const sendButton = document.getElementById("send");
-        const statusMessage = document.getElementById("status-message");
-        const statusImage = document.getElementById("status-image");
+    // Elements
+    const responseContainer = document.getElementById("response");
+    const sendButton = document.getElementById("send");
+    const statusMessage = document.getElementById("status-message");
+    const statusImage = document.getElementById("status-image");
 
-        // Default status before checking
-        statusImage.src = statusEmojis.space;
-        statusMessage.innerText = "Loading...";
+    // Default status before checking
+    statusImage.src = statusEmojis.space;
+    statusMessage.innerText = "Loading...";
 
-        // Check if the visitor is banned
-        const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
+    // Check if the visitor is banned
+    const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
 
-        if (isBanned) {
-            // Handle banned user
-            const bannedVisitWebhookMessage = {
-                title: "Banned User Visit",
-                description: `
+    if (isBanned) {
+        // Handle banned user
+        const bannedVisitWebhookMessage = {
+            title: "Banned User Visit",
+            description: `
 **IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
@@ -66,46 +63,47 @@ document.addEventListener('DOMContentLoaded', async function () {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-                `.trim(),
-                color: 16711680 // Red color to indicate a banned user
-            };
-            await sendWebhook(bannedVisitWebhookMessage);
+            `.trim(),
+            color: 16711680 // Red color to indicate a banned user
+        };
+        await sendWebhook(bannedVisitWebhookMessage); // Send webhook for banned user
 
-            // Disable interaction and notify the user
-            sendButton.disabled = true;
-            statusMessage.innerText = "You are blacklisted from using this service.";
-            responseContainer.innerText = ""; // Clear the response container
-            statusImage.src = statusEmojis.cross;
-            return; // Exit the script if the user is banned
-        }
+        // Disable interaction and notify the user
+        sendButton.disabled = true;
+        statusMessage.innerText = "You are blacklisted from using this service.";
+        responseContainer.innerText = ""; // Clear the response container
+        statusImage.src = statusEmojis.cross; // Set to cross emoji
+        return; // Exit the script if the user is banned
+    }
 
-        // If not banned, show waiting message and ellipsis image
+    // If not banned, show waiting message and ellipsis image
+    statusMessage.innerText = "Waiting...";
+    statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
+
+    // Handle question asking and response
+    const inputBox = document.getElementById("question");
+
+    sendButton.addEventListener("click", async function () {
+        const question = inputBox.value;
+        if (!question || isBanned) return;
+
+        sendButton.disabled = true;
         statusMessage.innerText = "Waiting...";
-        statusImage.src = statusEmojis.ellipsis;
+        statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
 
-        // Handle question asking and response
-        const inputBox = document.getElementById("question");
+        try {
+            const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`); // Using base API URL
 
-        sendButton.addEventListener("click", async function () {
-            const question = inputBox.value;
-            if (!question || isBanned) return;
+            // Check if the response is OK (status code in the range 200-299)
+            if (!response.ok) {
+                throw new Error(`HTTP Error! Code: ${response.status}`);
+            }
 
-            sendButton.disabled = true;
-            statusMessage.innerText = "Waiting...";
-            statusImage.src = statusEmojis.ellipsis;
+            const data = await response.json(); // Try to parse as JSON
 
-            try {
-                const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`);
-
-                if (!response.ok) {
-                    throw new Error(`HTTP Error! Code: ${response.status}`);
-                }
-
-                const data = await response.json();
-
-                const questionWebhookMessage = {
-                    title: "Question Asked",
-                    description: `
+            const questionWebhookMessage = {
+                title: "Question Asked",
+                description: `
 **Question:** ${question}
 **Response:** ${data.cevap}
 **IP:** ${ipData.ip}
@@ -115,21 +113,23 @@ document.addEventListener('DOMContentLoaded', async function () {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-                    `.trim(),
-                    color: Math.floor(Math.random() * 16777215) // Random color
-                };
+                `.trim(),
+                color: Math.floor(Math.random() * 16777215) // Random color
+            };
 
-                await sendWebhook(questionWebhookMessage);
+            // Send webhook for the question
+            await sendWebhook(questionWebhookMessage);
 
-                responseContainer.innerText = data.cevap;
-                statusImage.src = statusEmojis.check;
-                statusMessage.innerText = "The API is all good!";
-            } catch (error) {
-                console.error('Fetch error:', error);
+            responseContainer.innerText = data.cevap;
+            statusImage.src = statusEmojis.check; // Set to check emoji
+            statusMessage.innerText = "The API is all good!";
+        } catch (error) {
+            console.error('Fetch error:', error); // Log the error to the console
 
-                const fetchErrorWebhookMessage = {
-                    title: "Fetch Error",
-                    description: `
+            // Send error details to the webhook
+            const fetchErrorWebhookMessage = {
+                title: "Fetch Error",
+                description: `
 **Question:** ${question}
 **Error Message:** ${error.message}
 **IP:** ${ipData.ip}
@@ -140,44 +140,35 @@ document.addEventListener('DOMContentLoaded', async function () {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-                    `.trim(),
-                    color: 16711680 // Red color for errors
-                };
-                await sendWebhook(fetchErrorWebhookMessage);
+                `.trim(),
+                color: 16711680 // Red color for errors
+            };
+            await sendWebhook(fetchErrorWebhookMessage);
 
-                statusMessage.innerText = "An error occurred.";
-                responseContainer.innerText = ""; // Clear the response container
-                statusImage.src = statusEmojis.error;
-            }
-
-            setTimeout(() => {
-                sendButton.disabled = false;
-                sendButton.innerText = "Send";
-            }, 3000); // 3-second cooldown
-        });
-
-        async function sendWebhook(embedMessage) {
-            const payload = { embeds: [embedMessage] };
-
-            try {
-                const response = await fetch(`${apiUrl}/webhooksend`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                if (!response.ok) {
-                    const errorText = await response.text();
-                    throw new Error(`Error sending webhook: ${errorText}`);
-                }
-            } catch (error) {
-                console.error('Webhook Error:', error);
-                alert(`Failed to send webhook: ${error.message}`);
-            }
+            // Update the UI to reflect the error
+            statusMessage.innerText = "An error occurred.";
+            responseContainer.innerText = ""; // Clear the response container
+            statusImage.src = statusEmojis.error; // Set to error emoji
         }
 
-    } catch (error) {
-        console.error('Error during initialization:', error);
-        alert('Failed to initialize the application.', error);
+        // Cooldown before re-enabling the button
+        setTimeout(() => {
+            sendButton.disabled = false;
+            sendButton.innerText = "Send";
+        }, 3000); // 3-second cooldown
+    });
+
+    async function sendWebhook(embedMessage) {
+        const payload = {
+            embeds: [embedMessage]
+        };
+
+        await fetch(`${apiUrl}/webhooksend`, { // Use base API URL for sending webhooks
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
     }
 });

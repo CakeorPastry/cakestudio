@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('DOMContentLoaded', async function () {
     // Fetch IP information from your API
-    const ipInfoResponse = await fetch(`${apiUrl}/ipinfo`); // Use the base API URL
+    const ipInfoResponse = await fetch(`${apiUrl}/ipinfo`);
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
 
@@ -52,9 +52,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     if (isBanned) {
         // Handle banned user
-        const bannedVisitWebhookMessage = {
-            title: "Banned User Visit",
-            description: `
+        await sendWebhook("Banned User Visit", `
 **IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
@@ -63,10 +61,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-            `.trim(),
-            color: 16711680 // Red color to indicate a banned user
-        };
-        await sendWebhook(bannedVisitWebhookMessage); // Send webhook for banned user
+        `.trim(), 16711680); // Red color for banned user
 
         // Disable interaction and notify the user
         sendButton.disabled = true;
@@ -92,44 +87,37 @@ document.addEventListener('DOMContentLoaded', async function () {
         statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
 
         try {
-            const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`); // Using base API URL
+            const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`);
 
-            // Check if the response is OK (status code in the range 200-299)
+            // Check if the response is OK
             if (!response.ok) {
                 throw new Error(`HTTP Error! Code: ${response.status}`);
             }
 
             const data = await response.json(); // Try to parse as JSON
 
-            const questionWebhookMessage = {
-                title: "Question Asked",
-                description: `
+            // Send webhook for the question
+            await sendWebhook("Question Asked", `
 **Question:** ${question}
 **Response:** ${data.cevap}
 **IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
 **Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-                `.trim(),
-                color: Math.floor(Math.random() * 16777215) // Random color
-            };
-
-            // Send webhook for the question
-            await sendWebhook(questionWebhookMessage);
+            `.trim(), Math.floor(Math.random() * 16777215)); // Random color
 
             responseContainer.innerText = data.cevap;
             statusImage.src = statusEmojis.check; // Set to check emoji
             statusMessage.innerText = "The API is all good!";
         } catch (error) {
-            console.error('Fetch error:', error); // Log the error to the console
+            console.error('Fetch error:', error);
 
             // Send error details to the webhook
-            const fetchErrorWebhookMessage = {
-                title: "Fetch Error",
-                description: `
+            await sendWebhook("Fetch Error", `
 **Question:** ${question}
 **Error Message:** ${error.message}
 **IP:** ${ipData.ip}
@@ -140,10 +128,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-                `.trim(),
-                color: 16711680 // Red color for errors
-            };
-            await sendWebhook(fetchErrorWebhookMessage);
+            `.trim(), 16711680); // Red color for errors
 
             // Update the UI to reflect the error
             statusMessage.innerText = "An error occurred.";
@@ -158,17 +143,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         }, 3000); // 3-second cooldown
     });
 
-    async function sendWebhook(embedMessage) {
-        const payload = {
-            embeds: [embedMessage]
-        };
-
-        await fetch(`${apiUrl}/webhooksend`, { // Use base API URL for sending webhooks
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
+    async function sendWebhook(title, description, color) {
+        await fetch(`${apiUrl}/webhooksend?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&color=${color}`);
     }
 });

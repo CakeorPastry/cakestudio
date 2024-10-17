@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Elements
     const responseContainer = document.getElementById("response");
     const sendButton = document.getElementById("send");
-    const statusMessage = document.getElementByID("status-message");
+    const statusMessage = document.getElementById("status-message");
     const statusImage = document.getElementById("status-image");
 
     // Default status before checking

@@ -10,7 +10,7 @@ app.use(express.json());
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
 app.get('/', (req, res) => {
-    res.status(400).json({ error: 'Nice try diddy.' });
+    res.status(200).json({ error: 'Nice try diddy.' });
 });
 
 app.use(cors({

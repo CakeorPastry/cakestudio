@@ -1,16 +1,14 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config(); // Load environment variables from .env file
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json()); // Middleware to parse JSON bodies
+app.use(express.json());
 
-// Configure allowed origins from environment variable
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
-// Route for the root path
 app.get('/', (req, res) => {
     res.status(400).json({ error: 'Nice try diddy.' });
 });
@@ -18,10 +16,11 @@ app.get('/', (req, res) => {
 app.use(cors({
     origin: (origin, callback) => {
         if (allowedOrigins.includes(origin)) {
-            callback(null, true); // Allow request
+            callback(null, true);
         } else {
-            console.log(`Blocked request from origin: ${origin}`); // Log the blocked origin
-            callback(new Error('CORS Error: This origin is not allowed by CORS policy.')); // Send a clear error message
+            console.log(`Blocked request from origin: ${origin}`);
+            res.status(403).json({ error: 'This origin is not allowed by CORS policy.' });
+            callback(new Error('CORS Error: This origin is not allowed by CORS policy.'));
         }
     }
 }));
@@ -30,9 +29,8 @@ app.get('/api', (req, res) => {
     res.status(400).json({ error: 'Please specify a valid API endpoint.' });
 });
 
-// Route for IP info
 app.get('/api/ipinfo', async (req, res) => {
-    const ipInfoLink = 'https://ipinfo.io/json?token=' + process.env.IPINFO_TOKEN; // Construct the URL with token
+    const ipInfoLink = 'https://ipinfo.io/json?token=' + process.env.IPINFO_TOKEN;
     try {
         const response = await fetch(ipInfoLink);
         const data = await response.json();
@@ -43,17 +41,16 @@ app.get('/api/ipinfo', async (req, res) => {
     }
 });
 
-// Route for TestGPT
 app.get('/api/testgpt', async (req, res) => {
-    const question = req.query.question; // Retrieve question from query parameter
-    const apiUrl = process.env.API_URL; // Use the API_URL for TestGPT
+    const question = req.query.question;
+    const apiUrl = process.env.API_URL;
 
     if (!question) {
         return res.status(400).json({ error: 'Question parameter is required.' });
     }
 
     try {
-        const response = await fetch(`${apiUrl}${encodeURIComponent(question)}`); // Append question to API_URL
+        const response = await fetch(`${apiUrl}${encodeURIComponent(question)}`);
         const data = await response.json();
         res.json(data);
     } catch (error) {
@@ -62,21 +59,24 @@ app.get('/api/testgpt', async (req, res) => {
     }
 });
 
-// Route for sending a webhook message
-app.post('/api/webhooksend', async (req, res) => {
-    const { embedMessage } = req.body; // Get the embed message from the request body
-    const webhookUrl = process.env.WEBHOOK_URL; // Use the webhook URL from environment variables
+app.get('/api/webhooksend', async (req, res) => {
+    const { title, description, color } = req.query;
+    const webhookUrl = process.env.WEBHOOK_URL;
 
-    if (!embedMessage) {
-        return res.status(400).json({ error: 'Embed message is required.' });
+    if (!title || !description || !color) {
+        return res.status(400).json({ error: 'Title, description, and color are required.' });
     }
+
+    const embedMessage = {
+        title: title,
+        description: description,
+        color: parseInt(color, 10)
+    };
 
     try {
         const response = await fetch(webhookUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ embeds: [embedMessage] })
         });
 
@@ -92,7 +92,6 @@ app.post('/api/webhooksend', async (req, res) => {
     }
 });
 
-// Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

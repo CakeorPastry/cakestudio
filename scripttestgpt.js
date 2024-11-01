@@ -164,10 +164,21 @@ document.addEventListener('DOMContentLoaded', async function () {
     copyButton.addEventListener('click', function() {
         const textToCopy = responseContainer.innerText; // Get the text from the <P> element
         if (textToCopy) {
+            copyButton.disabled = true; // Disable the button
+            const originalText = copyButton.innerText; // Store original button text
+            copyButton.innerText = "Copied!"; // Change button text
+
             navigator.clipboard.writeText(textToCopy).then(() => {
-                alert('Text copied to clipboard!'); // Provide feedback to the user
+                // Cooldown before re-enabling the button
+                setTimeout(() => {
+                    copyButton.innerText = originalText; // Restore original text
+                    copyButton.disabled = false; // Re-enable the button
+                }, 3000); // 3-second cooldown
             }).catch(err => {
                 console.error('Could not copy text: ', err);
+                // Re-enable the button in case of an error
+                copyButton.innerText = originalText; 
+                copyButton.disabled = false; 
             });
         } else {
             alert('No response to copy.');

@@ -6,8 +6,11 @@
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.17.1", 
+    "express": "^4.17.1",
     "cors": "^2.8.5",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "node-fetch": "^2.6.7", // For server-side fetching
+    "passport": "^0.5.0", // For authentication
+    "passport-discord": "^0.1.4" // For Discord authentication
   }
 }

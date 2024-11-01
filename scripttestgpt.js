@@ -163,11 +163,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     const copyButton = document.getElementById('copyResponseToClipboard');
     copyButton.addEventListener('click', function() {
         const textToCopy = responseContainer.innerText; // Get the text from the <P> element
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            alert('Text copied to clipboard!'); // Provide feedback to the user
-        }).catch(err => {
-            console.error('Could not copy text: ', err);
-        });
+        if (textToCopy) {
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                alert('Text copied to clipboard!'); // Provide feedback to the user
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+            });
+        } else {
+            alert('No response to copy.');
+        }
     });
 
     async function sendWebhook(title, description, color) {

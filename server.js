@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const fetch = require('node-fetch'); // Make sure to install node-fetch if you haven't already
+const fetch = require('node-fetch');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,6 +9,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
+
+// Temporary storage for user data
+let currentUser = null;
 
 app.get('/', (req, res) => {
     res.status(200).json({ error: 'Nice try diddy.' });
@@ -127,10 +130,22 @@ app.get('/auth/discord/callback', async (req, res) => {
         });
         const userData = await userResponse.json();
 
+        // Store user data in a variable
+        currentUser = userData;
+
         // Redirect to your frontend with user data as a query parameter
         res.redirect(`/login-success?user=${encodeURIComponent(JSON.stringify(userData))}`);
     } else {
         res.status(500).json({ error: 'Failed to authenticate with Discord' });
+    }
+});
+
+// User information endpoint
+app.get('/user', (req, res) => {
+    if (currentUser) {
+        res.json(currentUser); // Return the current user data
+    } else {
+        res.status(401).json({ error: 'User not authenticated' }); // Handle unauthenticated access
     }
 });
 

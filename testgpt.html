@@ -7,8 +7,8 @@
 <meta property="og:type" content="website">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TestGPT</title>
-<LINK REL="stylesheet" HREF="style.css">
+<TITLE>TestGPT</TITLE>
+<LINK REL="stylesheet" HREF="styletestgpt.css">
 <SCRIPT SRC="scripttestgpt.js"></SCRIPT>
 </HEAD>
 
@@ -31,7 +31,7 @@ Don't misuse this.
 </H2>
 <DIV CLASS="container">
 <input type="text" id="question" placeholder="Type your question here...">
-<DIV CLASS="button-group">
+<DIV>
 <BUTTON ID="send" CLASS="primary-button">Send</BUTTON>
 </DIV>
 <H4>
@@ -48,6 +48,15 @@ When you ask a question, the API's response will appear here.
 <P>
 <SPAN ID="status-message">Loading...</SPAN>
 </P>
+</DIV>
+<DIV CLASS="profile-ui">
+<H2>My Account</H2>
+<DIV CLASS="profile-info">
+<IMG SRC="https://cdn.discordapp.com/emojis/1218461285746741350" ALT="Profile Picture" CLASS="profile-picture">
+<B CLASS="username">Username</B>
+</DIV>
+<BUTTON ID="loginButton" CLASS="primary-button">Login</BUTTON>
+<BUTTON ID="logoutButton" CLASS="secondary-button">Logout</BUTTON>
 </DIV>
 </H4>
 </DIV>

@@ -122,31 +122,36 @@ TR:hover {
     margin: 0 10px;
 }
 
-.header h2, .header h2 {
+.header h2 {
     margin: 0;
 }
 
-.logo, .emoji-button {
-    font-size: 1.5em;
+.logo {
+    font-size: 1.5em; /* Adjust as needed */
     background: transparent;
     border-radius: 50%;
-    width: 50px;
-    height: 50px;
+    width: 50px; /* Size for the logo */
+    height: 50px; /* Size for the logo */
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.logo {
     border: 2px solid white;
 }
 
 .emoji-button {
+    font-size: 1.5em; /* Smaller size for the emoji button */
+    background: transparent;
+    border-radius: 50%;
+    width: 50px; /* Size for emoji button */
+    height: 50px; /* Size for emoji button */
+    display: flex;
+    justify-content: center;
+    align-items: center;
     border: 2px solid yellow;
     cursor: pointer;
 }
 
-.emoji-button:hover {
+.logo:hover, .emoji-button:hover, #profileButton:hover {
     opacity: 0.7;
 }
 
@@ -261,7 +266,7 @@ input::placeholder {
 }
 
 /* Box Styles */
-.status-box, .response-box {
+.status-box, .response-box, .profile-ui {
     background-color: #1d1f22;
     border-radius: 10px;
     padding: 20px;
@@ -271,12 +276,12 @@ input::placeholder {
     margin: 10px 0; /* Adds gap between boxes */
 }
 
-.status-box h2, .response-box h2 {
+.status-box h2, .response-box h2, .profile-ui h2 {
     font-size: 20px;
     margin-bottom: 10px;
 }
 
-.status-box p, .response-box p {
+.status-box p, .response-box p, .profile-ui p {
     font-size: 16px;
 }
 
@@ -286,4 +291,27 @@ input::placeholder {
     border-radius: 50%;
     display: block;
     margin: 10px auto;
+}
+
+.profile-ui {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-info {
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center vertically */
+    margin: 10px 0; /* Add some spacing */
+}
+
+.profile-picture {
+    width: 50px; /* Adjust size as needed */
+    height: 50px; /* Adjust size as needed */
+    border-radius: 50%; /* Make it circular */
+    margin-right: 10px; /* Space between image and username */
+}
+
+.username {
+    font-weight: bold; /* Make username bold */
 }

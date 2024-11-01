@@ -12,7 +12,9 @@ const statusEmojis = {
     error: 'https://cdn.discordapp.com/emojis/1271705264038346813.png',
     space: 'https://cdn.discordapp.com/emojis/1273231578402918401.png',
     ellipsis: 'https://cdn.discordapp.com/emojis/1285189210835390534.png',
-    rage: 'https://link-to-rage-emoji.png' // Placeholder, to be updated later
+    rage: 'https://link-to-rage-emoji.png', // Placeholder, to be updated later
+    entry: 'https://cdn.discordapp.com/emojis/1267398812557774848.png',
+    exit: 'https://cdn.discordapp.com/emojis/1267384023257321572.png'
 };
 
 // List of banned users

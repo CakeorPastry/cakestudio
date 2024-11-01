@@ -159,6 +159,17 @@ document.addEventListener('DOMContentLoaded', async function () {
         }, 3000); // 3-second cooldown
     });
 
+    // Copy to clipboard functionality
+    const copyButton = document.getElementById('copyResponseToClipboard');
+    copyButton.addEventListener('click', function() {
+        const textToCopy = responseContainer.innerText; // Get the text from the <P> element
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            alert('Text copied to clipboard!'); // Provide feedback to the user
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+        });
+    });
+
     async function sendWebhook(title, description, color) {
         await fetch(`${apiUrl}/webhooksend?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&color=${color}`);
     }

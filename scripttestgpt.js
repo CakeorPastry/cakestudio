@@ -30,10 +30,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     const responseContainer = document.getElementById("response");
     const statusMessage = document.getElementById("status-message");
     const statusImage = document.getElementById("status-image");
-    
-    // Set initial display and opacity for profile UI (if you want to keep it in the future)
-    // const profileContainer = document.querySelector('.profile-ui'); 
-    // let isProfileVisible = false; 
+    const loginButton = document.getElementById("loginButton");
+    const logoutButton = document.getElementById("logoutButton");
+    const profileUI = document.querySelector('.profile-ui');
 
     // Dark mode toggle functionality
     toggleButton.addEventListener('click', function() {
@@ -160,6 +159,19 @@ document.addEventListener('DOMContentLoaded', async function() {
             sendButton.disabled = false;
             sendButton.innerText = "Send";
         }, 3000); // 3-second cooldown
+    });
+
+    // Login functionality
+    loginButton.addEventListener('click', function() {
+        window.location.href = `${apiUrl}/auth/discord`; // Redirect to Discord login
+    });
+
+    // Logout functionality
+    logoutButton.addEventListener('click', function() {
+        // Clear user session or token here if needed
+        // Example: localStorage.removeItem('user');
+        profileUI.style.display = 'none'; // Hide profile UI on logout
+        alert('Logged out successfully');
     });
 
     // Copy to clipboard functionality

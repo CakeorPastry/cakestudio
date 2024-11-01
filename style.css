@@ -176,6 +176,13 @@ button {
     transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
 }
 
+button img {
+    width: 20px; /* Set a specific width for the image */
+    height: 20px; /* Set a specific height for the image */
+    vertical-align: middle; /* Align image vertically with text */
+    margin-right: 5px; /* Space between the image and text */
+}
+
 .primary-button {
     background-color: #5865f2;
     color: #ffffff;
@@ -315,3 +322,4 @@ input::placeholder {
 .username {
     font-weight: bold; /* Make username bold */
 }
+

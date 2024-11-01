@@ -8,7 +8,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TestGPT</title>
-<LINK REL="stylesheet" HREF="style.css">
+<LINK REL="stylesheet" HREF="styletestgpt.css">
 <SCRIPT SRC="scripttestgpt.js"></SCRIPT>
 </HEAD>
 
@@ -25,7 +25,7 @@
 </BUTTON>
 </DIV>
 <H2>
-This is the first version of this project, alot of bugs are expected! 
+This is the first version of this project, a lot of bugs are expected! 
 This project will be updated.
 Don't misuse this.
 </H2>
@@ -34,10 +34,13 @@ Don't misuse this.
 <DIV CLASS="button-group">
 <BUTTON ID="send" CLASS="primary-button">Send</BUTTON>
 </DIV>
-</DIV>
 <H4>
-<DIV ID="response"></DIV>
-
+<DIV CLASS="response-box">
+<H2>Response</H2>
+<P ALIGN="LEFT" ID="response">
+When you ask a question, the API's response will appear here.
+</P>
+</DIV>
 <DIV CLASS="status-box">
 <H2>Status</H2>
 <IMG SRC="https://cdn.discordapp.com/emojis/1273231578402918401.png" ALT="Status Image" ID="status-image">
@@ -45,8 +48,7 @@ Don't misuse this.
 <SPAN ID="status-message">Loading...</SPAN>
 </P>
 </DIV>
-  
-</DIV>
 </H4>
+</DIV>
 </BODY>
 </HTML>

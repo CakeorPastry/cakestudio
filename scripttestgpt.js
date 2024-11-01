@@ -22,26 +22,27 @@ const bannedUsers = [
     { cookie: 'locale=en-US', ip: '' }
 ];
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const toggleButton = document.getElementById('toggleDarkModeButton');
+    const sendButton = document.getElementById("send");
+    const responseContainer = document.getElementById("response");
+    const statusMessage = document.getElementById("status-message");
+    const statusImage = document.getElementById("status-image");
+    
+    // Set initial display and opacity for profile UI (if you want to keep it in the future)
+    // const profileContainer = document.querySelector('.profile-ui'); 
+    // let isProfileVisible = false; 
 
+    // Dark mode toggle functionality
     toggleButton.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
         this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
-});
 
-document.addEventListener('DOMContentLoaded', async function () {
     // Fetch IP information from your API
     const ipInfoResponse = await fetch(`https://ipinfo.io/json`);
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
-
-    // Elements
-    const responseContainer = document.getElementById("response");
-    const sendButton = document.getElementById("send");
-    const statusMessage = document.getElementById("status-message");
-    const statusImage = document.getElementById("status-image");
 
     // Default status before checking
     statusImage.src = statusEmojis.space;

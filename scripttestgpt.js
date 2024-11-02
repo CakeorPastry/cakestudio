@@ -174,6 +174,7 @@ loginButton.addEventListener('click', function() {
 logoutButton.addEventListener('click', function() {
     localStorage.removeItem('discordUser');
     updateUI(); // Update UI after logout
+    window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
 });
 
 // Function to update UI based on login state
@@ -200,7 +201,8 @@ function updateUI() {
             // If user data is in the URL, parse and store it
             const userData = JSON.parse(decodeURIComponent(userParam));
             localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
-            updateUI(); // Update UI to reflect the new user
+            updateUI();
+            window.location.href = 'https://cakeorpastry.netlify.app/testgpt'
         } else {
             // Not logged in and no user data in URL
             logoutButton.disabled = true;

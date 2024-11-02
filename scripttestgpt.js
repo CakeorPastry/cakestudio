@@ -161,18 +161,43 @@ document.addEventListener('DOMContentLoaded', async function() {
         }, 3000); // 3-second cooldown
     });
 
-    // Login functionality
-    loginButton.addEventListener('click', function() {
-        window.location.href = `${apiUrl}/auth/discord`; // Redirect to Discord login
-    });
+// Discord login functionality
+loginButton.addEventListener('click', function() {
+    const discordLoginUrl = `${apiUrl}/auth/discord`;
+    window.location.href = discordLoginUrl;
+});
 
-    // Logout functionality
-    logoutButton.addEventListener('click', function() {
-        // Clear user session or token here if needed
-        // Example: localStorage.removeItem('user');
-        profileUI.style.display = 'none'; // Hide profile UI on logout
-        alert('Logged out successfully');
-    });
+logoutButton.addEventListener('click', function() {
+    localStorage.removeItem('discordUser');
+    updateUI(); // Update UI after logout
+});
+
+// Function to update UI based on login state
+function updateUI() {
+    const discordUser = localStorage.getItem('discordUser');
+    
+    if (discordUser) {
+        // User is logged in, parse user data
+        const userData = JSON.parse(discordUser);
+        const usernameElement = document.querySelector('.username');
+        usernameElement.innerText = userData.username; // Update username
+        const profilePicture = profileUI.querySelector('.profile-picture');
+        profilePicture.src = userData.avatar; // Update profile picture
+        
+        // Enable logout button, disable login button
+        logoutButton.disabled = false;
+        loginButton.disabled = true;
+    } else {
+        // User is not logged in
+        logoutButton.disabled = true;
+        loginButton.disabled = false;
+    }
+    
+    profileUI.style.display = 'block'; // Always show profile UI
+}
+
+// Initial UI setup
+updateUI(); // Check and update UI on page load
 
     // Copy to clipboard functionality
     const copyButton = document.getElementById('copyResponseToClipboard');

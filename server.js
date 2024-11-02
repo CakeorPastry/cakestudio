@@ -11,30 +11,72 @@ app.use(express.json());
 // Set up the allowed origins from environment variables
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
-// General CORS middleware for restricted routes
-app.use((req, res, next) => {
-    if (req.path === 'api/auth/discord' || req.path === 'api/auth/discord/callback') {
-        // Allow all origins for Discord login routes
-        return cors()(req, res, next);
-    } else {
-        // Apply restricted CORS policy for other routes
-        cors({
-            origin: (origin, callback) => {
-                if (allowedOrigins.includes(origin)) {
-                    callback(null, true);
-                } else {
-                    console.log(`Blocked request from origin: ${origin}`);
-                    callback(new Error('CORS Error: This origin is not allowed by CORS policy.'));
-                }
-            }
-        })(req, res, next);
-    }
-});
-
 // Root route accessible to all
 app.get('/', (req, res) => {
     res.status(200).json({ error: 'Nice try diddy.' });
 });
+
+// Discord OAuth Routes accessible to all
+app.get('api/auth/discord', (req, res) => {
+    const redirectUri = process.env.DISCORD_REDIRECT_URI;
+    const clientId = process.env.DISCORD_CLIENT_ID;
+    const scope = 'identify email';
+    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
+    res.redirect(discordAuthUrl);
+});
+
+app.get('api/auth/discord/callback', async (req, res) => {
+    const code = req.query.code;
+
+    const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({
+            client_id: process.env.DISCORD_CLIENT_ID,
+            client_secret: process.env.DISCORD_CLIENT_SECRET,
+            grant_type: 'authorization_code',
+            code: code,
+            redirect_uri: process.env.DISCORD_REDIRECT_URI,
+        })
+    });
+
+    const tokenData = await tokenResponse.json();
+
+    if (tokenResponse.ok) {
+        const userResponse = await fetch('https://discord.com/api/users/@me', {
+            headers: {
+                Authorization: `Bearer ${tokenData.access_token}`
+            }
+        });
+        const userData = await userResponse.json();
+
+        currentUser = userData;
+
+        res.redirect(`/login-success?user=${encodeURIComponent(JSON.stringify(userData))}`);
+    } else {
+        res.status(500).json({ error: 'Failed to authenticate with Discord' });
+    }
+});
+
+app.get('/user', (req, res) => {
+    if (currentUser) {
+        res.json(currentUser);
+    } else {
+        res.status(401).json({ error: 'User not authenticated' });
+    }
+});
+
+// CORS Middleware
+app.use(cors({
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true); // Allow the request
+        } else {
+            console.log(`Blocked request from origin: ${origin}`);
+            callback(new Error('CORS Error: This origin is not allowed by CORS policy.'));
+        }
+    }
+}));
 
 // Restricted API routes
 app.get('/api', (req, res) => {
@@ -101,56 +143,6 @@ app.get('/api/webhooksend', async (req, res) => {
     } catch (error) {
         console.error('Error sending webhook:', error);
         res.status(500).json({ error: 'Failed to send webhook message.' });
-    }
-});
-
-// Discord OAuth Routes accessible to all
-app.get('api/auth/discord', (req, res) => {
-    const redirectUri = process.env.DISCORD_REDIRECT_URI;
-    const clientId = process.env.DISCORD_CLIENT_ID;
-    const scope = 'identify email';
-    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
-    res.redirect(discordAuthUrl);
-});
-
-app.get('api/auth/discord/callback', async (req, res) => {
-    const code = req.query.code;
-
-    const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-            client_id: process.env.DISCORD_CLIENT_ID,
-            client_secret: process.env.DISCORD_CLIENT_SECRET,
-            grant_type: 'authorization_code',
-            code: code,
-            redirect_uri: process.env.DISCORD_REDIRECT_URI,
-        })
-    });
-
-    const tokenData = await tokenResponse.json();
-
-    if (tokenResponse.ok) {
-        const userResponse = await fetch('https://discord.com/api/users/@me', {
-            headers: {
-                Authorization: `Bearer ${tokenData.access_token}`
-            }
-        });
-        const userData = await userResponse.json();
-
-        currentUser = userData;
-
-        res.redirect(`/login-success?user=${encodeURIComponent(JSON.stringify(userData))}`);
-    } else {
-        res.status(500).json({ error: 'Failed to authenticate with Discord' });
-    }
-});
-
-app.get('/user', (req, res) => {
-    if (currentUser) {
-        res.json(currentUser);
-    } else {
-        res.status(401).json({ error: 'User not authenticated' });
     }
 });
 

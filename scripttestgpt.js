@@ -150,7 +150,11 @@ ${userDataFormatted}
     logoutButton.disabled = true;
 
     // Check if the visitor is banned
-    const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip || user.discord_id === userData.id);
+    const isBanned = bannedUsers.some(user => 
+    user.cookie === visitorCookie || 
+    user.ip === ipData.ip || 
+    (user.discord_id && user.discord_id === (userData ? userData.id : ''))
+);
 
     if (isBanned) {
         // Handle banned user

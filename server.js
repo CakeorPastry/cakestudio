@@ -66,6 +66,18 @@ app.get('/user', (req, res) => {
     }
 });
 
+app.get('/login-success', (req, res) => {
+    // Retrieve user data from the query string
+    const userData = req.query.user ? JSON.parse(decodeURIComponent(req.query.user)) : null;
+
+    if (userData) {
+        // Respond with user data or render a success page
+        res.status(200).json({ message: 'Login successful!', user: userData });
+    } else {
+        res.status(400).json({ error: 'No user data found.' });
+    }
+});
+
 // CORS Middleware
 app.use(cors({
     origin: (origin, callback) => {

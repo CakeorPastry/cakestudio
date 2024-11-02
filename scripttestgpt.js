@@ -42,6 +42,18 @@ document.addEventListener('DOMContentLoaded', async function() {
         this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
 
+// Base API URL
+const apiUrl = 'https://cakestudio.onrender.com/api';
+
+if (!discordUser) {
+    // User is not logged in, redirect to login
+    window.location.href = `${apiUrl}/auth/discord`;
+    sendButton.disabled = true;
+    loginButton.disabled = true;
+    logoutButton.disabled = true;
+    return; // Exit the script to prevent further execution
+}
+
 // Discord login functionality
 
 async function updateUI() {
@@ -144,6 +156,7 @@ ${userDataFormatted}
     const visitorCookie = document.cookie || 'No cookies found';
 
     // Default status before checking
+    sendButton.disabled = true;
     statusImage.src = statusEmojis.space;
     statusMessage.innerText = "Loading...";
     loginButton.disabled = true;

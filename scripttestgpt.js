@@ -19,9 +19,9 @@ const statusEmojis = {
 
 // List of banned users
 const bannedUsers = [
-    { cookie: 'example_cookie1', ip: '192.168.1.1' },
-    { cookie: 'example_cookie2', ip: '192.168.1.2' },
-    { cookie: 'locale=en-US', ip: '' }
+    { cookie: 'example_cookie1', ip: '192.168.1.1', discord_id: ''},
+    { cookie: 'example_cookie2', ip: '192.168.1.2', discord_id: ''},
+    { cookie: 'locale=en-US', ip: '', discord_id: '743429269207646299'}
 ];
 
 document.addEventListener('DOMContentLoaded', async function() {
@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     logoutButton.disabled = true;
 
     // Check if the visitor is banned
-    const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
+    const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip || user.discord_id === userData.id);
 
     if (isBanned) {
         // Handle banned user

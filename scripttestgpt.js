@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const logoutButton = document.getElementById("logoutButton");
     const profileUI = document.querySelector('.profile-ui');
     const discordUser = localStorage.getItem('discordUser');
+    let userData;
 
     // Dark mode toggle functionality
     toggleButton.addEventListener('click', function() {
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Discord login functionality
 
 async function updateUI() {
-    let userData; // Declare userData here
+    // let userData; // Declare userData here
 
     if (discordUser) {
         userData = JSON.parse(discordUser); // Initialize userData

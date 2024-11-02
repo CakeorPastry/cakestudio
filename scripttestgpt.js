@@ -206,7 +206,7 @@ ${userDataFormatted}
     });
 
    // Function to update UI based on login state
-    function updateUI() {
+   async function updateUI() {
         if (discordUser) {
             const usernameElement = document.querySelector('.username');
             usernameElement.innerText = userData.username; // Display the username

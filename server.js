@@ -50,31 +50,11 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         });
         const userData = await userResponse.json();
 
-        currentUser = userData;
-
-        res.redirect(`/login-success?user=${encodeURIComponent(JSON.stringify(userData))}`);
+        // Redirect to frontend with user data
+        const frontendUrl = https://cakeorpastry.netlify.app/testgpt; // Set this to your frontend URL in .env
+        res.redirect(`${frontendUrl}/?user=${encodeURIComponent(JSON.stringify(userData))}`);
     } else {
         res.status(500).json({ error: 'Failed to authenticate with Discord' });
-    }
-});
-
-app.get('/user', (req, res) => {
-    if (currentUser) {
-        res.json(currentUser);
-    } else {
-        res.status(401).json({ error: 'User not authenticated' });
-    }
-});
-
-app.get('/login-success', (req, res) => {
-    // Retrieve user data from the query string
-    const userData = req.query.user ? JSON.parse(decodeURIComponent(req.query.user)) : null;
-
-    if (userData) {
-        // Respond with user data or render a success page
-        res.status(200).json({ message: 'Login successful!', user: userData });
-    } else {
-        res.status(400).json({ error: 'No user data found.' });
     }
 });
 
@@ -90,11 +70,12 @@ app.use(cors({
     }
 }));
 
-// Restricted API routes
+// Example restricted API route
 app.get('/api', (req, res) => {
     res.status(400).json({ error: 'Please specify a valid API endpoint.' });
 });
 
+// IP info route
 app.get('/api/ipinfo', async (req, res) => {
     const ipInfoLink = 'https://ipinfo.io/json?token=' + process.env.IPINFO_TOKEN;
     try {
@@ -107,6 +88,7 @@ app.get('/api/ipinfo', async (req, res) => {
     }
 });
 
+// TestGPT route
 app.get('/api/testgpt', async (req, res) => {
     const question = req.query.question;
     const apiUrl = process.env.API_URL;
@@ -125,6 +107,7 @@ app.get('/api/testgpt', async (req, res) => {
     }
 });
 
+// Webhook send route
 app.get('/api/webhooksend', async (req, res) => {
     const { title, description, color } = req.query;
     const webhookUrl = process.env.WEBHOOK_URL;

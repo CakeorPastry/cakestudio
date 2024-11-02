@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
 });
 
 // Discord OAuth Routes accessible to all
-app.get('api/auth/discord', (req, res) => {
+app.get('/api/auth/discord', (req, res) => {
     const redirectUri = process.env.DISCORD_REDIRECT_URI;
     const clientId = process.env.DISCORD_CLIENT_ID;
     const scope = 'identify email';
@@ -25,7 +25,7 @@ app.get('api/auth/discord', (req, res) => {
     res.redirect(discordAuthUrl);
 });
 
-app.get('api/auth/discord/callback', async (req, res) => {
+app.get('/api/auth/discord/callback', async (req, res) => {
     const code = req.query.code;
 
     const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {

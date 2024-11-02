@@ -48,8 +48,8 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Default status before checking
     statusImage.src = statusEmojis.space;
     statusMessage.innerText = "Loading...";
-    loginButton.disabled = false;
-    logoutButton.disabled = false;
+    loginButton.disabled = true;
+    logoutButton.disabled = true;
 
     // Check if the visitor is banned
     const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
@@ -88,7 +88,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user visit
 
     statusMessage.innerText = "Waiting...";
-    statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
+    statusImage.src = statusEmojis.ellipsis;
+    loginButton.disabled = false;
+    logoutButton.disabled = false;
 
     // Handle question asking and response
     const inputBox = document.getElementById("question");
@@ -184,7 +186,7 @@ function updateUI() {
         const usernameElement = document.querySelector('.username');
         usernameElement.innerText = userData.username; // Update username
         const profilePicture = profileUI.querySelector('.profile-picture');
-        profilePicture.src = userData.avatar; // Update profile picture
+        profilePicture.src = https://cdn.discordapp.com/avatars/userData.id/userData.avatar; // Update profile picture
 
         // Enable logout button, disable login button
         logoutButton.disabled = false;

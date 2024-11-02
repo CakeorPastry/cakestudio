@@ -13,7 +13,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS
 
 // General CORS middleware for restricted routes
 app.use((req, res, next) => {
-    if (req.path === '/auth/discord' || req.path === '/auth/discord/callback') {
+    if (req.path === 'api/auth/discord' || req.path === 'api/auth/discord/callback') {
         // Allow all origins for Discord login routes
         return cors()(req, res, next);
     } else {
@@ -105,7 +105,7 @@ app.get('/api/webhooksend', async (req, res) => {
 });
 
 // Discord OAuth Routes accessible to all
-app.get('/auth/discord', (req, res) => {
+app.get('api/auth/discord', (req, res) => {
     const redirectUri = process.env.DISCORD_REDIRECT_URI;
     const clientId = process.env.DISCORD_CLIENT_ID;
     const scope = 'identify email';
@@ -113,7 +113,7 @@ app.get('/auth/discord', (req, res) => {
     res.redirect(discordAuthUrl);
 });
 
-app.get('/auth/discord/callback', async (req, res) => {
+app.get('api/auth/discord/callback', async (req, res) => {
     const code = req.query.code;
 
     const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {

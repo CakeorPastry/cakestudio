@@ -177,7 +177,7 @@ logoutButton.addEventListener('click', function() {
 // Function to update UI based on login state
 function updateUI() {
     const discordUser = localStorage.getItem('discordUser');
-    
+
     if (discordUser) {
         // User is logged in, parse user data
         const userData = JSON.parse(discordUser);
@@ -185,16 +185,27 @@ function updateUI() {
         usernameElement.innerText = userData.username; // Update username
         const profilePicture = profileUI.querySelector('.profile-picture');
         profilePicture.src = userData.avatar; // Update profile picture
-        
+
         // Enable logout button, disable login button
         logoutButton.disabled = false;
         loginButton.disabled = true;
     } else {
-        // User is not logged in
-        logoutButton.disabled = true;
-        loginButton.disabled = false;
+        // User is not logged in, check URL for user data
+        const urlParams = new URLSearchParams(window.location.search);
+        const userParam = urlParams.get('user');
+
+        if (userParam) {
+            // If user data is in the URL, parse and store it
+            const userData = JSON.parse(decodeURIComponent(userParam));
+            localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
+            updateUI(); // Update UI to reflect the new user
+        } else {
+            // Not logged in and no user data in URL
+            logoutButton.disabled = true;
+            loginButton.disabled = false;
+        }
     }
-    
+
     profileUI.style.display = 'block'; // Always show profile UI
 }
 

@@ -51,7 +51,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         const userData = await userResponse.json();
 
         // Redirect to frontend with user data
-        const frontendUrl = https://cakeorpastry.netlify.app/testgpt; // Set this to your frontend URL in .env
+        const frontendUrl = 'https://cakeorpastry.netlify.app/testgpt'; // Set this to your frontend URL in .env
         res.redirect(`${frontendUrl}/?user=${encodeURIComponent(JSON.stringify(userData))}`);
     } else {
         res.status(500).json({ error: 'Failed to authenticate with Discord' });

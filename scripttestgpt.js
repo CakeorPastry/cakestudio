@@ -186,7 +186,7 @@ function updateUI() {
         const usernameElement = document.querySelector('.username');
         usernameElement.innerText = userData.username; // Update username
         const profilePicture = profileUI.querySelector('.profile-picture');
-        profilePicture.src = https://cdn.discordapp.com/avatars/userData.id/userData.avatar; // Update profile picture
+        profilePicture.src = 'https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}; // Update profile picture
 
         // Enable logout button, disable login button
         logoutButton.disabled = false;

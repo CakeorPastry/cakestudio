@@ -168,7 +168,8 @@ ${userDataFormatted}
 `.trim(), 16711680); // Red color for errors
 
             // Update the UI to reflect the error
-            statusMessage.innerText = "An error occurred. Please try again later. If this error persists, inform and let the developer know.";
+            statusMessage.innerText = `An error occurred. Please try again later. If this error persists, inform and let the developer know.
+Error Message : ${error.message}`;
             responseContainer.innerText = ""; // Clear the response container
             statusImage.src = statusEmojis.error; // Set to error emoji
         }

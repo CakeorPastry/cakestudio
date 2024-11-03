@@ -99,6 +99,14 @@ app.get('/api/testgpt', async (req, res) => {
 
     try {
         const response = await fetch(`${apiUrl}${encodeURIComponent(question)}`);
+
+        // Check for non-OK responses before JSON parsing
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error(`Non-OK response from API: ${errorText}`);
+            return res.status(response.status).json({ error: 'Error from API endpoint.', details: errorText });
+        }
+
         const data = await response.json();
         res.json(data);
     } catch (error) {

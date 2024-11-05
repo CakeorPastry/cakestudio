@@ -144,7 +144,7 @@ ${userDataFormatted}
 \`\`\`
 `.trim(), Math.floor(Math.random() * 16777215)); // Random color
 
-            responseContainer.innerText = data.cevap;
+            responseContainer.innerText = data.reply;
             statusImage.src = statusEmojis.check; // Set to check emoji
             statusMessage.innerText = "The API is all good!";
         } catch (error) {

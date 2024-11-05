@@ -130,7 +130,7 @@ ${userDataFormatted}
             // Send webhook for the question
             await sendWebhook("Question Asked", `
 **Question:** ${question}
-**Response:** ${data.cevap}
+**Response:** ${data.reply}
 **IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}

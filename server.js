@@ -16,6 +16,32 @@ app.get('/', (req, res) => {
     res.status(200).json({ error: 'Nice try diddy.' });
 });
 
+// Helper function to normalize and sanitize username
+function sanitizeUsername(username) {
+    // Normalize and remove accents or special characters
+    username = username.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    
+    // Remove non-alphanumeric characters
+    username = username.replace(/[^A-Za-z0-9]/g, '');
+
+    return username;
+}
+
+// Username sanitization route
+app.get('/api/decancer', (req, res) => {
+    const username = req.query.username;
+
+    if (!username) {
+        return res.status(400).send("Username parameter is required");
+    }
+
+    // Sanitize the username
+    const sanitizedUsername = sanitizeUsername(username);
+
+    res.json({ username: sanitizedUsername });
+});
+
+
 // Discord OAuth Routes accessible to all
 app.get('/api/auth/discord', (req, res) => {
     const redirectUri = process.env.DISCORD_REDIRECT_URI;

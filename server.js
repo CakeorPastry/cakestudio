@@ -32,7 +32,7 @@ app.get('/api/decancer', (req, res) => {
     const username = req.query.username;
 
     if (!username) {
-        return res.status(400).send("Username parameter is required");
+        return res.status(400).json({ error: 'Username parameter is required.' });
     }
 
     // Sanitize the username

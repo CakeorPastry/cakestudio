@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const fetch = require('node-fetch');
+const jwt = require('jsonwebtoken');  // Import the JWT library
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -20,7 +21,7 @@ app.get('/', (req, res) => {
 function sanitizeUsername(username) {
     // Normalize and remove accents or special characters
     username = username.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    
+
     // Remove non-alphanumeric characters
     username = username.replace(/[^A-Za-z0-9]/g, '');
 
@@ -41,6 +42,25 @@ app.get('/api/decancer', (req, res) => {
     res.json({ username: sanitizedUsername });
 });
 
+// JWT Validation Middleware
+function validateJWT(req, res, next) {
+    const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
+
+    if (!token) {
+        return res.status(403).json({ error: 'Token is required for authentication' });
+    }
+
+    // Verify the token
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ error: 'Invalid or expired token' });
+        }
+        
+        // Attach the decoded user data to the request object
+        req.user = decoded;
+        next(); // Proceed to the next middleware or route
+    });
+}
 
 // Discord OAuth Routes accessible to all
 app.get('/api/auth/discord', (req, res) => {
@@ -76,12 +96,26 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         });
         const userData = await userResponse.json();
 
-        // Redirect to frontend with user data
-        const frontendUrl = 'https://cakeorpastry.netlify.app/testgpt'; // Set this to your frontend URL in .env
-        res.redirect(`${frontendUrl}/?user=${encodeURIComponent(JSON.stringify(userData))}`);
+        // Generate a JWT token for the user
+        const token = jwt.sign({ id: userData.id, username: userData.username }, process.env.JWT_SECRET, {
+            expiresIn: '1h' // Token expires in 1 hour
+        });
+
+        // Redirect to frontend with JWT token
+        const frontendUrl = 'https://cakeorpastry.netlify.app/testgpt';
+        res.redirect(`${frontendUrl}/?token=${encodeURIComponent(token)}`);
     } else {
         res.status(500).json({ error: 'Failed to authenticate with Discord' });
     }
+});
+
+// Token validation route (for testing purposes)
+app.get('/api/auth/discord/validateToken', validateJWT, (req, res) => {
+    res.json({ message: 'Token is valid', user: req.user });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
 });
 
 // CORS Middleware
@@ -96,9 +130,11 @@ app.use(cors({
     }
 }));
 
-// Example restricted API route
-app.get('/api', (req, res) => {
-    res.status(400).json({ error: 'Please specify a valid API endpoint.' });
+// Example restricted API route with JWT validation
+app.get('/api/restricted', validateJWT, (req, res) => {
+    // Access user data from the decoded token
+    const user = req.user;
+    res.json({ message: 'Welcome to the restricted route!', user });
 });
 
 // IP info route
@@ -173,8 +209,4 @@ app.get('/api/webhooksend', async (req, res) => {
         console.error('Error sending webhook:', error);
         res.status(500).json({ error: 'Failed to send webhook message.' });
     }
-});
-
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
 });

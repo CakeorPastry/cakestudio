@@ -13,12 +13,10 @@ const statusEmojis = {
     space: 'https://cdn.discordapp.com/emojis/1273231578402918401.png',
     ellipsis: 'https://cdn.discordapp.com/emojis/1285189210835390534.png',
     rage: 'https://em-content.zobj.net/source/twitter/408/pouting-face_1f621.png',
-    user:
-'https://cdn.discordapp.com/emojis/1285189009722839060.png',
+    user: 'https://cdn.discordapp.com/emojis/1285189009722839060.png',
     entry: 'https://cdn.discordapp.com/emojis/1267398812557774848.png',
     exit: 'https://cdn.discordapp.com/emojis/1267384023257321572.png',
-    LOL:
-'https://cdn.discordapp.com/emojis/1267385971352145950.png'
+    LOL: 'https://cdn.discordapp.com/emojis/1267385971352145950.png'
 };
 
 // List of banned users
@@ -210,7 +208,7 @@ ${userDataFormatted}
         window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
     });
 
-   // Function to update UI based on login state
+    // Function to update UI based on login
 async function updateUI() {
     if (discordUser) {
         // Display user info in UI
@@ -276,33 +274,32 @@ function parseJwt(token) {
 // Initial UI setup
 updateUI(); // Check and update UI on page load
 
-    // Copy to clipboard functionality
-    const copyButton = document.getElementById('copyResponseToClipboard');
-    copyButton.addEventListener('click', function() {
-        const textToCopy = responseContainer.innerText; // Get the text from the <P> element
-        if (textToCopy) {
-            copyButton.disabled = true; // Disable the button
-            const originalText = copyButton.innerText; // Store original button text
-            copyButton.innerText = "Copied!"; // Change button text
+// Copy to clipboard functionality
+const copyButton = document.getElementById('copyResponseToClipboard');
+copyButton.addEventListener('click', function() {
+    const textToCopy = responseContainer.innerText; // Get the text from the <P> element
+    if (textToCopy) {
+        copyButton.disabled = true; // Disable the button
+        const originalText = copyButton.innerText; // Store original button text
+        copyButton.innerText = "Copied!"; // Change button text
 
-            navigator.clipboard.writeText(textToCopy).then(() => {
-                // Cooldown before re-enabling the button
-                setTimeout(() => {
-                    copyButton.innerText = originalText; // Restore original text
-                    copyButton.disabled = false; // Re-enable the button
-                }, 3000); // 3-second cooldown
-            }).catch(err => {
-                console.error('Could not copy text: ', err);
-                // Re-enable the button in case of an error
-                copyButton.innerText = originalText; 
-                copyButton.disabled = false; 
-            });
-        } else {
-            alert('No response to copy.');
-        }
-    });
-
-    async function sendWebhook(title, description, color) {
-        await fetch(`${apiUrl}/webhooksend?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&color=${color}`);
+        navigator.clipboard.writeText(textToCopy).then(() => {
+            // Cooldown before re-enabling the button
+            setTimeout(() => {
+                copyButton.innerText = originalText; // Restore original text
+                copyButton.disabled = false; // Re-enable the button
+            }, 3000); // 3-second cooldown
+        }).catch(err => {
+            console.error('Could not copy text: ', err);
+            // Re-enable the button in case of an error
+            copyButton.innerText = originalText; 
+            copyButton.disabled = false; 
+        });
+    } else {
+        alert('No response to copy.');
     }
 });
+
+async function sendWebhook(title, description, color) {
+    await fetch(`${apiUrl}/webhooksend?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&color=${color}`);
+}

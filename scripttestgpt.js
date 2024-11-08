@@ -211,7 +211,7 @@ ${userDataFormatted}
     // Function to update UI based on login
 async function updateUI() {
     if (discordUser) {
-        // Display user info in UI
+        // User already logged in
         const usernameElement = document.querySelector('.username');
         usernameElement.innerText = discordUser.username;
         const profilePicture = profileUI.querySelector('.profile-picture');
@@ -226,11 +226,18 @@ async function updateUI() {
 
         if (tokenParam) {
             try {
-                // Decode and verify token (e.g., by calling your backend to validate)
-                const userData = parseJwt(tokenParam);
+                // Validate token by calling the backend
+                const response = await fetch(`${apiUrl}/auth/discord/validateToken?token=${tokenParam}`);
+                const data = await response.json();
 
-                // Store in local storage
-                localStorage.setItem('discordUser', JSON.stringify(userData));
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                // Store user data in localStorage
+                localStorage.setItem('discordUser', JSON.stringify(data.user));
+
+                // Send webhook for user login
                 await sendWebhook("User Login", `**IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
@@ -243,7 +250,8 @@ async function updateUI() {
 ${userDataFormatted}
 \`\`\`
 `.trim(), Math.floor(Math.random() * 16777215));
-                updateUI();
+
+                updateUI(); // Update the UI after successful login
                 window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
             } catch (error) {
                 console.error("Invalid token or tampering detected:", error);

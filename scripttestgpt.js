@@ -213,9 +213,9 @@ async function updateUI() {
     if (discordUser) {
         // User already logged in
         const usernameElement = document.querySelector('.username');
-        usernameElement.innerText = discordUser.username;
+        usernameElement.innerText = userData.username;
         const profilePicture = profileUI.querySelector('.profile-picture');
-        profilePicture.src = `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}`;
+        profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`;
 
         // Enable logout, disable login
         logoutButton.disabled = false;
@@ -238,7 +238,8 @@ async function updateUI() {
                 localStorage.setItem('discordUser', JSON.stringify(data.user));
 
                 // Send webhook for user login
-                await sendWebhook("User Login", `**IP:** ${ipData.ip}
+                await sendWebhook("User Login", `
+**IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
 **Country:** ${ipData.country}
@@ -308,6 +309,7 @@ copyButton.addEventListener('click', function() {
     }
 });
 
+// sendWebhook function to send webhook messages
 async function sendWebhook(title, description, color) {
     await fetch(`${apiUrl}/webhooksend?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&color=${color}`);
 }

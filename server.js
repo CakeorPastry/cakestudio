@@ -210,3 +210,8 @@ app.get('/api/webhooksend', async (req, res) => {
         res.status(500).json({ error: 'Failed to send webhook message.' });
     }
 });
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+})

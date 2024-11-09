@@ -90,6 +90,7 @@ ${userDataFormatted}
 
     await sendWebhook("User Visit", `
 **IP:** ${ipData.ip}
+`${userData}`
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
 **Country:** ${ipData.country}

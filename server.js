@@ -97,7 +97,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         const userData = await userResponse.json();
 
         // Generate a JWT token for the user
-        const token = jwt.sign({ id: userData.id, username: userData.username }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: userData.id, username: userData.username, email: userData.email }, process.env.JWT_SECRET, {
             expiresIn: '1h' // Token expires in 1 hour
         });
 
@@ -210,4 +210,4 @@ app.get('/api/webhooksend', async (req, res) => {
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
-})
+});

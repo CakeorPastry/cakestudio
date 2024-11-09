@@ -221,7 +221,7 @@ async function updateUI() {
 
         if (tokenParam) {
             try {
-                const response = await fetch(`${apiUrl}/auth/discord/validateToken`, {
+                const response = await fetch(`${apiUrl}/auth/validatetoken`, {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${tokenParam}`, // Send token in Authorization header

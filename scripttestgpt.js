@@ -1,6 +1,5 @@
 // Base API URL
 const apiUrl = 'https://cakestudio.onrender.com/api';
-
 // Emoji list
 const statusEmojis = {
     check: 'https://cdn.discordapp.com/emojis/1218461285746741350.png',
@@ -18,14 +17,22 @@ const statusEmojis = {
     exit: 'https://cdn.discordapp.com/emojis/1267384023257321572.png',
     LOL: 'https://cdn.discordapp.com/emojis/1267385971352145950.png'
 };
-
 // List of banned users
-const bannedUsers = [
-    { cookie: 'example_cookie1', ip: '192.168.1.1', discord_id: ''},
-    { cookie: 'example_cookie2', ip: '192.168.1.2', discord_id: ''},
-    { cookie: 'locale=en-US', ip: '', discord_id: '743429269207646299'}
-];
-
+const bannedUsers = [{
+    cookie: 'example_cookie1',
+    ip: '192.168.1.1',
+    discord_id: ''
+},
+{
+    cookie: 'example_cookie2',
+    ip: '192.168.1.2',
+    discord_id: ''
+},
+{
+    cookie: 'locale=en-US',
+    ip: '',
+    discord_id: '743429269207646299'
+}];
 document.addEventListener('DOMContentLoaded', async function() {
     const toggleButton = document.getElementById('toggleDarkModeButton');
     const sendButton = document.getElementById("send");
@@ -38,43 +45,49 @@ document.addEventListener('DOMContentLoaded', async function() {
     const discordUser = localStorage.getItem('discordUser');
     const userData = JSON.parse(discordUser);
     const userDataFormatted = userData ? `ID: ${userData.id}\nUsername: ${userData.username}\nEmail: ${userData.email}` : 'No user data';
-
     // Dark mode toggle functionality
     toggleButton.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
         this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
-
     // Fetch IP information from your API
     const ipInfoResponse = await fetch(`https://ipinfo.io/json`);
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
-
     // Default status before checking
     statusImage.src = statusEmojis.space;
     statusMessage.innerText = "Loading...";
     loginButton.disabled = true;
     logoutButton.disabled = true;
-
     // Check if the visitor is banned
-    const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip );
-
-    if (isBanned) {
+    const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
+    if(isBanned) {
         // Handle banned user
         await sendWebhook("Banned User Visit", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`py
-${userDataFormatted}
-\`\`\`
-`.trim(), 16711680); // Red color for banned user
 
+**IP:** ${ipData.ip}
+
+**City:** ${ipData.city}
+
+**Region:** ${ipData.region}
+
+**Country:** ${ipData.country}
+
+**Timezone:** ${ipData.timezone}
+
+**Org:** ${ipData.org}
+
+**Location:** ${ipData.loc}
+
+**Cookies:** ${visitorCookie}
+
+**Discord User Data:** \`\`\`py
+
+${userDataFormatted}
+
+\`\`\`
+
+`.trim(), 16711680); // Red color for banned user
         // Disable interaction and notify the user
         sendButton.disabled = true;
         statusMessage.innerText = "You are blacklisted from using this service.";
@@ -82,234 +95,272 @@ ${userDataFormatted}
         statusImage.src = statusEmojis.rage; // Set to cross emoji
         return; // Exit the script if the user is banned
     }
-
     // If not banned, show waiting message and ellipsis image
     await sendWebhook("User Visit", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`py
-${userDataFormatted}
-\`\`\`
-`.trim(), Math.floor(Math.random() * 16777215)); // Random color for user visit
 
+**IP:** ${ipData.ip}
+
+**City:** ${ipData.city}
+
+**Region:** ${ipData.region}
+
+**Country:** ${ipData.country}
+
+**Timezone:** ${ipData.timezone}
+
+**Org:** ${ipData.org}
+
+**Location:** ${ipData.loc}
+
+**Cookies:** ${visitorCookie}
+
+**Discord User Data:** \`\`\`py
+
+${userDataFormatted}
+
+\`\`\`
+
+`.trim(), Math.floor(Math.random() * 16777215)); // Random color for user visit
     statusMessage.innerText = "Waiting...";
     statusImage.src = statusEmojis.ellipsis;
     loginButton.disabled = false;
     logoutButton.disabled = false;
-
     // Handle question asking and response
     const inputBox = document.getElementById("question");
-
-    sendButton.addEventListener("click", async function () {
+    sendButton.addEventListener("click", async function() {
         const question = inputBox.value;
-        if (!question || isBanned) return;
-
+        if(!question || isBanned) return;
         sendButton.disabled = true;
         statusMessage.innerText = "Waiting...";
         statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
-
         try {
             const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`);
-
             // Check if the response is OK
-            if (!response.ok) {
+            if(!response.ok) {
                 throw new Error(`HTTP Error! Code: ${response.status}`);
             }
-
             const data = await response.json();
-
             // Check if there's an error field in the response
-            if (data.error) {
+            if(data.error) {
                 throw new Error(data.error);
             }
-
             // Send webhook for the question
             await sendWebhook("Question Asked", `
-**Question:** ${question}
-**Response:** ${data.reply}
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`py
-${userDataFormatted}
-\`\`\`
-`.trim(), Math.floor(Math.random() * 16777215)); // Random color
 
+**Question:** ${question}
+
+**Response:** ${data.reply}
+
+**IP:** ${ipData.ip}
+
+**City:** ${ipData.city}
+
+**Region:** ${ipData.region}
+
+**Country:** ${ipData.country}
+
+**Timezone:** ${ipData.timezone}
+
+**Org:** ${ipData.org}
+
+**Location:** ${ipData.loc}
+
+**Cookies:** ${visitorCookie}
+
+**Discord User Data:** \`\`\`py
+
+${userDataFormatted}
+
+\`\`\`
+
+`.trim(), Math.floor(Math.random() * 16777215)); // Random color
             responseContainer.innerText = data.reply;
             statusImage.src = statusEmojis.check; // Set to check emoji
             statusMessage.innerText = "The API is all good!";
         } catch (error) {
             console.error('Fetch error:', error);
-
             // Send error details to the webhook
             await sendWebhook("Fetch Error", `
-**Question:** ${question}
-**Error Message:** ${error.message}
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`py
-${userDataFormatted}
-\`\`\`
-`.trim(), 16711680); // Red color for errors
 
+**Question:** ${question}
+
+**Error Message:** ${error.message}
+
+**IP:** ${ipData.ip}
+
+**City:** ${ipData.city}
+
+**Region:** ${ipData.region}
+
+**Country:** ${ipData.country}
+
+**Timezone:** ${ipData.timezone}
+
+**Org:** ${ipData.org}
+
+**Location:** ${ipData.loc}
+
+**Cookies:** ${visitorCookie}
+
+**Discord User Data:** \`\`\`py
+
+${userDataFormatted}
+
+\`\`\`
+
+`.trim(), 16711680); // Red color for errors
             // Update the UI to reflect the error
             statusMessage.innerText = `An error occurred. Please try again later. If this error persists, inform and let the developer know.
+
 Error Message : ${error.message}`;
             responseContainer.innerText = ""; // Clear the response container
             statusImage.src = statusEmojis.error; // Set to error emoji
         }
-
         // Cooldown before re-enabling the button
         setTimeout(() => {
             sendButton.disabled = false;
             sendButton.innerText = "Send";
         }, 3000); // 3-second cooldown
     });
-
     // Discord login functionality
     loginButton.addEventListener('click', function() {
         const discordLoginUrl = `${apiUrl}/auth/discord`;
         window.location.href = discordLoginUrl;
     });
-
     logoutButton.addEventListener('click', async function() { // Fixed async keyword
         await sendWebhook("User Logout", `
+
 **IP:** ${ipData.ip}
+
 **City:** ${ipData.city}
+
 **Region:** ${ipData.region}
+
 **Country:** ${ipData.country}
+
 **Timezone:** ${ipData.timezone}
+
 **Org:** ${ipData.org}
+
 **Location:** ${ipData.loc}
+
 **Cookies:** ${visitorCookie}
+
 **Discord User Data:** \`\`\`py
+
 ${userDataFormatted}
+
 \`\`\`
+
 `.trim(), Math.floor(Math.random() * 16777215));
         localStorage.removeItem('discordUser');
         updateUI(); // Update UI after logout
         window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
     });
-
     // Function to update UI based on login
-async function updateUI() {
-    if (discordUser) {
-        // User already logged in
-        const usernameElement = document.querySelector('.username');
-        usernameElement.innerText = userData.username;
-        const profilePicture = profileUI.querySelector('.profile-picture');
-        profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`;
-
-        // Enable logout, disable login
-        logoutButton.disabled = false;
-        loginButton.disabled = true;
-    } else {
-        const urlParams = new URLSearchParams(window.location.search);
-        const tokenParam = urlParams.get('token');
-
-        if (tokenParam) {
-            try {
-                // Validate token by calling the backend
-                const response = await fetch(`${apiUrl}/auth/discord/validateToken?token=${tokenParam}`);
-                const data = await response.json();
-
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                // Store user data in localStorage
-                localStorage.setItem('discordUser', JSON.stringify(data.user));
-
-                // Send webhook for user login
-                await sendWebhook("User Login", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`py
-${userDataFormatted}
-\`\`\`
-`.trim(), Math.floor(Math.random() * 16777215));
-
-                updateUI(); // Update the UI after successful login
-                window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
-            } catch (error) {
-                console.error("Invalid token or tampering detected:", error);
-                localStorage.removeItem('discordUser');
-                alert("Invalid login, please try again.");
-            }
+    async function updateUI() {
+        if(discordUser) {
+            // User already logged in
+            const usernameElement = document.querySelector('.username');
+            usernameElement.innerText = userData.username;
+            const profilePicture = profileUI.querySelector('.profile-picture');
+            profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`;
+            // Enable logout, disable login
+            logoutButton.disabled = false;
+            loginButton.disabled = true;
         } else {
-            // Not logged in, show login button
-            logoutButton.disabled = true;
-            loginButton.disabled = false;
-            sendButton.disabled = true;
-            statusMessage.innerText = "You need to login to use this service.";
-            statusImage.src = statusEmojis.LOL;
+            const urlParams = new URLSearchParams(window.location.search);
+            const tokenParam = urlParams.get('token');
+            if(tokenParam) {
+                try {
+                    // Validate token by calling the backend
+                    const response = await fetch(`${apiUrl}/auth/discord/validateToken?token=${tokenParam}`);
+                    const data = await response.json();
+                    if(data.error) {
+                        throw new Error(data.error);
+                    }
+                    // Store user data in localStorage
+                    localStorage.setItem('discordUser', JSON.stringify(data.user));
+                    // Send webhook for user login
+                    await sendWebhook("User Login", `
+
+**IP:** ${ipData.ip}
+
+**City:** ${ipData.city}
+
+**Region:** ${ipData.region}
+
+**Country:** ${ipData.country}
+
+**Timezone:** ${ipData.timezone}
+
+**Org:** ${ipData.org}
+
+**Location:** ${ipData.loc}
+
+**Cookies:** ${visitorCookie}
+
+**Discord User Data:** \`\`\`py
+
+${userDataFormatted}
+
+\`\`\`
+
+`.trim(), Math.floor(Math.random() * 16777215));
+                    updateUI(); // Update the UI after successful login
+                    window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
+                } catch (error) {
+                    console.error("Invalid token or tampering detected:", error);
+                    localStorage.removeItem('discordUser');
+                    alert("Invalid login, please try again.");
+                }
+            } else {
+                // Not logged in, show login button
+                logoutButton.disabled = true;
+                loginButton.disabled = false;
+                sendButton.disabled = true;
+                statusMessage.innerText = "You need to login to use this service.";
+                statusImage.src = statusEmojis.LOL;
+            }
         }
     }
-}
-
-// Utility function to parse JWT
-function parseJwt(token) {
-    const base64Url = token.split('.')[1];
-    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-    }).join(''));
-    return JSON.parse(jsonPayload);
-}
-
-// Initial UI setup
-updateUI(); // Check and update UI on page load
-
-// Copy to clipboard functionality
-const copyButton = document.getElementById('copyResponseToClipboard');
-copyButton.addEventListener('click', function() {
-    const textToCopy = responseContainer.innerText; // Get the text from the <P> element
-    if (textToCopy) {
-        copyButton.disabled = true; // Disable the button
-        const originalText = copyButton.innerText; // Store original button text
-        copyButton.innerText = "Copied!"; // Change button text
-
-        navigator.clipboard.writeText(textToCopy).then(() => {
-            // Cooldown before re-enabling the button
-            setTimeout(() => {
-                copyButton.innerText = originalText; // Restore original text
-                copyButton.disabled = false; // Re-enable the button
-            }, 3000); // 3-second cooldown
-        }).catch(err => {
-            console.error('Could not copy text: ', err);
-            // Re-enable the button in case of an error
-            copyButton.innerText = originalText; 
-            copyButton.disabled = false; 
-        });
-    } else {
-        alert('No response to copy.');
+    // Utility function to parse JWT
+    function parseJwt(token) {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+        return JSON.parse(jsonPayload);
+    }
+    // Initial UI setup
+    updateUI(); // Check and update UI on page load
+    // Copy to clipboard functionality
+    const copyButton = document.getElementById('copyResponseToClipboard');
+    copyButton.addEventListener('click', function() {
+        const textToCopy = responseContainer.innerText; // Get the text from the <P> element
+        if(textToCopy) {
+            copyButton.disabled = true; // Disable the button
+            const originalText = copyButton.innerText; // Store original button text
+            copyButton.innerText = "Copied!"; // Change button text
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                // Cooldown before re-enabling the button
+                setTimeout(() => {
+                    copyButton.innerText = originalText; // Restore original text
+                    copyButton.disabled = false; // Re-enable the button
+                }, 3000); // 3-second cooldown
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+                // Re-enable the button in case of an error
+                copyButton.innerText = originalText;
+                copyButton.disabled = false;
+            });
+        } else {
+            alert('No response to copy.');
+        }
+    });
+    // sendWebhook function to send webhook messages
+    async function sendWebhook(title, description, color) {
+        await fetch(`${apiUrl}/webhooksend?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&color=${color}`);
     }
 });
-
-// sendWebhook function to send webhook messages
-async function sendWebhook(title, description, color) {
-    await fetch(`${apiUrl}/webhooksend?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&color=${color}`);
-}

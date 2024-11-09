@@ -289,7 +289,7 @@ updateUI(); // Check and update UI on page load
         }
     });
 
-alert(discordUser, userData, userDataFormatted);
+alert(`discordUser : ${discordUser}, Userdata : ${userData}, formatted : ${userDataFormatted}`);
 
     // sendWebhook function
     async function sendWebhook(title, description, color) {

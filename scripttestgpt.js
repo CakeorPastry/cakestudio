@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const discordUser = localStorage.getItem('discordUser');
     const userData = JSON.parse(discordUser);
     const userDataFormatted = userData ? `ID: ${userData.id}\nUsername: ${userData.username}\nEmail: ${userData.email}` : 'No user data';
+    let loggedIn = false;
     // Dark mode toggle functionality
     toggleButton.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
@@ -129,7 +130,7 @@ ${userDataFormatted}
     const inputBox = document.getElementById("question");
     sendButton.addEventListener("click", async function() {
         const question = inputBox.value;
-        if(!question || isBanned) return;
+        if(!question || isBanned || loggedIn!=true) return;
         sendButton.disabled = true;
         statusMessage.innerText = "Waiting...";
         statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
@@ -281,6 +282,7 @@ ${userDataFormatted}
                     }
                     // Store user data in localStorage
                     localStorage.setItem('discordUser', JSON.stringify(data.user));
+                    loggedIn = true;
                     // Send webhook for user login
                     await sendWebhook("User Login", `
 
@@ -319,6 +321,7 @@ ${userDataFormatted}
                 logoutButton.disabled = true;
                 loginButton.disabled = false;
                 sendButton.disabled = true;
+                loggedIn = false;
                 statusMessage.innerText = "You need to login to use this service.";
                 statusImage.src = statusEmojis.LOL;
             }

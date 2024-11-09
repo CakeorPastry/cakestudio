@@ -43,281 +43,137 @@ document.addEventListener('DOMContentLoaded', async function() {
     const logoutButton = document.getElementById("logoutButton");
     const profileUI = document.querySelector('.profile-ui');
     const discordUser = localStorage.getItem('discordUser');
-    const userData = JSON.parse(discordUser);
+    const jwtToken = localStorage.getItem('jwtToken'); // Get JWT token from localStorage
+    const userData = discordUser ? JSON.parse(discordUser) : null;
     const userDataFormatted = userData ? `ID: ${userData.id}\nUsername: ${userData.username}\nEmail: ${userData.email}` : 'No user data';
-    let loggedIn = false;
+    let loggedIn = !!jwtToken; // If JWT token exists, user is logged in
+
     // Dark mode toggle functionality
     toggleButton.addEventListener('click', function() {
         document.body.classList.toggle('dark-mode');
         this.textContent = document.body.classList.contains('dark-mode') ? '☀️' : '🌙';
     });
+
     // Fetch IP information from your API
     const ipInfoResponse = await fetch(`https://ipinfo.io/json`);
     const ipData = await ipInfoResponse.json();
     const visitorCookie = document.cookie || 'No cookies found';
+
     // Default status before checking
     statusImage.src = statusEmojis.space;
     statusMessage.innerText = "Loading...";
     loginButton.disabled = true;
     logoutButton.disabled = true;
+
     // Check if the visitor is banned
     const isBanned = bannedUsers.some(user => user.cookie === visitorCookie || user.ip === ipData.ip);
-    if(isBanned) {
-        // Handle banned user
-        await sendWebhook("Banned User Visit", `
-
-**IP:** ${ipData.ip}
-
-**City:** ${ipData.city}
-
-**Region:** ${ipData.region}
-
-**Country:** ${ipData.country}
-
-**Timezone:** ${ipData.timezone}
-
-**Org:** ${ipData.org}
-
-**Location:** ${ipData.loc}
-
-**Cookies:** ${visitorCookie}
-
-**Discord User Data:** \`\`\`py
-
-${userDataFormatted}
-
-\`\`\`
-
-`.trim(), 16711680); // Red color for banned user
-        // Disable interaction and notify the user
+    if (isBanned) {
+        await sendWebhook("Banned User Visit", `...`);
         sendButton.disabled = true;
         statusMessage.innerText = "You are blacklisted from using this service.";
-        responseContainer.innerText = ""; // Clear the response container
-        statusImage.src = statusEmojis.rage; // Set to cross emoji
-        return; // Exit the script if the user is banned
+        responseContainer.innerText = "";
+        statusImage.src = statusEmojis.rage;
+        return;
     }
-    // If not banned, show waiting message and ellipsis image
-    await sendWebhook("User Visit", `
 
-**IP:** ${ipData.ip}
-
-**City:** ${ipData.city}
-
-**Region:** ${ipData.region}
-
-**Country:** ${ipData.country}
-
-**Timezone:** ${ipData.timezone}
-
-**Org:** ${ipData.org}
-
-**Location:** ${ipData.loc}
-
-**Cookies:** ${visitorCookie}
-
-**Discord User Data:** \`\`\`py
-
-${userDataFormatted}
-
-\`\`\`
-
-`.trim(), Math.floor(Math.random() * 16777215)); // Random color for user visit
+    await sendWebhook("User Visit", `...`);
     statusMessage.innerText = "Waiting...";
     statusImage.src = statusEmojis.ellipsis;
     loginButton.disabled = false;
     logoutButton.disabled = false;
+
     // Handle question asking and response
     const inputBox = document.getElementById("question");
     sendButton.addEventListener("click", async function() {
         const question = inputBox.value;
-        if(!question || isBanned || loggedIn!=true) return;
+        if (!question || !loggedIn) return; // Don't proceed if not logged in
         sendButton.disabled = true;
         statusMessage.innerText = "Waiting...";
-        statusImage.src = statusEmojis.ellipsis; // Set to ellipsis emoji
+        statusImage.src = statusEmojis.ellipsis;
+
         try {
-            const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`);
-            // Check if the response is OK
-            if(!response.ok) {
+            const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`, {
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}` // Add JWT token to the request header
+                }
+            });
+
+            if (!response.ok) {
                 throw new Error(`HTTP Error! Code: ${response.status}`);
             }
+
             const data = await response.json();
-            // Check if there's an error field in the response
-            if(data.error) {
+            if (data.error) {
                 throw new Error(data.error);
             }
-            // Send webhook for the question
-            await sendWebhook("Question Asked", `
 
-**Question:** ${question}
-
-**Response:** ${data.reply}
-
-**IP:** ${ipData.ip}
-
-**City:** ${ipData.city}
-
-**Region:** ${ipData.region}
-
-**Country:** ${ipData.country}
-
-**Timezone:** ${ipData.timezone}
-
-**Org:** ${ipData.org}
-
-**Location:** ${ipData.loc}
-
-**Cookies:** ${visitorCookie}
-
-**Discord User Data:** \`\`\`py
-
-${userDataFormatted}
-
-\`\`\`
-
-`.trim(), Math.floor(Math.random() * 16777215)); // Random color
+            await sendWebhook("Question Asked", `...`);
             responseContainer.innerText = data.reply;
-            statusImage.src = statusEmojis.check; // Set to check emoji
+            statusImage.src = statusEmojis.check;
             statusMessage.innerText = "The API is all good!";
         } catch (error) {
             console.error('Fetch error:', error);
-            // Send error details to the webhook
-            await sendWebhook("Fetch Error", `
-
-**Question:** ${question}
-
-**Error Message:** ${error.message}
-
-**IP:** ${ipData.ip}
-
-**City:** ${ipData.city}
-
-**Region:** ${ipData.region}
-
-**Country:** ${ipData.country}
-
-**Timezone:** ${ipData.timezone}
-
-**Org:** ${ipData.org}
-
-**Location:** ${ipData.loc}
-
-**Cookies:** ${visitorCookie}
-
-**Discord User Data:** \`\`\`py
-
-${userDataFormatted}
-
-\`\`\`
-
-`.trim(), 16711680); // Red color for errors
-            // Update the UI to reflect the error
-            statusMessage.innerText = `An error occurred. Please try again later. If this error persists, inform and let the developer know.
-
-Error Message : ${error.message}`;
-            responseContainer.innerText = ""; // Clear the response container
-            statusImage.src = statusEmojis.error; // Set to error emoji
+            await sendWebhook("Fetch Error", `...`);
+            statusMessage.innerText = `An error occurred. Please try again later. Error Message : ${error.message}`;
+            responseContainer.innerText = "";
+            statusImage.src = statusEmojis.error;
         }
+
         // Cooldown before re-enabling the button
         setTimeout(() => {
             sendButton.disabled = false;
             sendButton.innerText = "Send";
         }, 3000); // 3-second cooldown
     });
+
     // Discord login functionality
     loginButton.addEventListener('click', function() {
         const discordLoginUrl = `${apiUrl}/auth/discord`;
         window.location.href = discordLoginUrl;
     });
-    logoutButton.addEventListener('click', async function() { // Fixed async keyword
-        await sendWebhook("User Logout", `
 
-**IP:** ${ipData.ip}
-
-**City:** ${ipData.city}
-
-**Region:** ${ipData.region}
-
-**Country:** ${ipData.country}
-
-**Timezone:** ${ipData.timezone}
-
-**Org:** ${ipData.org}
-
-**Location:** ${ipData.loc}
-
-**Cookies:** ${visitorCookie}
-
-**Discord User Data:** \`\`\`py
-
-${userDataFormatted}
-
-\`\`\`
-
-`.trim(), Math.floor(Math.random() * 16777215));
+    // Logout functionality with JWT
+    logoutButton.addEventListener('click', async function() {
+        await sendWebhook("User Logout", `...`);
         localStorage.removeItem('discordUser');
-        updateUI(); // Update UI after logout
+        localStorage.removeItem('jwtToken'); // Remove the JWT token on logout
+        loggedIn = false;
+        updateUI();
         window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
     });
-    // Function to update UI based on login
+
+    // Function to update UI based on login status
     async function updateUI() {
-        if(discordUser) {
-            // User already logged in
+        if (discordUser && jwtToken) {
             const usernameElement = document.querySelector('.username');
             usernameElement.innerText = userData.username;
             const profilePicture = profileUI.querySelector('.profile-picture');
             profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`;
-            // Enable logout, disable login
             logoutButton.disabled = false;
             loginButton.disabled = true;
         } else {
             const urlParams = new URLSearchParams(window.location.search);
             const tokenParam = urlParams.get('token');
-            if(tokenParam) {
+            if (tokenParam) {
                 try {
-                    // Validate token by calling the backend
                     const response = await fetch(`${apiUrl}/auth/discord/validateToken?token=${tokenParam}`);
                     const data = await response.json();
-                    if(data.error) {
+                    if (data.error) {
                         throw new Error(data.error);
                     }
-                    // Store user data in localStorage
                     localStorage.setItem('discordUser', JSON.stringify(data.user));
+                    localStorage.setItem('jwtToken', data.token); // Store JWT token
                     loggedIn = true;
-                    // Send webhook for user login
-                    await sendWebhook("User Login", `
-
-**IP:** ${ipData.ip}
-
-**City:** ${ipData.city}
-
-**Region:** ${ipData.region}
-
-**Country:** ${ipData.country}
-
-**Timezone:** ${ipData.timezone}
-
-**Org:** ${ipData.org}
-
-**Location:** ${ipData.loc}
-
-**Cookies:** ${visitorCookie}
-
-**Discord User Data:** \`\`\`py
-
-${userDataFormatted}
-
-\`\`\`
-
-`.trim(), Math.floor(Math.random() * 16777215));
+                    await sendWebhook("User Login", `...`);
                     updateUI(); // Update the UI after successful login
                     window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
                 } catch (error) {
                     console.error("Invalid token or tampering detected:", error);
                     localStorage.removeItem('discordUser');
-                    alert(`Invalid login, please try again. Error : ${error}`);
+                    localStorage.removeItem('jwtToken');
+                    alert(`Invalid login, please try again. Error: ${error}`);
                 }
             } else {
-                // Not logged in, show login button
                 logoutButton.disabled = true;
                 loginButton.disabled = false;
                 sendButton.disabled = true;
@@ -327,34 +183,25 @@ ${userDataFormatted}
             }
         }
     }
-    // Utility function to parse JWT
-    function parseJwt(token) {
-        const base64Url = token.split('.')[1];
-        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-        }).join(''));
-        return JSON.parse(jsonPayload);
-    }
+
     // Initial UI setup
     updateUI(); // Check and update UI on page load
+
     // Copy to clipboard functionality
     const copyButton = document.getElementById('copyResponseToClipboard');
     copyButton.addEventListener('click', function() {
-        const textToCopy = responseContainer.innerText; // Get the text from the <P> element
-        if(textToCopy) {
-            copyButton.disabled = true; // Disable the button
-            const originalText = copyButton.innerText; // Store original button text
-            copyButton.innerText = "Copied!"; // Change button text
+        const textToCopy = responseContainer.innerText;
+        if (textToCopy) {
+            copyButton.disabled = true;
+            const originalText = copyButton.innerText;
+            copyButton.innerText = "Copied!";
             navigator.clipboard.writeText(textToCopy).then(() => {
-                // Cooldown before re-enabling the button
                 setTimeout(() => {
-                    copyButton.innerText = originalText; // Restore original text
-                    copyButton.disabled = false; // Re-enable the button
-                }, 3000); // 3-second cooldown
+                    copyButton.innerText = originalText;
+                    copyButton.disabled = false;
+                }, 3000);
             }).catch(err => {
                 console.error('Could not copy text: ', err);
-                // Re-enable the button in case of an error
                 copyButton.innerText = originalText;
                 copyButton.disabled = false;
             });
@@ -362,7 +209,8 @@ ${userDataFormatted}
             alert('No response to copy.');
         }
     });
-    // sendWebhook function to send webhook messages
+
+    // sendWebhook function
     async function sendWebhook(title, description, color) {
         await fetch(`${apiUrl}/webhooksend?title=${encodeURIComponent(title)}&description=${encodeURIComponent(description)}&color=${color}`);
     }

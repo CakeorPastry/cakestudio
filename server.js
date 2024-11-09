@@ -23,6 +23,7 @@ function restrictedCors(req, res, next) {
     if (allowedOrigins.includes(origin)) {
         cors()(req, res, next);
     } else {
+        console.log(`Blocked request from origin: ${origin}`);
         res.status(403).json({ error: 'CORS Error: This origin is not allowed by CORS policy.' });
     }
 }

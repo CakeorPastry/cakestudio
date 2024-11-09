@@ -12,17 +12,7 @@ app.use(express.json());
 // Set up the allowed origins from environment variables
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
-// CORS Middleware
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true); // Allow the request if no origin or if origin is allowed
-        } else {
-            console.log(`Blocked request from origin: ${origin}`);
-            callback(new Error('CORS Error: This origin is not allowed by CORS policy.'));
-        }
-    }
-}));
+
 
 // Root route accessible to all
 app.get('/', (req, res) => {
@@ -102,6 +92,18 @@ app.get('/api/auth/discord/callback', async (req, res) => {
 app.get('/api/auth/discord/validateToken', validateJWT, (req, res) => {
     res.json({ message: 'Token is valid', user: req.user });
 });
+
+// CORS Middleware
+app.use(cors({
+    origin: (origin, callback) => {
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true); // Allow the request if no origin or if origin is allowed
+        } else {
+            console.log(`Blocked request from origin: ${origin}`);
+            callback(new Error('CORS Error: This origin is not allowed by CORS policy.'));
+        }
+    }
+}));
 
 // Example restricted API route with JWT validation
 app.get('/api/restricted', validateJWT, (req, res) => {

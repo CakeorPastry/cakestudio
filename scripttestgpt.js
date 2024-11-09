@@ -312,7 +312,7 @@ ${userDataFormatted}
                 } catch (error) {
                     console.error("Invalid token or tampering detected:", error);
                     localStorage.removeItem('discordUser');
-                    alert("Invalid login, please try again.");
+                    alert(`Invalid login, please try again. Error : ${error}`);
                 }
             } else {
                 // Not logged in, show login button

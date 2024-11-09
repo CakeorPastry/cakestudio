@@ -206,29 +206,36 @@ ${userDataFormatted}
         window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
     });
 
-    // Function to update UI based on login status
-    async function updateUI() {
-        if (discordUser && jwtToken) {
-            const usernameElement = document.querySelector('.username');
-            usernameElement.innerText = userData.username;
-            const profilePicture = profileUI.querySelector('.profile-picture');
-            profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`;
-            logoutButton.disabled = false;
-            loginButton.disabled = true;
-        } else {
-            const urlParams = new URLSearchParams(window.location.search);
-            const tokenParam = urlParams.get('token');
-            if (tokenParam) {
-                try {
-                    const response = await fetch(`${apiUrl}/auth/discord/validateToken?token=${tokenParam}`);
-                    const data = await response.json();
-                    if (data.error) {
-                        throw new Error(data.error);
-                    }
-                    localStorage.setItem('discordUser', JSON.stringify(data.user));
-                    localStorage.setItem('jwtToken', data.token); // Store JWT token
-                    loggedIn = true;
-                    await sendWebhook("User Login", `
+// Function to update UI based on login status
+async function updateUI() {
+    if (discordUser && jwtToken) {
+        const usernameElement = document.querySelector('.username');
+        usernameElement.innerText = userData.username;
+        const profilePicture = profileUI.querySelector('.profile-picture');
+        profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`;
+        logoutButton.disabled = false;
+        loginButton.disabled = true;
+    } else {
+        const urlParams = new URLSearchParams(window.location.search);
+        const tokenParam = urlParams.get('token') || localStorage.getItem('jwtToken'); // Try token from URL or localStorage
+
+        if (tokenParam) {
+            try {
+                const response = await fetch(`${apiUrl}/auth/discord/validateToken`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${tokenParam}`, // Send token in Authorization header
+                    },
+                });
+                const data = await response.json();
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                localStorage.setItem('discordUser', JSON.stringify(data.user));
+                localStorage.setItem('jwtToken', data.token); // Store JWT token
+                loggedIn = true;
+                
+                await sendWebhook("User Login", `
 **IP:** ${ipData.ip}
 **City:** ${ipData.city}
 **Region:** ${ipData.region}
@@ -241,27 +248,28 @@ ${userDataFormatted}
 ${userDataFormatted}
 \`\`\`
 `, Math.floor(Math.random() * 16777215)); // Random color
-                    updateUI(); // Update the UI after successful login
-                    window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
-                } catch (error) {
-                    console.error("Invalid token or tampering detected:", error);
-                    localStorage.removeItem('discordUser');
-                    localStorage.removeItem('jwtToken');
-                    alert(`Invalid login, please try again. Error: ${error}`);
-                }
-            } else {
-                logoutButton.disabled = true;
-                loginButton.disabled = false;
-                sendButton.disabled = true;
-                loggedIn = false;
-                statusMessage.innerText = "You need to login to use this service.";
-                statusImage.src = statusEmojis.LOL;
+                
+                updateUI(); // Update the UI after successful login
+                window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
+            } catch (error) {
+                console.error("Invalid token or tampering detected:", error);
+                localStorage.removeItem('discordUser');
+                localStorage.removeItem('jwtToken');
+                alert(`Invalid login, please try again. Error: ${error}`);
             }
+        } else {
+            logoutButton.disabled = true;
+            loginButton.disabled = false;
+            sendButton.disabled = true;
+            loggedIn = false;
+            statusMessage.innerText = "You need to login to use this service.";
+            statusImage.src = statusEmojis.LOL;
         }
     }
+}
 
-    // Initial UI setup
-    updateUI(); // Check and update UI on page load
+// Initial UI setup
+updateUI(); // Check and update UI on page load
 
     // Copy to clipboard functionality
     const copyButton = document.getElementById('copyResponseToClipboard');

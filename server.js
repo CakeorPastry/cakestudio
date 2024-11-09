@@ -110,7 +110,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
 });
 
 // Token validation route
-app.get('/api/auth/validatetoken', restrictedCors, validateJWT, (req, res) => {
+app.get('/api/auth/validatetoken', validateJWT, (req, res) => {
     res.json({ message: 'Token is valid', user: req.user });
 });
 

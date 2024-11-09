@@ -17,7 +17,16 @@ app.get('/', (req, res) => {
     res.status(200).json({ error: 'Nice try diddy.' });
 });
 
-
+// CORS Middleware for restricted routes
+function restrictedCors(req, res, next) {
+    const origin = req.get('origin');
+    if (allowedOrigins.includes(origin)) {
+        cors()(req, res, next);
+    } else {
+        console.log(`Blocked request from origin: ${origin}`);
+        res.status(403).json({ error: 'CORS Error: This origin is not allowed by CORS policy.' });
+    }
+}
 
 // Helper function to normalize and sanitize username
 function sanitizeUsername(username) {

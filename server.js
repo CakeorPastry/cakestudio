@@ -114,10 +114,6 @@ app.get('/api/auth/discord/validateToken', validateJWT, (req, res) => {
     res.json({ message: 'Token is valid', user: req.user });
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
-
 // CORS Middleware
 app.use(cors({
     origin: (origin, callback) => {

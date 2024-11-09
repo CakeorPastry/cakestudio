@@ -221,12 +221,7 @@ async function updateUI() {
 
         if (tokenParam) {
             try {
-                const response = await fetch(`${apiUrl}/auth/validatetoken`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${tokenParam}`, // Send token in Authorization header
-                    },
-                });
+                const response = await fetch(`${apiUrl}/auth/validatetoken?token=${tokenParam}`);
                 const data = await response.json();
                 if (data.error) {
                     throw new Error(data.error);

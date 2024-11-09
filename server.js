@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 const fetch = require('node-fetch');
-const jwt = require('jsonwebtoken');  // Import the JWT library
+const jwt = require('jsonwebtoken');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,14 +17,20 @@ app.get('/', (req, res) => {
     res.status(200).json({ error: 'Nice try diddy.' });
 });
 
+// CORS Middleware for restricted routes
+function restrictedCors(req, res, next) {
+    const origin = req.get('origin');
+    if (allowedOrigins.includes(origin)) {
+        cors()(req, res, next);
+    } else {
+        res.status(403).json({ error: 'CORS Error: This origin is not allowed by CORS policy.' });
+    }
+}
+
 // Helper function to normalize and sanitize username
 function sanitizeUsername(username) {
-    // Normalize and remove accents or special characters
     username = username.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-    // Remove non-alphanumeric characters
     username = username.replace(/[^A-Za-z0-9]/g, '');
-
     return username;
 }
 
@@ -36,29 +42,24 @@ app.get('/api/decancer', (req, res) => {
         return res.status(400).json({ error: 'Username parameter is required.' });
     }
 
-    // Sanitize the username
     const sanitizedUsername = sanitizeUsername(username);
-
     res.json({ username: sanitizedUsername });
 });
 
 // JWT Validation Middleware
 function validateJWT(req, res, next) {
-    const token = req.headers['authorization']?.split(' ')[1]; // Extract token from Authorization header
+    const token = req.headers['authorization']?.split(' ')[1];
 
     if (!token) {
         return res.status(403).json({ error: 'Token is required for authentication' });
     }
 
-    // Verify the token
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
             return res.status(401).json({ error: 'Invalid or expired token' });
         }
-
-        // Attach the decoded user data to the request object
         req.user = decoded;
-        next(); // Proceed to the next middleware or route
+        next();
     });
 }
 
@@ -96,12 +97,10 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         });
         const userData = await userResponse.json();
 
-        // Generate a JWT token for the user
         const token = jwt.sign({ id: userData.id, username: userData.username, email: userData.email }, process.env.JWT_SECRET, {
-            expiresIn: '1h' // Token expires in 1 hour
+            expiresIn: '1h'
         });
 
-        // Redirect to frontend with JWT token
         const frontendUrl = 'https://cakeorpastry.netlify.app/testgpt';
         res.redirect(`${frontendUrl}/?token=${encodeURIComponent(token)}`);
     } else {
@@ -109,45 +108,13 @@ app.get('/api/auth/discord/callback', async (req, res) => {
     }
 });
 
-// Token validation route (for testing purposes)
+// Token validation route
 app.get('/api/auth/discord/validateToken', validateJWT, (req, res) => {
     res.json({ message: 'Token is valid', user: req.user });
 });
 
-// CORS Middleware
-app.use(cors({
-    origin: (origin, callback) => {
-        if (allowedOrigins.includes(origin)) {
-            callback(null, true); // Allow the request
-        } else {
-            console.log(`Blocked request from origin: ${origin}`);
-            callback(new Error('CORS Error: This origin is not allowed by CORS policy.'));
-        }
-    }
-}));
-
-// Example restricted API route with JWT validation
-app.get('/api/restricted', validateJWT, (req, res) => {
-    // Access user data from the decoded token
-    const user = req.user;
-    res.json({ message: 'Welcome to the restricted route!', user });
-});
-
-// IP info route
-app.get('/api/ipinfo', async (req, res) => {
-    const ipInfoLink = 'https://ipinfo.io/json?token=' + process.env.IPINFO_TOKEN;
-    try {
-        const response = await fetch(ipInfoLink);
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        console.error('Error fetching IP info:', error);
-        res.status(500).json({ error: 'Failed to fetch IP information.' });
-    }
-});
-
-// TestGPT route
-app.get('/api/testgpt', async (req, res) => {
+// Apply CORS restriction only on specific routes
+app.get('/api/testgpt', restrictedCors, async (req, res) => {
     const question = req.query.question;
     const apiUrl = process.env.API_URL;
 
@@ -157,8 +124,6 @@ app.get('/api/testgpt', async (req, res) => {
 
     try {
         const response = await fetch(`${apiUrl}${encodeURIComponent(question)}`);
-
-        // Check for non-OK responses before JSON parsing
         if (!response.ok) {
             const errorText = await response.text();
             console.error(`Non-OK response from API: ${errorText}`);
@@ -173,8 +138,7 @@ app.get('/api/testgpt', async (req, res) => {
     }
 });
 
-// Webhook send route
-app.get('/api/webhooksend', async (req, res) => {
+app.get('/api/webhooksend', restrictedCors, async (req, res) => {
     const { title, description, color } = req.query;
     const webhookUrl = process.env.WEBHOOK_URL;
 
@@ -207,7 +171,18 @@ app.get('/api/webhooksend', async (req, res) => {
     }
 });
 
-// Start the server
+app.get('/api/ipinfo', restrictedCors, async (req, res) => {
+    const ipInfoLink = 'https://ipinfo.io/json?token=' + process.env.IPINFO_TOKEN;
+    try {
+        const response = await fetch(ipInfoLink);
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching IP info:', error);
+        res.status(500).json({ error: 'Failed to fetch IP information.' });
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

@@ -36,7 +36,7 @@ function validateJWT(req, res, next) {
 
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
         if (err) {
-console.log(`${err} + ${process.env.JWT_SECRET} + ${decoded} + ${token}
+console.log(`${err} + ${process.env.JWT_SECRET} + ${decoded} + ${token}`)
             return res.status(401).json({ error: 'Invalid or expired token' });
         }
         req.user = decoded;

@@ -3,6 +3,7 @@ const cors = require('cors');
 require('dotenv').config();
 const fetch = require('node-fetch');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -46,6 +47,10 @@ Token : ${token}`)
         next();
     });
 }
+
+app.get('/og-image', (req, res) => {
+    res.sendFile(path.join(__dirname, 'og-image.jpg'));
+});
 
 app.get('/', (req, res) => {
     res.status(200).json({ error: 'Nice try diddy.' });

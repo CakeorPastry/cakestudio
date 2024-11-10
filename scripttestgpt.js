@@ -116,11 +116,7 @@ ${userDataFormatted}
         statusImage.src = statusEmojis.ellipsis;
 
         try {
-            const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}`, {
-                headers: {
-                    'Authorization': `Bearer ${jwtToken}` // Add JWT token to the request header
-                }
-            });
+            const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}&token=${encodeURIComponent(jwtToken)}`)
 
             if (!response.ok) {
                 throw new Error(`HTTP Error! Code: ${response.status}`);
@@ -288,8 +284,6 @@ updateUI(); // Check and update UI on page load
             alert('No response to copy.');
         }
     });
-
-alert(`discordUser : ${discordUser}, Userdata : ${userData}, formatted : ${userDataFormatted}`);
 
     // sendWebhook function
     async function sendWebhook(title, description, color) {

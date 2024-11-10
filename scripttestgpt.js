@@ -256,6 +256,7 @@ ${userDataFormatted}
                 if (urlParams.has('token')) {
                     urlParams.delete('token');
                     window.history.replaceState({}, document.title, window.location.pathname);
+window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
                 }
             } catch (error) {
                 console.error("Invalid token or tampering detected:", error);

@@ -155,7 +155,7 @@ TR:hover {
     opacity: 0.7;
 }
 
-/* Footer */
+/* Footer
 footer {
     padding: 20px;
     margin-top: 20px;
@@ -163,7 +163,7 @@ footer {
     background-color: #e8491d;
     text-align: left;
     transform: translateY(250px);
-}
+}*/
 
 /* Button Styles */
 button {
@@ -273,7 +273,7 @@ input::placeholder {
 }
 
 /* Box Styles */
-.status-box, .response-box, .profile-ui {
+.status-box, .response-box, .profile-ui, footer {
     background-color: #1d1f22;
     border-radius: 10px;
     padding: 20px;

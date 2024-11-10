@@ -98,7 +98,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         });
         const userData = await userResponse.json();
 
-        const token = jwt.sign({ id: userData.id, username: userData.username, email: userData.email }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar}, process.env.JWT_SECRET, {
             expiresIn: '1h'
         });
 

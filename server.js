@@ -138,7 +138,7 @@ app.get('/api/auth/refresh', async (req, res) => {
 
       // Create a new access token
       const accessToken = jwt.sign(
-            { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
+            { id: user.id, username: user.username, email: user.email, avatar: user.avatar },
             process.env.JWT_SECRET,
             { expiresIn: '15m' }
         );

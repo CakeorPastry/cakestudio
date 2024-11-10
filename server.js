@@ -190,11 +190,11 @@ app.get('/assets', (req, res) => {
     res.status(400).json({ error: 'Please provide a valid asset name.' });
 });
 
-app.get('assets/banner-image', (req, res) => {
+app.get('/assets/banner-image', (req, res) => {
     res.sendFile(path.join(__dirname, 'banner-image.jpg'));
 });
 
-app.get('assets/favicon', (req, res) => {
+app.get('/assets/favicon', (req, res) => {
     res.sendFile(path.join(__dirname, 'favicon.png'));
 });
 

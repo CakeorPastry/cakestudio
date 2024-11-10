@@ -101,13 +101,13 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         const accessToken = jwt.sign(
             { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '15m' }
         );
 
         const refreshToken = jwt.sign(
             { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
             process.env.JWT_SECRET,
-            { expiresIn: '5d' }
+            { expiresIn: '7d' }
         );
 
         const frontendUrl = 'https://cakeorpastry.netlify.app/testgpt';
@@ -123,26 +123,33 @@ app.get('/api/auth/validatetoken', restrictedCors, validateJWT, (req, res) => {
 });
 
 // Refresh Token Route
-app.post('/api/auth/refresh', restrictedCors, async (req, res) => {
-    const { refreshtoken } = req.query; // Get the refresh token from the query parameter
-
-    if (!refreshtoken) {
-        return res.status(400).json({ error: 'Refresh token is required.' });
+app.get('/api/auth/refresh', async (req, res) => {
+  try {
+    const refreshToken = req.query.refreshtoken;
+    if (!refreshToken) {
+      return res.status(400).json({ message: 'No refresh token provided' });
     }
 
-    try {
-        const decoded = await jwt.verify(refreshtoken, process.env.JWT_SECRET);
+    // Verify refresh token
+    jwt.verify(refreshToken, JWT_SECRET, (err, user) => {
+      if (err) {
+        return res.status(403).json({ message: 'Invalid or expired refresh token' });
+      }
 
-        const newAccessToken = jwt.sign(
-            { id: decoded.id, username: decoded.username, email: decoded.email, avatar: decoded.avatar },
+      // Create a new access token
+      const accessToken = jwt.sign(
+            { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
             process.env.JWT_SECRET,
-            { expiresIn: '1h' }
+            { expiresIn: '15m' }
         );
 
-        res.json({ accessToken: newAccessToken });
-    } catch (err) {
-        return res.status(401).json({ error: 'Invalid or expired refresh token' });
-    }
+      // Respond with new access token
+      res.json({ accessToken });
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 });
 
 // Apply CORS restriction only on specific routes

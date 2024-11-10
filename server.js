@@ -115,7 +115,7 @@ app.get('/api/auth/validatetoken', restrictedCors, validateJWT, (req, res) => {
 });
 
 // Apply CORS restriction only on specific routes
-app.get('/api/testgpt', restrictedCors, validateToken, async (req, res) => {
+app.get('/api/testgpt', restrictedCors, validateJWT, async (req, res) => {
     const question = req.query.question;
     const apiUrl = process.env.API_URL;
 

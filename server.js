@@ -11,14 +11,6 @@ app.use(express.json());
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
-app.get('/', (req, res) => {
-    res.status(200).json({ error: 'Nice try diddy.' });
-});
-
-app.get('/api', (req, res) => {
-    res.status(400).json({ error: 'Please provide a valid API endpoint.' });
-});
-
 function restrictedCors(req, res, next) {
     const origin = req.get('origin');
     if (allowedOrigins.includes(origin)) {
@@ -35,17 +27,6 @@ function sanitizeUsername(username) {
     return username;
 }
 
-app.get('/api/decancer', (req, res) => {
-    const username = req.query.username;
-
-    if (!username) {
-        return res.status(400).json({ error: 'Username parameter is required.' });
-    }
-
-    const sanitizedUsername = sanitizeUsername(username);
-    res.json({ username: sanitizedUsername });
-});
-
 function validateJWT(req, res, next) {
     const token = req.query.token;
 
@@ -61,6 +42,25 @@ function validateJWT(req, res, next) {
         next();
     });
 }
+
+app.get('/', (req, res) => {
+    res.status(200).json({ error: 'Nice try diddy.' });
+});
+
+app.get('/api', (req, res) => {
+    res.status(400).json({ error: 'Please provide a valid API endpoint.' });
+});
+
+app.get('/api/decancer', (req, res) => {
+    const username = req.query.username;
+
+    if (!username) {
+        return res.status(400).json({ error: 'Username parameter is required.' });
+    }
+
+    const sanitizedUsername = sanitizeUsername(username);
+    res.json({ username: sanitizedUsername });
+});
 
 app.get('/api/auth/discord', (req, res) => {
     const redirectUri = process.env.DISCORD_REDIRECT_URI;

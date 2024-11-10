@@ -105,7 +105,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         );
 
         const refreshToken = jwt.sign(
-            { id: userData.id },
+            { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
             process.env.JWT_SECRET,
             { expiresIn: '5d' }
         );
@@ -122,26 +122,27 @@ app.get('/api/auth/validatetoken', restrictedCors, validateJWT, (req, res) => {
     res.json({ message: 'Token is valid', user: req.user });
 });
 
+// Refresh Token Route
 app.post('/api/auth/refresh', restrictedCors, async (req, res) => {
-    const { refreshToken } = req.body;
+    const { refreshtoken } = req.query; // Get the refresh token from the query parameter
 
-    if (!refreshToken) {
+    if (!refreshtoken) {
         return res.status(400).json({ error: 'Refresh token is required.' });
     }
 
-    jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) {
-            return res.status(401).json({ error: 'Invalid or expired refresh token' });
-        }
+    try {
+        const decoded = await jwt.verify(refreshtoken, process.env.JWT_SECRET);
 
         const newAccessToken = jwt.sign(
-            { id: decoded.id },
+            { id: decoded.id, username: decoded.username, email: decoded.email, avatar: decoded.avatar },
             process.env.JWT_SECRET,
             { expiresIn: '1h' }
         );
 
         res.json({ accessToken: newAccessToken });
-    });
+    } catch (err) {
+        return res.status(401).json({ error: 'Invalid or expired refresh token' });
+    }
 });
 
 // Apply CORS restriction only on specific routes

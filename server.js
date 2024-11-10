@@ -98,12 +98,20 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         });
         const userData = await userResponse.json();
 
-        const token = jwt.sign({ id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar}, process.env.JWT_SECRET, {
-            expiresIn: '1h'
-        });
+        const accessToken = jwt.sign(
+            { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        const refreshToken = jwt.sign(
+            { id: userData.id },
+            process.env.JWT_SECRET,
+            { expiresIn: '5d' }
+        );
 
         const frontendUrl = 'https://cakeorpastry.netlify.app/testgpt';
-        res.redirect(`${frontendUrl}/?token=${encodeURIComponent(token)}`);
+        res.redirect(`${frontendUrl}/?token=${encodeURIComponent(accessToken)}&refreshToken=${encodeURIComponent(refreshToken)}`);
     } else {
         res.status(500).json({ error: 'Failed to authenticate with Discord' });
     }
@@ -112,6 +120,28 @@ app.get('/api/auth/discord/callback', async (req, res) => {
 // Token validation route
 app.get('/api/auth/validatetoken', restrictedCors, validateJWT, (req, res) => {
     res.json({ message: 'Token is valid', user: req.user });
+});
+
+app.post('/api/auth/refresh', restrictedCors, async (req, res) => {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+        return res.status(400).json({ error: 'Refresh token is required.' });
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ error: 'Invalid or expired refresh token' });
+        }
+
+        const newAccessToken = jwt.sign(
+            { id: decoded.id },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
+        res.json({ accessToken: newAccessToken });
+    });
 });
 
 // Apply CORS restriction only on specific routes

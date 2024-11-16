@@ -103,7 +103,7 @@ app.get('/api/auth/discord/callback', async (req, res) => {
         const accessToken = jwt.sign(
             { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
             process.env.JWT_SECRET,
-            { expiresIn: '1m' }
+            { expiresIn: '10m' }
         );
 
         const frontendUrl = 'https://cakeorpastry.netlify.app/testgpt';

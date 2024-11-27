@@ -138,6 +138,11 @@ TR:hover {
     border: 2px solid white;
 }
 
+.logo img {
+    width: 30px;
+    height: 30px;
+}
+
 .emoji-button {
     font-size: 1.5em; /* Smaller size for the emoji button */
     background: transparent;
@@ -283,12 +288,12 @@ input::placeholder {
     margin: 10px 0; /* Adds gap between boxes */
 }
 
-.status-box h2, .response-box h2, .profile-ui h2 {
+.status-box h2, .response-box h2, .profile-ui h2, .box h2 {
     font-size: 20px;
     margin-bottom: 10px;
 }
 
-.status-box p, .response-box p, .profile-ui p {
+.status-box p, .response-box p, .profile-ui p, .box p {
     font-size: 16px;
 }
 

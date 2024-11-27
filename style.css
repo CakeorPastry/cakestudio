@@ -279,6 +279,8 @@ input::placeholder {
 
 /* Box Styles */
 .status-box, .response-box, .profile-ui, .box, footer {
+    display: flex;
+    flex-direction: column;
     background-color: #1d1f22;
     border-radius: 10px;
     padding: 20px;

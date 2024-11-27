@@ -277,10 +277,13 @@ input::placeholder {
     gap: 10px;
 }
 
-/* Box Styles */
-.status-box, .response-box, .profile-ui, .box, footer {
+.box {
     display: flex;
     flex-direction: column;
+}
+
+/* Box Styles */
+.status-box, .response-box, .profile-ui, .box, footer {
     background-color: #1d1f22;
     border-radius: 10px;
     padding: 20px;

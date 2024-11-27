@@ -10,6 +10,8 @@ const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
 function restrictedCors(req, res, next) {

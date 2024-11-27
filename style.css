@@ -330,3 +330,7 @@ input::placeholder {
     font-weight: bold; /* Make username bold */
 }
 
+.blackBackground {
+    background: black;
+}
+

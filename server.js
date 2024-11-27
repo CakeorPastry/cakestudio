@@ -189,8 +189,13 @@ app.get('/api/ipinfo', restrictedCors, async (req, res) => {
 });
 
 app.get('/assets', (req, res) => {
-    res.status(400).json({ error: 'Please provide a valid asset name.' });
+     res.status(400).json({ error: 'Please provide a valid asset name.' });
 });
+
+app.get('*', (req, res) => {
+    res.status(404).sendFile(path.join(__dirname, '404.html'));
+});
+
 
 
 app.listen(PORT, () => {

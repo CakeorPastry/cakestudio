@@ -17,6 +17,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
+app.get('/test-error', (req, res) => {
+  res.render('error', {
+    title: 'Test - Cake\'s Studio',
+    errorCode: 'TEST',
+    message: 'This is a test page',
+    miniMessage: 'Testing error.ejs rendering'
+  });
+});
+
 function restrictedCors(req, res, next) {
     const origin = req.get('origin');
     if (allowedOrigins.includes(origin)) {

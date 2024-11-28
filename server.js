@@ -193,9 +193,12 @@ app.get('/assets', (req, res) => {
 });
 
 app.get('*', (req, res) => {
-    res.status(404).sendFile(path.join(__dirname, '404.html'));
+  res.status(404).render('error', {
+    title: '404 - Cake\'s Studio',
+    message: 'Page Not Found',
+    miniMessage: 'The page you are looking for does not exist.'
+  });
 });
-
 
 
 app.listen(PORT, () => {

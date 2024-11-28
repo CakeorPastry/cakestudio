@@ -22,7 +22,7 @@ app.get('/test-error', (req, res) => {
     title: 'Test - Cake\'s Studio',
     errorCode: 'TEST',
     message: 'This is a test page',
-    miniMessage: 'Testing error.ejs rendering'
+    minimessage: 'Testing error.ejs rendering'
   });
 });
 

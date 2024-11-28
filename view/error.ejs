@@ -69,17 +69,17 @@ BODY {
 }
 </STYLE>
 <!-- TITLE -->
-<TITLE>404 - Cake's Studio</TITLE>
+<TITLE><%= title %> - Cake's Studio</TITLE>
 </HEAD>
 <BODY BGCOLOR="BLACK" TEXT="WHITE">
 <DIV CLASS="container">
 <H1 CLASS="error-code" ALIGN="CENTER">404</H1>
-<IMG SRC="/public/assets/privateSussyBotError.jpg" ALT="404">
+<IMG SRC="https://cakestudio.onrender.com/assets/privateSussyBotError.jpg" ALT=<%= title %>>
 <P CLASS="message">
-Page Not Found
+<%= message %>
 </P>
 <P CLASS="minimessage">
-The page you are looking for does not exist.
+<%= minimessage %>
 </P>
 <A HREF="https://cakeorpastry.netlify.app" CLASS="goHome">
 GO HOME

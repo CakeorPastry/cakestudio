@@ -195,6 +195,7 @@ app.get('/assets', (req, res) => {
 app.get('*', (req, res) => {
   res.status(404).render('error', {
     title: '404 - Cake\'s Studio',
+    errorCode: '404',
     message: 'Page Not Found',
     miniMessage: 'The page you are looking for does not exist.'
   });

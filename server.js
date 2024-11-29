@@ -4,6 +4,7 @@ require('dotenv').config();
 const fetch = require('node-fetch');
 const jwt = require('jsonwebtoken');
 const path = require('path');
+const unidecode = require('unidecode');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,16 +16,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
-
-app.get('/test-error', (req, res) => {
-  res.render('error', {
-    title: 'Test - Cake\'s Studio',
-    errorCode: 'TEST',
-    message: 'This is a test page',
-    minimessage: 'Testing error.ejs rendering'
-  });
-});
+const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : con
 
 function restrictedCors(req, res, next) {
     const origin = req.get('origin');
@@ -37,9 +29,9 @@ function restrictedCors(req, res, next) {
 }
 
 function sanitizeUsername(username) {
-    username = username.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    username = username.replace(/[^A-Za-z0-9]/g, '');
-    return username;
+    username = unidecode(username);
+    username = username.replace('/[^A-Za-z0-9]/g', '');
+    return username
 }
 
 function validateJWT(req, res, next) {
@@ -202,6 +194,15 @@ app.get('/api/ipinfo', restrictedCors, async (req, res) => {
 
 app.get('/assets', (req, res) => {
      res.status(400).json({ error: 'Please provide a valid asset name.' });
+});
+
+app.get('/test-error', (req, res) => {
+  res.render('error', {
+    title: 'Test - Cake\'s Studio',
+    errorCode: 'TEST',
+    message: 'This is a test page',
+    minimessage: 'Testing error.ejs rendering'
+  });
 });
 
 app.get('*', (req, res) => {

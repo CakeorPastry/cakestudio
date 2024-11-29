@@ -31,7 +31,7 @@ function restrictedCors(req, res, next) {
 function sanitizeUsername(username) {
     username = unidecode(username);
     username = username.replace('/[^A-Za-z0-9]/g', '');
-    return username
+    return username;
 }
 
 function validateJWT(req, res, next) {

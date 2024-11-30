@@ -29,8 +29,11 @@ function restrictedCors(req, res, next) {
 }
 
 function sanitizeUsername(username) {
+    console.log(username);
     username = unidecode(username);
+    console.warn(username);
     username = username.replace('/[^A-Za-z0-9]/g', '');
+    console.error(username);
     return username;
 }
 

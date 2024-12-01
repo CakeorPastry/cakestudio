@@ -54,6 +54,14 @@ function sanitizeUsername(username) {
     console.log(`Original: "${originalUsername}",
 Sanitized: "${username}"`);
 
+    if (username == '') {
+    username = "Empty Name";
+}
+
+    if (username.length > 29) {
+    username = username.slice(0, 29) + '...';
+}
+
     return username;
 }
 

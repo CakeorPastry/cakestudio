@@ -163,7 +163,14 @@ app.get('/api/testgpt', restrictedCors, validateJWT, async (req, res) => {
         }
 
         const data = await response.json();
-        res.json(data);
+
+        // Check for expected structure and return the formatted response
+        if (data.status && Array.isArray(data.result) && data.result[0]?.response) {
+            return res.json({ reply: data.result[0].response });
+        } else {
+            console.error('Unexpected API response structure:', data);
+            return res.status(500).json({ error: 'Unexpected API response structure.' });
+        }
     } catch (error) {
         console.error('Error fetching TestGPT response:', error);
         res.status(500).json({ error: 'Failed to fetch response from TestGPT.' });

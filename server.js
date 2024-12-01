@@ -218,6 +218,8 @@ app.get('*', (req, res) => {
   });
 });
 
+// Old API_URL = "https://hercai.onrender.com/v3/hercai?question="
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);

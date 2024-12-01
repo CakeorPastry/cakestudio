@@ -29,11 +29,31 @@ function restrictedCors(req, res, next) {
 }
 
 function sanitizeUsername(username) {
-    console.log(username);
+    // Store the original username for logging
+    const originalUsername = username;
+
+    // Step 1: Normalize and remove diacritical marks
+    username = username.normalize('NFKC').replace(/[\u0300-\u036f]/g, '');
+
+    // Step 2: Remove unsupported Unicode ranges (e.g., emojis, symbols)
+    username = username.replace(/[\u2000-\u2BFF\u3000-\uD7FF\uE000-\uF8FF\uFFF0-\uFFFF]/g, '');
+
+    // Step 3: Apply unidecode to remove special Unicode characters
     username = unidecode(username);
-    console.warn(username);
-    username = username.replace('/[^A-Za-z0-9]/g', '');
-    console.error(username);
+
+    // Step 4: Replace duplicate spaces with a single space
+    username = username.replace(/\s+/g, ' ');
+
+    // Step 5: Final cleanup to allow only alphanumeric characters and spaces
+    username = username.replace(/[^A-Za-z0-9 ]/g, '');
+
+    // Step 6: Trim leading and trailing spaces
+    username = username.trim();
+
+    // Log original and sanitized usernames
+    console.log(`Original: "${originalUsername}",
+Sanitized: "${username}"`);
+
     return username;
 }
 

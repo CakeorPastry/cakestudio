@@ -116,7 +116,7 @@ app.get('/api/decancer', decancerLimiter, (req, res) => {
 
 const dehoistLimiter = rateLimit({
     windowMs: 10 * 1000, // 10 seconds
-    max: 1, // 2 requests per 10 seconds
+    max: 5, // 2 requests per 10 seconds
     message: { error: 'Too many requests. Please wait a few seconds.' },
 });
 
@@ -298,6 +298,18 @@ app.use((err, req, res, next) => {
         message: message,
         minimessage: minimessage
     });
+});
+
+app.get('/internalservererror', (req, res) => {
+    res.status(500).json({ error: 'Internal Server Error' });
+});
+
+app.get('/forbidden', (req, res) => {
+    res.status(403).json({ error: 'Forbidden' });
+});
+
+app.get('/err', (req, res) => {
+    console.log(LOL);
 });
 
 app.get('*', (req, res) => {

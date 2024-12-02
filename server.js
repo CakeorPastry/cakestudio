@@ -96,7 +96,13 @@ app.get('/api', (req, res) => {
     res.status(400).json({ error: 'Please provide a valid API endpoint.' });
 });
 
-app.get('/api/decancer', (req, res) => {
+const decancerLimiter = rateLimit({
+    windowMs: 10 * 1000, // 10 seconds
+    max: 10, // 10 requests per 10 seconds
+    message: { error: 'Too many requests. Please wait a few seconds.' },
+});
+
+app.get('/api/decancer', decancerLimiter, (req, res) => {
     const username = req.query.username;
 
     if (!username) {
@@ -107,7 +113,13 @@ app.get('/api/decancer', (req, res) => {
     res.json({ username: sanitizedUsername });
 });
 
-app.get('/api/dehoist', (req, res) => {
+const dehoistLimiter = rateLimit({
+    windowMs: 10 * 1000, // 10 seconds
+    max: 1, // 2 requests per 10 seconds
+    message: { error: 'Too many requests. Please wait a few seconds.' },
+});
+
+app.get('/api/dehoist', dehoistLimiter, (req, res) => {
     const queryParams = req.query;
 
     if (Object.keys(queryParams).length === 0) {

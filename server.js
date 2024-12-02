@@ -265,12 +265,25 @@ app.get('/test-error', (req, res) => {
 });
 
 app.use((err, req, res, next) => {
-    console.error(err.stack); // Log the error
-    res.status(500).render('error', { 
-        title: '500 - Cake\'s Studio', 
-        errorCode: err.code,
-        message: 'Interal Server Error',
-        minimessage: ''
+    console.error(err.stack); // Log the error details for debugging
+
+    let statusCode = err.status || 500;
+    let message = 'Internal Server Error';
+    let minimessage = 'The server encountered an unexpected error which prevented it from fulfilling the request.';
+    
+    if (statusCode === 403) {
+        message = 'Forbidden';
+        minimessage = 'You do not have permission to access this resource.';
+    } else if (statusCode === 500) {
+        message = 'Internal Server Error';
+        minimessage = 'The server encountered an unexpected error which prevented it from fulfilling the request.';
+    }
+
+    res.status(statusCode).render('error', { 
+        title: `${statusCode} - Cake\'s Studio`, 
+        errorCode: statusCode,
+        message: message,
+        minimessage: minimessage
     });
 });
 

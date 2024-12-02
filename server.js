@@ -277,6 +277,10 @@ app.get('/test-error', (req, res) => {
   });
 });
 
+app.get('/err', (req, res) => {
+    console.log(LOL);
+});
+
 app.use((err, req, res, next) => {
     console.error(err.stack); // Log the error details for debugging
 
@@ -298,18 +302,6 @@ app.use((err, req, res, next) => {
         message: message,
         minimessage: minimessage
     });
-});
-
-app.get('/internalservererror', (req, res) => {
-    res.status(500).json({ error: 'Internal Server Error' });
-});
-
-app.get('/forbidden', (req, res) => {
-    res.status(403).json({ error: 'Forbidden' });
-});
-
-app.get('/err', (req, res) => {
-    console.log(LOL);
 });
 
 app.get('*', (req, res) => {

@@ -114,7 +114,9 @@ app.get('/api/dehoist', (req, res) => {
     const sanitizedUsernames = {};
 
     for (const [key, value] of Object.entries(queryParams)) {
-        sanitizedUsernames[key] = sanitizeUsername(value || '');
+        // Handle array values by joining them into a single string
+        const safeValue = Array.isArray(value) ? value.join(' ') : value || '';
+        sanitizedUsernames[key] = sanitizeUsername(safeValue);
     }
 
     res.json(sanitizedUsernames);

@@ -5,6 +5,7 @@ const fetch = require('node-fetch');
 const jwt = require('jsonwebtoken');
 const path = require('path');
 const unidecode = require('unidecode');
+const favicon = require('serve-favicon');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -15,6 +16,8 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(favicon(path.join(__dirname, 'public', 'assets', 'favicon.png')));
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 
@@ -259,6 +262,16 @@ app.get('/test-error', (req, res) => {
     message: 'This is a test page',
     minimessage: 'Testing error.ejs rendering'
   });
+});
+
+app.use((err, req, res, next) => {
+    console.error(err.stack); // Log the error
+    res.status(500).render('error', { 
+        title: '500 - Cake\'s Studio', 
+        errorCode: err.code,
+        message: 'Interal Server Error',
+        minimessage: ''
+    });
 });
 
 app.get('*', (req, res) => {

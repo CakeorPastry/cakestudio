@@ -104,6 +104,22 @@ app.get('/api/decancer', (req, res) => {
     res.json({ username: sanitizedUsername });
 });
 
+app.get('/api/dehoist', (req, res) => {
+    const queryParams = req.query;
+
+    if (Object.keys(queryParams).length === 0) {
+        return res.status(400).json({ error: 'At least one username parameter is required.' });
+    }
+
+    const sanitizedUsernames = {};
+
+    for (const [key, value] of Object.entries(queryParams)) {
+        sanitizedUsernames[key] = sanitizeUsername(value || '');
+    }
+
+    res.json(sanitizedUsernames);
+});
+
 app.get('/api/auth/discord', (req, res) => {
     const redirectUri = process.env.DISCORD_REDIRECT_URI;
     const clientId = process.env.DISCORD_CLIENT_ID;

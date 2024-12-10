@@ -304,10 +304,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.get('/.well-known/discord', (req, res) => {
- res.status(200).send('dh=d1b6d5b7d78e4d2daa7ec13e4c62054bbae4fa53');
-});
-
 app.get('*', (req, res) => {
   console.log(`Wildcard route triggered for URL: ${req.originalUrl}`);
   res.status(404).render('error', {

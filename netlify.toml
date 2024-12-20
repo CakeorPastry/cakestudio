@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "/*"
+  to = "/503.html"
+  status = 503
+  force = true

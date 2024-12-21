@@ -113,6 +113,18 @@ TR:hover {
     50% { transform: translateX(20px); }
 }
 
+.animate-bounce {
+    display: inline-block;
+    animation: bounce 1s infinite;
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(.8, 0, 1, 1); }
+    50% { transform: none; animation-timing-function: cubic-bezier(0, 0, .2, 1); }
+}
+    
+    
+
 /* Header and Logo */
 .header {
     display: flex;

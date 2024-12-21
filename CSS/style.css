@@ -78,7 +78,7 @@ TR:hover {
 }
 
 /* Animations */
-.bounce {
+.animate-bounce-old {
     display: inline-block;
     animation: bounce 2s infinite cubic-bezier(0.42, 0, 0.58, 1);
 }

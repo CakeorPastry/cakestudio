@@ -1,6 +1,8 @@
 /* General Reset */
 HTML {
     scroll-behavior: smooth;
+    height: 100%;
+    margin: 0;
 }
 
 BODY {
@@ -9,6 +11,8 @@ BODY {
     transition: background 1s, color 1s;
     font-family: sans-serif;
     font-size: 16px;
+    height: 100%;
+    margin: 0;
 }
 
 .dark-mode {

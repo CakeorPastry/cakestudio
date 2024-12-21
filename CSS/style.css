@@ -9,6 +9,7 @@ BODY {
     transition: background 1s, color 1s;
     font-family: sans-serif;
     font-size: 16px;
+    min-height: 100vh;
 }
 
 .dark-mode {

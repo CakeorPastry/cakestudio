@@ -221,6 +221,7 @@ function brapp() {
     audio2.play();
     var audio3 = document.getElementById("shart3");
     audio3.play();
+    allChaos();
 }
 
 function openBrowser() {
@@ -250,6 +251,76 @@ function tfs()
         openBrowser();
 }
 
+function muhaha() {
+    document.addEventListener("keydown", function(e) { if (
+        e.key === "F11" || (e.ctrlKey && e.key === "w") || (e.altKey 
+                    && e.key === "F4")) {
+        e.preventDefault(); alert("You're trapped!"); }
+    });
+}
+
+function maozCtrl() {
+     document.addEventListener("mousemove", function(e) {
+        const delay = 50;
+         const fakeX = e.clientX + Math.random() * 20 
+- 10;
+  const fakeY = e.clientY + Math.random() * 20 - 10;
+        setTimeout(() => {
+        document.body.style.cursor = `none`;
+        }, delay); });
+}
+
+function wiggleMouse() {
+     setInterval(() => { const x = Math.random() * window.innerWidth;
+ const y = Math.random() * window.innerHeight;
+ document.body.style.cursor = "none";
+const mouseEvent = new MouseEvent("mousemove", { clientX: x, 
+clientY: y }); document.dispatchEvent(mouseEvent); }, 300);
+}
+
+function reverseMouse() {
+ document.addEventListener("mousemove", 
+    function(e) { const x = window.innerWidth - e.clientX; 
+const y = window.innerHeight - e.clientY;
+document.body.style.cursor = "none";
+const reversedMouseEvent = new MouseEvent("mousemove", 
+{ clientX: x, clientY: y });
+    document.dispatchEvent(reversedMouseEvent);
+    });
+}
+
+function disableClose() {
+     document.addEventListener("keydown", function(e) {
+    if ( e.key === "F11" || (e.ctrlKey && e.key === "w") 
+    || (e.altKey && e.key === "F4") || (e.ctrlKey && e.key === "r")
+    ) { e.preventDefault(); 
+alert("No escape for you!"); } });
+}
+
+function annoyingClicks() {
+     setInterval(() => {
+const x = Math.random() * window.innerWidth;
+const y = Math.random() * window.innerHeight;
+ const clickEvent = new MouseEvent("click", 
+{ clientX: x, clientY: y }); 
+ document.dispatchEvent(clickEvent);
+    }, 500); }
+
+function allChaos() {
+    muhaha(); 
+maozCtrl();
+ wiggleMouse(); reverseMouse();
+        disableClose(); annoyingClicks();
+}
+
+// Extra name ideas for functions:
+/*
+function zappyZap() { /* Alternate name for maozCtrl */ }
+function wonkyMouse() { /* Alternate name for reverseMouse */ }
+function bouncyClicks() { /* Alternate name for annoyingClicks */ }
+function chaosUnleashed() { /* Alternate name for allChaos */ }
+function trapEscape() { /* Alternate name for disableClose */ }
+*/
 
 </SCRIPT>
 

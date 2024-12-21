@@ -284,6 +284,9 @@ input::placeholder {
 .box {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    margin-left: 8px;
+    margin-right: 8px;
 }
 
 /* Box Styles */

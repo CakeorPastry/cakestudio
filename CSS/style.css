@@ -39,16 +39,16 @@ HR {
     margin-right: auto;
 }
 
-/* Table Styles */
-.table, .marquee {
+MARQUEE {
     color: black;
 }
 
-.dark-mode .table, .dark-mode .marquee {
-    color: black;
+.dark-mode TABLE {
+    border-color: rgb(255, 255, 255);
 }
 
 TABLE {
+    color: black;
     width: 100%;
     border-collapse: collapse;
     margin: 20px auto;

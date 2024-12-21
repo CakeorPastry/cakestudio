@@ -250,7 +250,8 @@ button img {
 
 /* Input Field Styles */
 input {
-    width: 300px;
+   /* width: 300px; */
+    width: 100%;
     padding: 10px;
     border: 1px solid #72767d;
     border-radius: 5px;

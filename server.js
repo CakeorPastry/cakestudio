@@ -7,6 +7,7 @@ const path = require('path');
 const unidecode = require('unidecode');
 const favicon = require('serve-favicon');
 const rateLimit = require('express-rate-limit');
+const session = require('express-session');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -19,6 +20,13 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(favicon(path.join(__dirname, 'public', 'assets', 'favicon.png')));
+
+app.use(session({
+    secret: process.env.SESSION_SECRET
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+}));
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
 

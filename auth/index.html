@@ -4,7 +4,7 @@
 <!-- META TAGS -->
 <meta property="og:title" content="Cake's Studio">
 <meta property="og:description" content="A website made for the funny testing lol. This was made for learning basic coding and has only a few projects.">
-<meta property="og:url" content="https://cakeorpastry.netlify.app">
+<meta property="og:url" content="https://cakeorpastry.netlify.app/auth">
 <meta property="og:image" content="https://cakestudio.onrender.com/assets/favicon.png">
 <meta property="og:type" content="website">
 <meta charset="UTF-8">
@@ -14,85 +14,55 @@
 <!-- STYLESHEETS -->
 <LINK REL="stylesheet" HREF="/CSS/style.css">
 <!-- SCRIPTS -->
-<SCRIPT SRC="/Javascript/script.js"></SCRIPT>
+<SCRIPT SRC="/Javascript/account.js"></SCRIPT>
 <!-- TITLE -->
 <TITLE>Cake's Studio</TITLE>
 </HEAD>
+<BODY STYLE="background: black; color: white;">
 
-<BODY BGCOLOR="PINK" TEXT="BLACK">
+<DIV CLASS="box" STYLE="gap: 10px; display: none;" ID="account">
 
-<DIV CLASS="header" ID="top">
-<A HREF="https://cakeorpastry.netlify.app" CLASS="emoji">
-<SPAN CLASS="logo">
-<IMG SRC="/Assets/Studio/favicon.png">
-</SPAN>
-</A>
-<H2>Cake's Studio</H2>
-<BUTTON ID="toggleDarkModeButton" CLASS="emoji-button">
-🌙
+<H2>My Account</H2>
+
+<DIV ID="profileInfo">
+<IMG SRC="https://cdn.discordapp.com/emojis/1285189009722839060.png" ALT="Profile Picture" ID="profilePicture">
+<B ID="username">Username</B>
+</DIV>
+
+<BUTTON ID="loginButton" CLASS="primary-button" DISABLED>
+<IMG SRC="https://cdn.discordapp.com/emojis/1267398812557774848.png" ALT="enter">
+Login
 </BUTTON>
+<BUTTON ID="logoutButton" CLASS="danger-button" DISABLED>
+<IMG SRC="https://cdn.discordapp.com/emojis/1267384023257321572.png" ALT="exit">
+Logout
+</BUTTON>
+
 </DIV>
 
-<HR SIZE="5" WIDTH="100%" COLOR="BLUE">
 
-<P>
-<B>
-Hello sigmas. This is the website of Cake's Studio.
-This is the home page and you can visit my projects by clicking the links below. 
-
-<UL TYPE="DISC">
-<LI>
-<A HREF="amysteriousworld">
-A Mysterious World
-</A>
-</LI>
-<LI>
-<A HREF="testgpt">
-TestGPT
-</A>
-</LI>
-<LI>
-<A HREF="crasherzoner">
-Crasherzoner
-</A>
-</LI>
-<LI>
-<A HREF="numberguesser">
-Number Guesser
-</A>
-</LI>
-<LI>
-<A HREF="bgcolor">
-BGCOLOR
-</A>
-</LI>
-<LI>
-<A HREF="nikhil">
-NIKHIL
-</A>
-</LI>
-</UL>
-
-</B>
-</P>
-
-<H2>About Me</H2>
-<P>
-<B>
-I'm autistic and uh I like coding yes affimrwivte right? 
-</B>
-</P>
-
-<DIV CLASS="box">
-<P>
-<B>
-Cake's Studio <BR>
-Discord : _xcake <BR>
-Roblox : CakeorPastry <BR>
-Instagram : _xcoka <BR>
-</B>
-</P>
+<DIV STYLE="display: flex; flex-direction: column;" ID="loading">
+<H2 CLASS="animate-pulse" STYLE="text-align: center;">Loading...</H2>
+<svg height="50" width="50" xmlns="http://www.w3.org/2000/svg" class="animate-bounce" style="position: fixed; top: 50%; left: 44%; transform: translate(-50%, -50%);">
+<!-- Main Circle -->
+<circle r="20" cx="25" cy="25" fill="cyan" />
+<!-- Outline for Styling -->
+<circle r="22" cx="25" cy="25" fill="none" stroke="white" stroke-width="2" />
+</svg>
+<hr style="position: fixed; top: 56%; left: 50%; transform: translate(-50%, -50%); display: flex;" width=100%>
 </DIV>
 
+<SCRIPT>
+setTimeout(() => { show(); }, Math.random() * 5000);
+
+async function show() {
+    const account = document.getElementById("account");
+    const loading = document.getElementById("loading");
+    
+    account.style.display = "flex";
+    loading.style.display = "none";
+    loaded = true;
+}
+</SCRIPT>
 </BODY>
 </HTML>

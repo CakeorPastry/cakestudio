@@ -142,6 +142,8 @@ app.get('/api/auth/discord', (req, res) => {
     const redirectUri = process.env.DISCORD_REDIRECT_URI;
     const clientId = process.env.DISCORD_CLIENT_ID;
     const scope = 'identify email';
+    const redirect = req.query.redirect || '/';
+    res.session.redirect = redirect;
     const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
     res.redirect(discordAuthUrl);
 });
@@ -176,9 +178,10 @@ app.get('/api/auth/discord/callback', async (req, res) => {
             process.env.JWT_SECRET,
             { expiresIn: '1d' }
         );
-
-        const frontendUrl = 'https://cakeorpastry.netlify.app/testgpt';
-        res.redirect(`${frontendUrl}/?token=${encodeURIComponent(accessToken)}`);
+        
+        const redirectPath = req.session.redirect || '/';
+        const frontendUrl = 'https://cakeorpastry.netlify.app/auth/callback';
+        res.redirect(`${frontendUrl}/?token=${encodeURIComponent(accessToken)}&redirect=${encodeURIComponent(redirectPath)}`);
     } else {
         res.status(500).json({ error: 'Failed to authenticate with Discord' });
     }

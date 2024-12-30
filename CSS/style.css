@@ -84,8 +84,12 @@ TR:hover {
 }
 
 @keyframes bounce {
-    0%, 70%, 100% { transform: translateY(0); }
-    30% { transform: translateY(-18px); }
+    0%, 70%, 100% { 
+        transform: translateY(0); 
+    }
+    30% { 
+        transform: translateY(-18px); 
+    }
 }
 
 .move-left, .move-right {
@@ -104,13 +108,21 @@ TR:hover {
 }
 
 @keyframes move-left {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(-20px); }
+    0%, 100% { 
+        transform: translateX(0); 
+    }
+    50% { 
+        transform: translateX(-20px); 
+    }
 }
 
 @keyframes move-right {
-    0%, 100% { transform: translateX(0); }
-    50% { transform: translateX(20px); }
+    0%, 100% { 
+        transform: translateX(0); 
+    }
+    50% { 
+        transform: translateX(20px); 
+    }
 }
 
 .animate-bounce {
@@ -119,9 +131,41 @@ TR:hover {
 }
 
 @keyframes bounce {
-    0%, 100% { transform: translateY(-25%); animation-timing-function: cubic-bezier(.8, 0, 1, 1); }
-    50% { transform: none; animation-timing-function: cubic-bezier(0, 0, .2, 1); }
-} 
+    0%, 100% { 
+        transform: translateY(-25%); 
+        animation-timing-function: cubic-bezier(.8, 0, 1, 1); 
+    }
+    50% { 
+        transform: none; 
+        animation-timing-function: cubic-bezier(0, 0, .2, 1); 
+    }
+}
+
+.animate-ping {
+    display: inline-block;
+    animation: ping 1s cubic-bezier(0, 0, .2, 1) infinite;
+}
+
+@keyframes ping {
+    75%, 100% { 
+        transform: scale(2); 
+        opacity: 0; 
+    }
+}
+
+.animate-pulse {
+    -webkit-animation: pulse 2s cubic-bezier(.4, 0, .6, 1) infinite;
+    animation: pulse 2s cubic-bezier(.4, 0, .6, 1) infinite;
+}
+
+@keyframes pulse {
+    50% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+}
 
 /* Header and Logo */
 .header {
@@ -296,12 +340,7 @@ input:disabled {
     gap: 10px;
 }
 
-.box {
-    display: flex;
-    flex-direction: column;
-}
-
-.status-box, .response-box, .profile-ui, .box, footer {
+.box, footer {
     background-color: #1d1f22;
     border-radius: 10px;
     padding: 20px;
@@ -310,50 +349,65 @@ input:disabled {
     width: 100%;
     max-width: 100vw; 
     box-sizing: border-box; 
-    margin: 10px 0;  
+    margin: 10px 0;
+    display: flex;
+    flex-direction: column;
 }
 
-.status-box h2, .response-box h2, .profile-ui h2, .box h2 {
+.box h2 {
     font-size: 20px;
     margin-bottom: 10px;
 }
 
-.status-box p, .response-box p, .profile-ui p, .box p {
+.box p {
     font-size: 16px;
 }
 
-.status-image {
-    width: 100px;
-    height: 100px;
+#statusImage {
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
-    display: block;
-    margin: 10px auto;
 }
 
-.profile-ui {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.profile-info {
+#profileInfo {
     display: flex; /* Use flexbox for alignment */
     align-items: center; /* Center vertically */
     margin: 10px 0; /* Add some spacing */
 }
 
-.profile-picture {
+#profilePicture {
     width: 50px; /* Adjust size as needed */
     height: 50px; /* Adjust size as needed */
     border-radius: 50%; /* Make it circular */
     margin-right: 10px; /* Space between image and username */
 }
 
-.username {
-    font-weight: bold; /* Make username bold */
+#username {
+    font-weight: bold;
 }
 
 .blackBackground {
     background: black;
 }
 
+/* Simple and visible scrollbar styling */
+*::-webkit-scrollbar {
+  height: 6px; /* Height for horizontal scrollbar */
+  width: 6px;  /* Width for vertical scrollbar */
+}
+
+*::-webkit-scrollbar-track {
+  background: #2c2f33; /* Darker background to match a sleek look */
+}
+
+*::-webkit-scrollbar-thumb {
+ /* background: #ff6584; */
+    background: #8083ff;
+  border-radius: 3px;
+}
+
+/* Firefox scrollbar styling */
+* {
+  scrollbar-width: thin; /* Thin scrollbar for Firefox */
+  scrollbar-color: #8083ff #2c2f33; /* Thumb and track color for Firefox */
+}

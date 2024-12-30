@@ -1,7 +1,7 @@
 const urlParams = new URLSearchParams(window.location.search);
 const tokenParam = urlParams.get("token");
 const redirectParamRaw = urlParams.get("redirect") || "/";
-const redirectParam = (redirectParam.startsWith("/") ? redirectParam : "/" + redirectParam);
+const redirectParam = (redirectParamRaw.startsWith("/") ? redirectParamRaw : "/" + redirectParamRaw);
 
 
 async function callback() {

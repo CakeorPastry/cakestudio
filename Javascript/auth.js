@@ -14,7 +14,7 @@ async function callback() {
                     message: "Invalid login or tampering detected."
                 };
             }
-            localStorage.setItem("jwtToken", tokenParam);
+            localStorage.setItem("token", tokenParam);
         }
         catch (err) {
             const errMsg = `Failed to login\nHTTP Status Code : ${err.status}\nError Message : ${err.message}`

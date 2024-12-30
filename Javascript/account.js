@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async function() {
     
     if (jwtToken) {
         try {
-            const response = await fetch(`${apiUrl}/auth/validatetoken?token=${jwtToken}`);
+            const response = await fetch(`${apiUrl}/auth/validatetoken?token=${encodeURIComponent(jwtToken)}`);
             
             if (response.status === 401) {
                 throw {

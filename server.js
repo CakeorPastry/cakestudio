@@ -154,6 +154,7 @@ app.get('/api/auth/discord', (req, res) => {
     const scope = 'identify email';
     const redirect = req.query.redirect || '/';
     req.session.redirect = redirect;
+    console.warn(req.session.redirect);
     const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
     res.redirect(discordAuthUrl);
 });
@@ -189,6 +190,8 @@ app.get('/api/auth/discord/callback', async (req, res) => {
             { expiresIn: '1d' }
         );
         
+        console.log(req.session, "Session");
+        console.log(req.session.redirect, " Redirect callback");
         const redirectPath = req.session.redirect || '/';
         const frontendUrl = 'https://cakeorpastry.netlify.app/auth/callback';
         res.redirect(`${frontendUrl}/?token=${encodeURIComponent(accessToken)}&redirect=${encodeURIComponent(redirectPath)}`);

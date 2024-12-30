@@ -43,7 +43,13 @@ document.addEventListener("DOMContentLoaded", async function() {
         updateUI();
     };
 
+    loginButton.addEventListener("click", () => {
+        login();
+    });
     
+    logoutButton.addEventListener("click", () => {
+        logout();
+    });
 });
 
 async function updateUI() {
@@ -69,3 +75,4 @@ async function login() {
 async function logout() {
     window.location.href = "https://cakeorpastry.netlify.app/auth/logout";
 }
+

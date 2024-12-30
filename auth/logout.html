@@ -21,7 +21,8 @@
 <BODY STYLE="background: white; color: black;">
 <SCRIPT>
 const urlParams = new URLSearchParams(window.location.search);
-const redirectParam = urlParams.get("redirect") || "/";
+const redirectParamRaw = urlParams.get("redirect") || "/";
+const redirectParam = (redirectParamRaw.startsWith("/") ? redirectParamRaw : "/" + redirectParamRaw);
 const jwtToken = localStorage.getItem("jwtToken");
 if (jwtToken) {
     localStorage.removeItem("jwtToken");

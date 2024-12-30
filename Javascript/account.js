@@ -70,10 +70,10 @@ async function updateUI() {
 }
     
 async function login() {
-    window.location.href = "https://cakeorpastry.netlify.app/auth/login?redirect=${encodeURIComponent(path)}";
+    window.location.href = `https://cakeorpastry.netlify.app/auth/login?redirect=${encodeURIComponent(path)}`;
 }
     
 async function logout() {
-    window.location.href = "https://cakeorpastry.netlify.app/auth/logout?redirect=${encodeURIComponent(path)}";
+    window.location.href = `https://cakeorpastry.netlify.app/auth/logout?redirect=${encodeURIComponent(path)}`;
 }
 

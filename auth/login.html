@@ -22,7 +22,7 @@
 <SCRIPT>
 const urlParams = new URLSearchParams(window.location.search);
 const redirectParam = urlParams.get("redirect") || "/";
-const loginUrl = "https://cakestudio.onrender.com/api/auth/discord?redirect=${encodeURIComponent(redirectParam)}";
+const loginUrl = `https://cakestudio.onrender.com/api/auth/discord?redirect=${encodeURIComponent(redirectParam)}`;
 window.location.href = loginUrl;
 </SCRIPT>
 </BODY>

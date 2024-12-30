@@ -21,7 +21,8 @@
 <BODY STYLE="background: white; color: black;">
 <SCRIPT>
 const urlParams = new URLSearchParams(window.location.search);
-const redirectParam = urlParams.get("redirect") || "/";
+const redirectParamRaw = urlParams.get("redirect") || "/";
+const redirectParam = (redirectParamRaw.startsWith("/") ? redirectParamRaw : "/" + redirectParamRaw);
 const loginUrl = `https://cakestudio.onrender.com/api/auth/discord?redirect=${encodeURIComponent(redirectParam)}`;
 window.location.href = loginUrl;
 </SCRIPT>

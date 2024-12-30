@@ -1,4 +1,5 @@
 const apiUrl = "https://cakestudio.onrender.com/api";
+const path = window.location.pathname;
 const jwtToken = localStorage.getItem("token");
 let discordUser;
 let loggedIn = false;
@@ -69,10 +70,10 @@ async function updateUI() {
 }
     
 async function login() {
-    window.location.href = "https://cakeorpastry.netlify.app/auth/login";
+    window.location.href = "https://cakeorpastry.netlify.app/auth/login?redirect=${encodeURIComponent(path)}";
 }
     
 async function logout() {
-    window.location.href = "https://cakeorpastry.netlify.app/auth/logout";
+    window.location.href = "https://cakeorpastry.netlify.app/auth/logout?redirect=${encodeURIComponent(path)}";
 }
 

@@ -20,11 +20,13 @@
 </HEAD>
 <BODY STYLE="background: black; color: white;">
 <SCRIPT>
+const urlParams = new URLSearchParams(window.location.search);
+const redirectParam = urlParams.get("redirect") || "/";
 const jwtToken = localStorage.getItem("jwtToken");
 if (jwtToken) {
     localStorage.removeItem("jwtToken");
 };
-history.back();
+window.location.href = "https://cakeorpastry.netlify.app${encodeURIComponent(redirectParam)}";
 </SCRIPT>
 </BODY>
 </HTML>

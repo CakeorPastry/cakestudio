@@ -154,7 +154,6 @@ app.get('/api/auth/discord', (req, res) => {
     const scope = 'identify email';
     const redirect = req.query.redirect || '/';
     req.session.redirect = redirect;
-    console.warn(req.session.redirect);
     const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
     res.redirect(discordAuthUrl);
 });
@@ -190,8 +189,6 @@ app.get('/api/auth/discord/callback', async (req, res) => {
             { expiresIn: '1d' }
         );
         
-        console.log(req.session, "Session");
-        console.log(req.session.redirect, " Redirect callback");
         const redirectPath = req.session.redirect || '/';
         const frontendUrl = 'https://cakeorpastry.netlify.app/auth/callback';
         res.redirect(`${frontendUrl}/?token=${encodeURIComponent(accessToken)}&redirect=${encodeURIComponent(redirectPath)}`);
@@ -299,18 +296,8 @@ app.get('/err', (req, res) => {
 
 app.use((err, req, res, next) => {
     console.error(err.stack); // Log the error details for debugging
-
-    let statusCode = err.status || 500;
-    let message = 'Internal Server Error';
-    let minimessage = 'The server encountered an unexpected error which prevented it from fulfilling the request.';
-    
-    if (statusCode === 403) {
-        message = 'Forbidden';
-        minimessage = 'You do not have permission to access this resource.';
-    } else if (statusCode === 500) {
-        message = 'Internal Server Error';
-        minimessage = 'The server encountered an unexpected error which prevented it from fulfilling the request.';
-    }
+    const message = 'Internal Server Error';
+    const minimessage = 'The server encountered an unexpected error which prevented it from fulfilling the request.';
 
     res.status(statusCode).render('error', { 
         title: `${statusCode} - Cake\'s Studio`, 

@@ -1,0 +1,141 @@
+<HTML>
+<HEAD>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kakek's 2025 Stats - Cake's Studio</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+        .stat {
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section .stat {
+            font-size: 18px;
+            padding: 5px 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5); /* Adds a slight highlight */
+        }
+        .section .section-heading {
+            font-size: 22px;
+            font-weight: bold;
+            margin: 20px 0; /* Gaps above and below the headline */
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5); /* Adds a slight outline */
+        }
+    </style>
+</HEAD>
+<BODY>
+    <div id="statsContainer"></div>
+
+    <script>
+        // Variables
+        const Sleep = "41 hours";
+        const HoursStudied = "0 hours";
+        const Tuition = "3 hours across 3 days";
+
+        const InstagramHours = "24h13m";
+        const AliucordHours = "13h55m";
+        const DiscordHours = "1h54m";
+        const YouTubeHours = "7h9m";
+        const BrowserHours = "7h52m";
+        const RobloxHours = "3h31m";
+
+        const SchoolStart = "Haven't started yet";
+        const SchoolEnd = "Haven't started yet";
+        const DaysWentToSchool = 0;
+        const HomeworkGiven = 0;
+        const HomeworkCompleted = 0;
+        const TestsTaken = 0;
+        const TestDetails = [
+            {
+                Subject: "No Test Yet",
+                Topic: "No Test Yet", 
+                Questions: "0", 
+                Marks: "0/0",
+                Date: "??/??/????"
+            }
+        ];
+
+        const AnimesWatched = "None";
+        const PillsTaken = 4;
+        const DaysAteChicken = 2;
+        const FreakiestPersonSoFar = "KomMurchie";
+
+        // Function to display stats
+        function displayStats() {
+            const statsContainer = document.getElementById("statsContainer");
+
+            // General Stats
+            statsContainer.innerHTML += `<div class="section"><div class="section-heading">General Stats</div>`;
+            statsContainer.innerHTML += `<div class="stat">Sleep: ${Sleep}</div>`;
+            statsContainer.innerHTML += `<div class="stat">Hours Studied: ${HoursStudied}</div>`;
+            statsContainer.innerHTML += `<div class="stat">Tuition: ${Tuition}</div></div>`;
+
+            // Mobile Usage Stats
+            statsContainer.innerHTML += `<div class="section"><div class="section-heading">Mobile Usage Stats</div>`;
+            statsContainer.innerHTML += `<div class="stat">Instagram: ${InstagramHours}</div>`;
+            statsContainer.innerHTML += `<div class="stat">Aliucord: ${AliucordHours}</div>`;
+            statsContainer.innerHTML += `<div class="stat">Discord: ${DiscordHours}</div>`;
+            statsContainer.innerHTML += `<div class="stat">YouTube: ${YouTubeHours}</div>`;
+            statsContainer.innerHTML += `<div class="stat">Browsers: ${BrowserHours}</div>`;
+            statsContainer.innerHTML += `<div class="stat">Roblox: ${RobloxHours}</div></div>`;
+
+            // School Stats
+            statsContainer.innerHTML += `<div class="section"><div class="section-heading">School Stats</div>`;
+            statsContainer.innerHTML += `<div class="stat">School Start: ${SchoolStart}</div>`;
+            statsContainer.innerHTML += `<div class="stat">School End: ${SchoolEnd}</div>`;
+            statsContainer.innerHTML += `<div class="stat">Days Went To School: ${DaysWentToSchool}</div>`;
+            statsContainer.innerHTML += `<div class="stat">Homework Given: ${HomeworkGiven}</div>`;
+            statsContainer.innerHTML += `<div class="stat">Homework Completed: ${HomeworkCompleted}</div>`;
+            statsContainer.innerHTML += `<div class="stat">Tests Taken: ${TestsTaken}</div></div>`;
+
+            // Test Stats
+            statsContainer.innerHTML += `<div class="section"><div class="section-heading">Test Details</div>`;
+            TestDetails.forEach((test, index) => {
+                statsContainer.innerHTML += `
+                    <UL>
+                        <LI><b>Test ${index + 1}</b></LI><UL>
+                        <LI>Subject: ${test.Subject}</LI>
+                        <LI>Topic: ${test.Topic}</LI>
+                        <LI>Questions: ${test.Questions}</LI>
+                        <LI>Marks Scored: ${test.Marks}</LI>
+                        <LI>Date: ${test.Date}</LI>
+                    </UL>
+                `;
+            });
+            statsContainer.innerHTML += `</div>`;
+
+            // Entertainment Stats
+            statsContainer.innerHTML += `<div class="section"><div class="section-heading">Entertainment Stats</div>`;
+            statsContainer.innerHTML += `<div class="stat">Animes Watched: ${AnimesWatched}</div></div>`;
+
+            // Fitness Stats
+            statsContainer.innerHTML += `<div class="section"><div class="section-heading">Fitness Stats</div>`;
+            statsContainer.innerHTML += `<div class="stat">Pills Taken: ${PillsTaken}</div></div>`;
+
+            // Food Stats
+            statsContainer.innerHTML += `<div class="section"><div class="section-heading">Food Stats</div>`;
+            statsContainer.innerHTML += `<div class="stat">Days Ate Chicken: ${DaysAteChicken}</div></div>`;
+
+            // Random Stats
+            statsContainer.innerHTML += `<div class="section"><div class="section-heading">Random Stats</div>`;
+            statsContainer.innerHTML += `<div class="stat">Freakiest Person So Far: ${FreakiestPersonSoFar}</div></div>`;
+        }
+
+        // Call the function to display stats
+        displayStats();
+    </script>
+</BODY>
+</HTML>

@@ -148,7 +148,7 @@ Frame.Parent = ScreenGui
 
 local TextBox = Instance.new("TextBox")
 TextBox.Size = UDim2.new(1, -10, 1, -10)
-TextBox.Position = UDim2.new(0, 5, 0, 5)
+TextBox.Position = UDim2.new(0, 20, 0, 25)
 TextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.PlaceholderText = "Enter command..."

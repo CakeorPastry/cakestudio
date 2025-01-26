@@ -1,20 +1,14 @@
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
-local TweenService = game:GetService("TweenService")
+local TweenService = game:GetService("TweenService") 
 
+local TweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear)
 local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
-local TweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear)
 local CanTP = true
 
--- Update Character Reference on Respawn
-local function onCharacterAdded(newCharacter)
-    Character = newCharacter
-end
-Player.CharacterAdded:Connect(onCharacterAdded)
-
--- Notification Function
+-- 🔔 Notification Function
 function Notify(title, text, duration, button1)
     StarterGui:SetCore("SendNotification", {
         Title = title,
@@ -24,7 +18,7 @@ function Notify(title, text, duration, button1)
     })
 end
 
--- Fetches the Player's Current ID
+-- 🎯 Fetches the Player's Current ID
 local function FetchCurrentId(Map, SpecifiedClient)
     if not Map then return end
     for _, v in Map:GetChildren() do
@@ -39,48 +33,52 @@ local function FetchCurrentId(Map, SpecifiedClient)
     end
 end
 
--- Finds the Closest Player
+-- 🕵️‍♂️ Finds the Closest Player
 local function closestPlayerAtPos(Position)
-    local Closest, MaxRange = nil, math.huge
+    local MaxRange = math.huge
+    local Closest = nil
+
     for _, v in Players:GetPlayers() do
-        if v ~= Player and v.Character and v.Character:FindFirstChild("HumanoidRootPart") then
-            local Distance = (v.Character.HumanoidRootPart.Position - Position).Magnitude
-            if Distance < MaxRange then
-                Closest, MaxRange = v, Distance
+        local RootPart = v.Character and v.Character:FindFirstChild("HumanoidRootPart")
+        if RootPart and v ~= Player then
+            local Magnitude = (RootPart.Position - Position).Magnitude
+            if Magnitude < MaxRange then
+                Closest = v
+                MaxRange = Magnitude
             end
         end
     end
     return Closest
 end
 
--- Adjusts Prompt Properties
+-- 🎛 Adjusts Prompt Properties
 local function FiddleWithPrompts(Map)
     if not Map then return end
     for _, v in Map:GetChildren() do
         if v.Name == "Id" or v.Name == "Crate" then
-            local prompt = v:FindFirstChild("IdPrompt")
-            if prompt then
-                prompt.HoldDuration = 0
-                prompt.MaxActivationDistance = math.huge
-                prompt.RequiresLineOfSight = false
+            if v:FindFirstChild("IdPrompt") then
+                v.IdPrompt.HoldDuration = 0
+                v.IdPrompt.MaxActivationDistance = math.huge
+                v.IdPrompt.RequiresLineOfSight = false
             end
         end
     end
 end
 
--- Teleport Function (with Tween Support)
+-- 🚀 Teleport Function (With Tweening Support)
 local function TP(target, destination, tween)
     if target and destination and target:FindFirstChild("HumanoidRootPart") then
         if tween then
             local Tween = TweenService:Create(target.HumanoidRootPart, TweenInfo, {CFrame = destination.CFrame})
-            Tween:Play()
+            Tween:Play() 
+            Tween.Completed:Wait() 
         else
             target.HumanoidRootPart.CFrame = destination.CFrame
         end
     end
 end
 
--- Processes Commands from GUI Input
+-- 📜 Processes User Commands
 function ProcessCommand(command)
     if command == "" then return end
     if not command:match("^/") then
@@ -105,10 +103,7 @@ function ProcessCommand(command)
         CanTP = true
         local playerCFrame = Character.HumanoidRootPart.CFrame
         for _, player in Players:GetPlayers() do
-            if not CanTP then
-                Notify("Teleportation Aborted", "You stopped ID teleportation.", 5, "❌")
-                break
-            end
+            if not CanTP then break end
             local ID = FetchCurrentId(workspace.Map, player)
             if ID and Character then
                 TP(Character, ID, tweenParam and true or false)
@@ -139,13 +134,13 @@ function ProcessCommand(command)
     end
 end
 
--- GUI Creation
+-- 🎨 GUI Creation
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.CoreGui
 
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 350, 0, 60)
-Frame.Position = UDim2.new(0.5, -175, 0.1, 0)
+Frame.Size = UDim2.new(0, 450, 0, 80) -- Increased Frame Size
+Frame.Position = UDim2.new(0.5, -225, 0.1, 0)
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Frame.BorderSizePixel = 2
 Frame.Active = true
@@ -168,11 +163,12 @@ TextBox.FocusLost:Connect(function(enterPressed)
     end
 end)
 
--- GUI Dragging Functionality
-local dragging, dragInput, dragStart, startPos
+-- 🎭 GUI Dragging Fix
+local dragging = false
+local dragInput, dragStart, startPos
 
 local function update(input)
-    if startPos then
+    if dragging then -- Ensures Update Only When Dragging
         local delta = input.Position - dragStart
         Frame.Position = UDim2.new(
             startPos.X.Scale, startPos.X.Offset + delta.X,
@@ -183,7 +179,10 @@ end
 
 Frame.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging, dragStart, startPos = true, input.Position, Frame.Position
+        dragging = true
+        dragStart = input.Position
+        startPos = Frame.Position
+
         input.Changed:Connect(function()
             if input.UserInputState == Enum.UserInputState.End then
                 dragging = false
@@ -199,10 +198,10 @@ Frame.InputChanged:Connect(function(input)
 end)
 
 UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
+    if input == dragInput then
         update(input)
     end
 end)
 
--- Notify Script Loaded
-Notify("Script Loaded", "Updated version with bug fixes and improvements.", 10, "Enjoy!")
+-- 🎉 Notify Script Loaded
+Notify("Script Loaded", "Fixed GUI dragging & increased size!", 10, "Enjoy!")

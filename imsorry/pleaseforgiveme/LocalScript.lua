@@ -200,3 +200,5 @@ UserInputService.InputChanged:Connect(function(input)
         update(input)
     end
 end)
+
+Notify("Script Loaded", "First version btw alot of bugs, just ask the creator for the list of commands", 10, "thank you my goat")

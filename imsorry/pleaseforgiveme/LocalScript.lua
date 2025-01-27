@@ -139,7 +139,7 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.CoreGui
 
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 450, 0, 80) -- Increased Frame Size
+Frame.Size = UDim2.new(0, 380, 0, 120) -- Increased Frame Size
 Frame.Position = UDim2.new(0.5, -225, 0.1, 0)
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Frame.BorderSizePixel = 2
@@ -147,7 +147,7 @@ Frame.Active = true
 Frame.Parent = ScreenGui
 
 local TextBox = Instance.new("TextBox")
-TextBox.Size = UDim2.new(1, -10, 1, -10)
+TextBox.Size = UDim2.new(1, -40, 1, -45)
 TextBox.Position = UDim2.new(0, 20, 0, 25)
 TextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)

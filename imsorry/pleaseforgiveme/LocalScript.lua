@@ -156,7 +156,7 @@ TextBox.TextScaled = true
 TextBox.ClearTextOnFocus = false
 TextBox.Parent = Frame
 TextBox.RichText = true
-TextBot.Text = '/commandname <FONT COLOR="rgb(255, 0, 0)"><argument1></FONT><FONT COLOR="rgb(0, 255, 0)">[argument2]</FONT><FONT COLOR="rgb(0, 0, 255)">[PARAMETERS]</FONT>'
+TextBox.Text = '/commandname <FONT COLOR="rgb(255, 0, 0)"><argument1></FONT><FONT COLOR="rgb(0, 255, 0)">[argument2]</FONT><FONT COLOR="rgb(0, 0, 255)">[PARAMETERS]</FONT>'
 
 TextBox.FocusLost:Connect(function(enterPressed)
     if enterPressed and TextBox.Text ~= "" then

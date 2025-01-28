@@ -156,7 +156,7 @@ TextBox.TextScaled = true
 TextBox.ClearTextOnFocus = false
 TextBox.Parent = Frame
 TextBox.RichText = true
-TextBox.Text = '/commandname <FONT COLOR="rgb(255, 0, 0)"><argument1></FONT><FONT COLOR="rgb(0, 255, 0)">[argument2]</FONT><FONT COLOR="rgb(0, 0, 255)">[PARAMETERS]</FONT>'
+TextBox.Text = '/commandname <font color="rgb(255, 0, 0)">&lt;argument1&gt;</font><font color="rgb(0, 255, 0)">[argument2]</font><font color="rgb(0, 0, 255)">[PARAMETERS]</font>'
 
 TextBox.FocusLost:Connect(function(enterPressed)
     if enterPressed and TextBox.Text ~= "" then

@@ -139,7 +139,7 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.CoreGui
 
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 380, 0, 120) -- Increased Frame Size
+Frame.Size = UDim2.new(0, 250, 0, 60) -- Increased Frame Size
 Frame.Position = UDim2.new(0.5, -225, 0.1, 0)
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Frame.BorderSizePixel = 2
@@ -155,6 +155,8 @@ TextBox.PlaceholderText = "Enter command..."
 TextBox.TextScaled = true
 TextBox.ClearTextOnFocus = false
 TextBox.Parent = Frame
+TextBox.RichText = true
+TextBot.Text = '/commandname <FONT COLOR="rgb(255, 0, 0)"><argument1></FONT><FONT COLOR="rgb(0, 255, 0)">[argument2]</FONT><FONT COLOR="rgb(0, 0, 255)">[PARAMETERS]</FONT>'
 
 TextBox.FocusLost:Connect(function(enterPressed)
     if enterPressed and TextBox.Text ~= "" then

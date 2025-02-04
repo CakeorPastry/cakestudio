@@ -174,6 +174,9 @@ function ProcessCommand(command)
     elseif mainCmd == "/monitorid" then
         monitorIdBool = true
         monitorId(firstParam)
+    elseif mainCmd == "/unmonitorid" then
+        monitorIdBool = false
+        monitor = nil
     end
 end
 

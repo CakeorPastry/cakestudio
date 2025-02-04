@@ -111,7 +111,7 @@ local function monitorId(player)
             -- Find the closest player at the current ID position
             local closestPlayerRaw = closestPlayerAtPos(id.Position)
             if closestPlayerRaw and closestPlayerRaw["Closest"] ~= samePlayer then
-                Notify("Closest Player To Your ID", closestPlayerRaw["Closest"].Name..", Distance: "..math.floor(closestPlayerRaw["Distance"]).." studs", 10, "Done bro")
+                Notify("Closest Player To Your ID", closestPlayerRaw["Closest"].Name..", Distance: "..math.floor(closestPlayerRaw["Distance"])..' studs\n"/unmonitorid to stop this.', 10, "Done bro")
                 samePlayer = closestPlayerRaw["Closest"]
             end
         end

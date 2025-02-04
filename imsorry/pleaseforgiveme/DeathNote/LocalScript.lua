@@ -112,7 +112,7 @@ local function monitorId(player)
             -- Find the closest player at the current ID position
             local closestPlayerRaw = closestPlayerAtPos(id.Position)
             if closestPlayerRaw and closestPlayerRaw["Closest"] ~= samePlayer then
-                Notify("Closest Player To"..plr.Name.."'s ID", closestPlayerRaw["Closest"].Name..", Distance: "..math.floor(closestPlayerRaw["Distance"])..' studs\n"/unmonitorid to stop this.', 10, "Done bro")
+                Notify("Closest Player", "The closest player to"..plr.Name.."'s ID is "..closestPlayerRaw["Closest"].Name.." and the distance is "..math.floor(closestPlayerRaw["Distance"])..' studs\n"/unmonitorid to stop this.', 10, "Done bro")
                 samePlayer = closestPlayerRaw["Closest"]
             end
         end
@@ -182,6 +182,7 @@ function ProcessCommand(command)
     elseif mainCmd == "/unmonitorid" then
         monitorIdBool = false
         monitor = nil
+        Notify("Disabled Monitor ID", "Monitor ID has been disabled", 5, "Sigma")
     end
 end
 

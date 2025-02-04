@@ -2,11 +2,14 @@ local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 local TweenService = game:GetService("TweenService") 
+local RunService = game:GetService("RunService")
 
 local TweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear)
 local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
 local CanTP = true
+local monitor = nil
+local monitorIdBool = false
 
 -- 🔔 Notification Function
 function Notify(title, text, duration, button1)
@@ -14,8 +17,17 @@ function Notify(title, text, duration, button1)
         Title = title,
         Text = text,
         Duration = duration or 10,
-        Button1 = button1 or nil
+        Button1 = button1
     })
+end
+
+function FindPlayer(playerName)
+    for _, plr in Players:GetPlayers() do
+        if string.lower(plr.Name) == playerName then
+            return plr
+        end
+    end
+    return nil
 end
 
 -- 🎯 Fetches the Player's Current ID
@@ -43,7 +55,7 @@ local function closestPlayerAtPos(Position)
         if RootPart and v ~= Player then
             local Magnitude = (RootPart.Position - Position).Magnitude
             if Magnitude < MaxRange then
-                Closest = v
+                Closest = {["Closest"] = v, ["Distance"] = Magnitude}
                 MaxRange = Magnitude
             end
         end
@@ -78,6 +90,31 @@ local function TP(target, destination, tween)
     end
 end
 
+-- 👀 Monitor ID Function
+local function monitorId(player)
+    if monitor then
+        monitor:Disconnect()  -- Prevent multiple monitors running
+    end
+
+    local id = FetchCurrentId(workspace.Map, Players:FindFirstChild(player) or FindPlayer(player) or Player)
+    if id then 
+        monitorIdBool = true
+        local samePlayer = nil
+        monitor = RunService.Heartbeat:Connect(function() 
+            if not monitorIdBool then
+                monitor:Disconnect()
+                return
+            end
+
+            local closestPlayerRaw = closestPlayerAtPos(id.Position)
+            if closestPlayerRaw and closestPlayerRaw["Closest"] ~= samePlayer then
+                Notify("Closest Player To Your ID", closestPlayerRaw["Closest"].Name..", Distance: "..closestPlayerRaw["Distance"], 10, "Done bro")
+                samePlayer = closestPlayerRaw["Closest"]
+            end
+        end) 
+    end
+end
+
 -- 📜 Processes User Commands
 function ProcessCommand(command)
     if command == "" then return end
@@ -87,6 +124,7 @@ function ProcessCommand(command)
 
     local args = string.split(command, " ")
     local mainCmd = string.lower(args[1])
+    local firstParam = string.lower(args[2] or "")
     local fullyLowered = string.lower(command)
     local spookParam = string.find(fullyLowered, "?spook")
     local tweenParam = string.find(fullyLowered, "?tween")
@@ -122,15 +160,20 @@ function ProcessCommand(command)
         FiddleWithPrompts(workspace.Map)
 
     elseif mainCmd == "/closestplayer" then
-        local closestPlayer = closestPlayerAtPos(Character.HumanoidRootPart.Position)
+        local closestPlayerRaw = closestPlayerAtPos(Character.HumanoidRootPart.Position)
+        local closestPlayer, closestPlayerDistance = closestPlayerRaw["Closest"], closestPlayerRaw["Distance"]
         if closestPlayer then
-            Notify("Closest Player", closestPlayer.Name, 10, "🔥")
+            Notify("Closest Player", closestPlayer.Name..", Distance: "..closestPlayerDistance, 10, "🔥")
             if tweenParam and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 TP(Character, closestPlayer.Character.HumanoidRootPart, true)
             end
         else
             Notify("Closest Player", "No players found", 5, "❌")
         end
+
+    elseif mainCmd == "/monitorid" then
+        monitorIdBool = true
+        monitorId(firstParam)
     end
 end
 
@@ -139,7 +182,7 @@ local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.CoreGui
 
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 250, 0, 60) -- Increased Frame Size
+Frame.Size = UDim2.new(0, 250, 0, 60)
 Frame.Position = UDim2.new(0.5, -225, 0.1, 0)
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Frame.BorderSizePixel = 2
@@ -156,7 +199,15 @@ TextBox.TextScaled = true
 TextBox.ClearTextOnFocus = false
 TextBox.Parent = Frame
 TextBox.RichText = true
-TextBox.Text = '/commandname <font color="rgb(255, 0, 0)">&lt;argument1&gt;</font><font color="rgb(0, 255, 0)">[argument2]</font><font color="rgb(0, 0, 255)">[PARAMETERS]</font>'
+
+local sampleText = '/commandname <font color="rgb(255, 0, 0)">&lt;argument1&gt;</font><font color="rgb(0, 255, 0)">[argument2]</font><font color="rgb(0, 0, 255)">[PARAMETERS]</font>'
+TextBox.Text = sampleText
+
+TextBox.Focused:Connect(function() 
+    if TextBox.Text == sampleText then
+        TextBox.Text = "/commandname <argument1> [argument2] [PARAMETERS]"
+    end
+end)
 
 TextBox.FocusLost:Connect(function(enterPressed)
     if enterPressed and TextBox.Text ~= "" then
@@ -204,4 +255,4 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 -- 🎉 Notify Script Loaded
-Notify("Script Loaded", "Fixed GUI dragging & increased size!", 10, "Enjoy!")
+Notify("Script Loaded", "Fixed GUI dragging & improved ID monitoring!", 10, "thank you my goat")

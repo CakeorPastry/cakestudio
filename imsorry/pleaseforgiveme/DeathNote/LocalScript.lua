@@ -24,9 +24,11 @@ end
 function FindPlayer(playerName)
     for _, plr in Players:GetPlayers() do
         if string.lower(plr.Name) == string.lower(playerName) then
+            print(plr, plr.Name)
             return plr
         end
     end
+    print("FindPlayer function returned nil")
     return nil
 end
 
@@ -91,13 +93,12 @@ local function TP(target, destination, tween)
 end
 
 -- 👀 Monitor ID Function
-local function monitorId(player)
+local function monitorId(playerName)
     if monitor then
         monitor:Disconnect()  -- Prevent multiple monitors running
     end
 
     -- Start the monitoring loop, fetching the current ID in the Heartbeat
-    -- monitorIdBool = true
     local samePlayer = nil
     monitor = RunService.Heartbeat:Connect(function()
         if not monitorIdBool then
@@ -105,8 +106,18 @@ local function monitorId(player)
             return
         end
 
-        -- Fetch the current ID every frame
-        local plr = Players:FindFirstChild(player) or FindPlayer(player) or Player
+        -- Find player using either player object or player name
+        local plr = nil
+        if typeof(playerName) == "string" then
+            plr = FindPlayer(playerName)  -- If it's a name string, find the player object
+        elseif typeof(playerName) == "Instance" and playerName:IsA("Player") then
+            plr = playerName  -- If it's already a player object, use it directly
+        end
+
+        -- If player is not found, exit the function
+        if not plr then Notify("Error", "Those who know there was an error with the 'Player' argument you provided", 10, "😭💔") return end
+
+        -- Fetch the current ID
         local id = FetchCurrentId(workspace.Map, plr)
         if id then
             -- Find the closest player at the current ID position
@@ -118,7 +129,6 @@ local function monitorId(player)
         end
     end)
 end
-
 
 -- 📜 Processes User Commands
 function ProcessCommand(command)

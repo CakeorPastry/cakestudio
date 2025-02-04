@@ -96,24 +96,28 @@ local function monitorId(player)
         monitor:Disconnect()  -- Prevent multiple monitors running
     end
 
-    local id = FetchCurrentId(workspace.Map, Players:FindFirstChild(player) or FindPlayer(player) or Player)
-    if id then 
-        monitorIdBool = true
-        local samePlayer = nil
-        monitor = RunService.Heartbeat:Connect(function() 
-            if not monitorIdBool then
-                monitor:Disconnect()
-                return
-            end
+    -- Start the monitoring loop, fetching the current ID in the Heartbeat
+    -- monitorIdBool = true
+    local samePlayer = nil
+    monitor = RunService.Heartbeat:Connect(function()
+        if not monitorIdBool then
+            monitor:Disconnect()
+            return
+        end
 
+        -- Fetch the current ID every frame
+        local id = FetchCurrentId(workspace.Map, Players:FindFirstChild(player) or FindPlayer(player) or Player)
+        if id then
+            -- Find the closest player at the current ID position
             local closestPlayerRaw = closestPlayerAtPos(id.Position)
             if closestPlayerRaw and closestPlayerRaw["Closest"] ~= samePlayer then
-                Notify("Closest Player To Your ID", closestPlayerRaw["Closest"].Name..", Distance: "..closestPlayerRaw["Distance"], 10, "Done bro")
+                Notify("Closest Player To Your ID", closestPlayerRaw["Closest"].Name..", Distance: "..math.floor(closestPlayerRaw["Distance"]).." studs", 10, "Done bro")
                 samePlayer = closestPlayerRaw["Closest"]
             end
-        end) 
-    end
+        end
+    end)
 end
+
 
 -- 📜 Processes User Commands
 function ProcessCommand(command)

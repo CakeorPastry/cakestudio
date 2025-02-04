@@ -106,12 +106,13 @@ local function monitorId(player)
         end
 
         -- Fetch the current ID every frame
-        local id = FetchCurrentId(workspace.Map, Players:FindFirstChild(player) or FindPlayer(player) or Player)
+        local plr = Players:FindFirstChild(player) or FindPlayer(player) or Player
+        local id = FetchCurrentId(workspace.Map, plr)
         if id then
             -- Find the closest player at the current ID position
             local closestPlayerRaw = closestPlayerAtPos(id.Position)
             if closestPlayerRaw and closestPlayerRaw["Closest"] ~= samePlayer then
-                Notify("Closest Player To Your ID", closestPlayerRaw["Closest"].Name..", Distance: "..math.floor(closestPlayerRaw["Distance"])..' studs\n"/unmonitorid to stop this.', 10, "Done bro")
+                Notify("Closest Player To"..plr.Name.."'s ID", closestPlayerRaw["Closest"].Name..", Distance: "..math.floor(closestPlayerRaw["Distance"])..' studs\n"/unmonitorid to stop this.', 10, "Done bro")
                 samePlayer = closestPlayerRaw["Closest"]
             end
         end

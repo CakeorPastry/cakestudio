@@ -26,9 +26,9 @@ function CreateNotification(text, color, duration)
     local notification = Instance.new("TextLabel")
     notification.Size = UDim2.new(1, 0, 1, 0)
     notification.Position = UDim2.new(0, 0, 0, 0)
-    notification.TextColor3 = color or "1, 1, 1"
+    notification.TextColor3 = color or Color3.new(1, 1, 1)
     notification.BackgroundTransparency = 1
- -- notification.TextColor3 = Color3.new(1, 1, 1)
+    -- notification.TextColor3 = Color3.new(1, 1, 1)
     notification.TextScaled = true
     notification.Text = text
     notification.Parent = notificationFrame
@@ -145,10 +145,10 @@ local function monitorId(playerName)
 
         -- If player is not found, exit the function
         if not plr then 
-            Notify("Error", "There was an error with the \"Player\" argument you provided", 10, "😭💔")
+            Notify("Error", "There was an error with the \"Player\" argument you provided", 10, "😭💔") 
+            monitor:Disconnect()
             monitorIdBool = false
             monitor = nil
-            monitor:Disconnect()
             return
         end
 
@@ -223,6 +223,7 @@ function ProcessCommand(command)
 
     elseif mainCmd == "/monitorid" then
         monitorIdBool = true
+        CreateNotification("Monitoring Id...", Color3.new(0, 255, 0), 5)
         monitorId(firstParam)
     elseif mainCmd == "/unmonitorid" then
         monitorIdBool = false
@@ -338,4 +339,4 @@ end)
 
 -- 🎉 Notify Script Loaded
 Notify("Script Loaded", "Fixed GUI dragging & improved ID monitoring!", 10, "thank you my goat")
-CreateNotification("NIKHIL_FBI is raiding your house!", "255, 0, 0", 5)
+CreateNotification("NIKHIL_FBI is raiding your house!", Color3.new(255, 0, 0), 5)

@@ -115,7 +115,13 @@ local function monitorId(playerName)
         end
 
         -- If player is not found, exit the function
-        if not plr then Notify("Error", "Those who know there was an error with the 'Player' argument you provided", 10, "😭💔") return end
+        if not plr then 
+            Notify("Error", "Those who know there was an error with the \"Player\" argument you provided", 10, "😭💔")
+            monitorIdBool = false
+            monitor = nil
+            monitor:Disconnect()
+            return
+        end
 
         -- Fetch the current ID
         local id = FetchCurrentId(workspace.Map, plr)

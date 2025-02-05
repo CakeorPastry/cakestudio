@@ -21,6 +21,35 @@ function Notify(title, text, duration, button1)
     })
 end
 
+-- Function to create notifications
+function CreateNotification(text, color, duration)
+    local notification = Instance.new("TextLabel")
+    notification.Size = UDim2.new(1, 0, 1, 0)
+    notification.Position = UDim2.new(0, 0, 0, 0)
+    notification.TextColor3 = color or "1, 1, 1"
+    notification.BackgroundTransparency = 1
+ -- notification.TextColor3 = Color3.new(1, 1, 1)
+    notification.TextScaled = true
+    notification.Text = text
+    notification.Parent = notificationFrame
+
+    -- Optional: Add a fade-out effect before deletion
+    -- [[
+    task.delay(duration or 5, function()
+        for transparency = 0.1, 1, 0.1 do
+            notification.BackgroundTransparency = transparency
+            task.wait(0.05)
+        end
+        notification:Destroy()
+    end)
+    ]]
+    task.wait(duration or 5)
+    local destroyTween = TweenService:Create(notification, TweenInfo, { TextTransparency = 1 })
+    destroyTween:Play() 
+    destroyTween.Completed:Wait() 
+    notification:Destroy() 
+end
+
 function FindPlayer(playerName)
     for _, plr in Players:GetPlayers() do
         if string.lower(plr.Name) == string.lower(playerName) then
@@ -203,6 +232,7 @@ function ProcessCommand(command)
 end
 
 -- 🎨 GUI Creation
+-- Command Bar
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Parent = game.CoreGui
 
@@ -225,12 +255,36 @@ TextBox.ClearTextOnFocus = false
 TextBox.Parent = Frame
 TextBox.RichText = true
 
+-- Notification Gui
+-- Create the ScreenGui
+local notificationGui = Instance.new("ScreenGui")
+notificationGui.Parent = game.CoreGui
+
+-- Create the Frame
+local notificationFrame = Instance.new("Frame")
+notificationFrame.Size = UDim2.new(0, 626, 0, 59)
+notificationFrame.Position = UDim2.new(0.5, 0, 0.268415093, 0)
+notificationFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+notificationFrame.BackgroundTransparency = 1
+notificationFrame.Parent = notificationGui
+
+-- Add UIGridLayout
+local gridLayout = Instance.new("UIGridLayout")
+gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+gridLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+gridLayout.StartCorner = Enum.StartCorner.TopLeft
+gridLayout.CellPadding = UDim2.new(0, 0, 0, 0)
+gridLayout.CellSize = UDim2.new(0, 1, 0.349999994, 0) -- Matching the TextLabel size
+gridLayout.Parent = notificationFrame
+
 local sampleText = '/commandname <font color="rgb(255, 0, 0)">&lt;argument1&gt;</font><font color="rgb(0, 255, 0)">[argument2]</font><font color="rgb(0, 0, 255)">[PARAMETERS]</font>'
+local sampleTextRaw = "/commandname <argument1> [argument2] [PARAMETERS]"
 TextBox.Text = sampleText
 
 TextBox.Focused:Connect(function() 
     if TextBox.Text == sampleText then
-        TextBox.Text = "/commandname <argument1> [argument2] [PARAMETERS]"
+        TextBox.Text = sampleTextRaw
     end
 end)
 
@@ -238,6 +292,9 @@ TextBox.FocusLost:Connect(function(enterPressed)
     if enterPressed and TextBox.Text ~= "" then
         ProcessCommand(TextBox.Text)
         TextBox.Text = ""
+    end
+    if TextBox.Text == sampleTextRaw then
+        TextBox.Text = sampleText
     end
 end)
 
@@ -281,3 +338,4 @@ end)
 
 -- 🎉 Notify Script Loaded
 Notify("Script Loaded", "Fixed GUI dragging & improved ID monitoring!", 10, "thank you my goat")
+CreateNotification("NIKHIL_FBI is raiding your house!", "255, 0, 0", 5)

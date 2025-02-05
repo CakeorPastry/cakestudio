@@ -116,7 +116,7 @@ local function monitorId(playerName)
 
         -- If player is not found, exit the function
         if not plr then 
-            Notify("Error", "Those who know there was an error with the \"Player\" argument you provided", 10, "😭💔")
+            Notify("Error", "There was an error with the \"Player\" argument you provided", 10, "😭💔")
             monitorIdBool = false
             monitor = nil
             monitor:Disconnect()

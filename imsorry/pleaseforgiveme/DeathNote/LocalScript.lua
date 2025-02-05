@@ -4,7 +4,7 @@ local StarterGui = game:GetService("StarterGui")
 local TweenService = game:GetService("TweenService") 
 local RunService = game:GetService("RunService")
 
-local TweenInfo = TweenInfo.new(1, Enum.EasingStyle.Linear)
+local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
 local CanTP = true
@@ -19,35 +19,6 @@ function Notify(title, text, duration, button1)
         Duration = duration or 10,
         Button1 = button1
     })
-end
-
--- Function to create notifications
-function CreateNotification(text, color, duration)
-    local notification = Instance.new("TextLabel")
-    notification.Size = UDim2.new(1, 0, 1, 0)
-    notification.Position = UDim2.new(0, 0, 0, 0)
-    notification.TextColor3 = color or Color3.new(1, 1, 1)
-    notification.BackgroundTransparency = 1
-    -- notification.TextColor3 = Color3.new(1, 1, 1)
-    notification.TextScaled = true
-    notification.Text = text
-    notification.Parent = notificationFrame
-
-    -- Optional: Add a fade-out effect before deletion
-    -- [[
-    task.delay(duration or 5, function()
-        for transparency = 0.1, 1, 0.1 do
-            notification.BackgroundTransparency = transparency
-            task.wait(0.05)
-        end
-        notification:Destroy()
-    end)
-    ]]
-    task.wait(duration or 5)
-    local destroyTween = TweenService:Create(notification, TweenInfo, { TextTransparency = 1 })
-    destroyTween:Play() 
-    destroyTween.Completed:Wait() 
-    notification:Destroy() 
 end
 
 function FindPlayer(playerName)
@@ -112,7 +83,7 @@ end
 local function TP(target, destination, tween)
     if target and destination and target:FindFirstChild("HumanoidRootPart") then
         if tween then
-            local Tween = TweenService:Create(target.HumanoidRootPart, TweenInfo, {CFrame = destination.CFrame})
+            local Tween = TweenService:Create(target.HumanoidRootPart, TweenInfoSetting, {CFrame = destination.CFrame})
             Tween:Play() 
             Tween.Completed:Wait() 
         else
@@ -282,6 +253,35 @@ gridLayout.Parent = notificationFrame
 local sampleText = '/commandname <font color="rgb(255, 0, 0)">&lt;argument1&gt;</font><font color="rgb(0, 255, 0)">[argument2]</font><font color="rgb(0, 0, 255)">[PARAMETERS]</font>'
 local sampleTextRaw = "/commandname <argument1> [argument2] [PARAMETERS]"
 TextBox.Text = sampleText
+
+-- Function to create notifications
+function CreateNotification(text, color, duration)
+    local notification = Instance.new("TextLabel")
+    notification.Size = UDim2.new(1, 0, 1, 0)
+    notification.Position = UDim2.new(0, 0, 0, 0)
+    notification.TextColor3 = color or Color3.new(1, 1, 1)
+    notification.BackgroundTransparency = 1
+    -- notification.TextColor3 = Color3.new(1, 1, 1)
+    notification.TextScaled = true
+    notification.Text = text
+    notification.Parent = notificationFrame
+
+    -- Optional: Add a fade-out effect before deletion
+    -- [[
+    task.delay(duration or 5, function()
+        for transparency = 0.1, 1, 0.1 do
+            notification.BackgroundTransparency = transparency
+            task.wait(0.05)
+        end
+        notification:Destroy()
+    end)
+    ]]
+    task.wait(duration or 5)
+    local destroyTween = TweenService:Create(notification, TweenInfoSetting, { TextTransparency = 1 })
+    destroyTween:Play() 
+    destroyTween.Completed:Wait() 
+    notification:Destroy() 
+end
 
 TextBox.Focused:Connect(function() 
     if TextBox.Text == sampleText then

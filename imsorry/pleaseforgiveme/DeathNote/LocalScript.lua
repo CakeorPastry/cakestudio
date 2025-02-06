@@ -271,6 +271,7 @@ function CreateNotification(text, color, duration)
     notification.BackgroundTransparency = 1
     -- notification.TextColor3 = Color3.new(1, 1, 1)
     notification.TextScaled = true
+    notification.TextSize = 20
     notification.Text = text
     notification.TextTransparency = 0
     notification.TextWrapped = false

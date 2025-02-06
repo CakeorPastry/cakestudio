@@ -24,6 +24,7 @@ end
 function PlaySound(id) 
     local Sound = Instance.new("Sound")
     Sound.SoundId = "rbxassetid://"..id or "97495881842727"
+    -- "DO NOT REDEEM" Meme Btw
     Sound.Parent = workspace
     Sound:Play() 
     Sound.Ended:Wait() 
@@ -284,7 +285,7 @@ function CreateNotification(text, color, duration)
     notification.TextTransparency = 0
     notification.TextWrapped = false
     notification.TextScaled = true
-    print(notification.TextScaled)
+    -- print(notification.TextScaled)
     notification.Parent = notificationFrame
     PlaySound("9102731048")
 
@@ -353,3 +354,4 @@ end)
 -- 🎉 Notify Script Loaded
 Notify("Script Loaded", "Fixed GUI dragging & improved ID monitoring!", 10, "thank you my goat")
 CreateNotification("NIKHIL_FBI is raiding your house!", Color3.new(255, 0, 0), 5)
+PlaySound() 

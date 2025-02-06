@@ -262,9 +262,10 @@ TextBox.Text = sampleText
 function CreateNotification(text, color, duration)
     local notification = Instance.new("TextLabel")
     notification.Size = UDim2.new(1, 0, 1, 0)
+    notification.AnchorPoint = Udim2.new(0.5, 0, 0.5, 0)
     notification.Position = UDim2.new(0, 0, 0, 0)
     notification.TextColor3 = color or Color3.new(1, 1, 1)
-    notification.BackgroundTransparency = 1
+    notification.BackgroundTransparency = 0
     -- notification.TextColor3 = Color3.new(1, 1, 1)
     notification.TextScaled = true
     notification.Text = text

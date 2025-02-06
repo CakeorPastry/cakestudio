@@ -268,14 +268,14 @@ function CreateNotification(text, color, duration)
 
     -- Optional: Add a fade-out effect before deletion
     -- [[
-    task.delay(duration or 5, function()
-        for transparency = 0.1, 1, 0.1 do
-            notification.BackgroundTransparency = transparency
-            task.wait(0.05)
-        end
-        notification:Destroy()
-    end)
-    ]]
+  --  task.delay(duration or 5, function()
+--       for transparency = 0.1, 1, 0.1 do
+--            notification.BackgroundTransparency = transparency
+--            task.wait(0.05)
+ --       end
+ --       notification:Destroy()
+ --   end)
+    
     task.wait(duration or 5)
     local destroyTween = TweenService:Create(notification, TweenInfoSetting, { TextTransparency = 1 })
     destroyTween:Play() 

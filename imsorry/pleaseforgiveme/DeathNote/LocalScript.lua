@@ -200,12 +200,15 @@ function ProcessCommand(command)
         monitorIdBool = false
         monitor = nil
         Notify("Disabled Monitor ID", "Monitor ID has been disabled", 5, "Sigma")
+    elseif mainCmd == "/notification" then
+        CreateNotification("Hello, Notification Test", Color3.new(0, 255, 0), 5)
     end
 end
 
 -- 🎨 GUI Creation
 -- Command Bar
 local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Name = "ꯂꯋꯥꯏ ꯃꯆꯥ"
 ScreenGui.Parent = game.CoreGui
 
 local Frame = Instance.new("Frame")
@@ -229,8 +232,8 @@ TextBox.RichText = true
 
 -- Notification Gui
 -- Create the ScreenGui
-local notificationGui = Instance.new("ScreenGui")
-notificationGui.Parent = game.CoreGui
+-- local notificationGui = Instance.new("ScreenGui")
+-- notificationGui.Parent = game.CoreGui
 
 -- Create the Frame
 local notificationFrame = Instance.new("Frame")
@@ -238,7 +241,8 @@ notificationFrame.Size = UDim2.new(0, 626, 0, 59)
 notificationFrame.Position = UDim2.new(0.5, 0, 0.268415093, 0)
 notificationFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 notificationFrame.BackgroundTransparency = 1
-notificationFrame.Parent = notificationGui
+notificationFrame.Parent = ScreenGui
+notificationFrame.Name = "Output"
 
 -- Add UIGridLayout
 local gridLayout = Instance.new("UIGridLayout")
@@ -264,6 +268,7 @@ function CreateNotification(text, color, duration)
     -- notification.TextColor3 = Color3.new(1, 1, 1)
     notification.TextScaled = true
     notification.Text = text
+    notification.TextTransparency = 0
     notification.Parent = notificationFrame
 
     -- Optional: Add a fade-out effect before deletion

@@ -21,6 +21,15 @@ function Notify(title, text, duration, button1)
     })
 end
 
+function PlaySound(id) 
+    local Sound = Instance.new("Sound")
+    Sound.SoundId = "rbxassetid://"..id or "97495881842727"
+    Sound.Parent = workspace
+    Sound:Play() 
+    Sound.Ended:Wait() 
+    Sound:Destroy()
+end
+
 function FindPlayer(playerName)
     for _, plr in Players:GetPlayers() do
         if string.lower(plr.Name) == string.lower(playerName) then
@@ -277,6 +286,7 @@ function CreateNotification(text, color, duration)
     notification.TextScaled = true
     print(notification.TextScaled)
     notification.Parent = notificationFrame
+    PlaySound("9102731048")
 
     -- Optional: Add a fade-out effect before deletion
     task.wait(duration or 5)

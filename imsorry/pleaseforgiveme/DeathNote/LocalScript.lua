@@ -252,7 +252,7 @@ gridLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
 gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 gridLayout.StartCorner = Enum.StartCorner.TopLeft
 gridLayout.CellPadding = UDim2.new(0, 0, 0, 0)
-gridLayout.CellSize = UDim2.new(0, 1, 0.349999994, 0) -- Matching the TextLabel size
+gridLayout.CellSize = UDim2.new(1, 0, 0.349999994, 0) -- Matching the TextLabel size
 gridLayout.Parent = notificationFrame
 
 local sampleText = '/commandname <font color="rgb(255, 0, 0)">&lt;argument1&gt;</font><font color="rgb(0, 255, 0)">[argument2]</font><font color="rgb(0, 0, 255)">[PARAMETERS]</font>'
@@ -266,23 +266,15 @@ function CreateNotification(text, color, duration)
     notification.AnchorPoint = Vector2.new(0.5, 0, 0.5, 0)
     notification.Position = UDim2.new(0, 0, 0, 0)
     notification.TextColor3 = color or Color3.new(1, 1, 1)
-    notification.BackgroundTransparency = 0
+    notification.BackgroundTransparency = 1
     -- notification.TextColor3 = Color3.new(1, 1, 1)
     notification.TextScaled = true
     notification.Text = text
     notification.TextTransparency = 0
+    notification.TextWrapped = false
     notification.Parent = notificationFrame
 
     -- Optional: Add a fade-out effect before deletion
-    -- [[
-  --  task.delay(duration or 5, function()
---       for transparency = 0.1, 1, 0.1 do
---            notification.BackgroundTransparency = transparency
---            task.wait(0.05)
- --       end
- --       notification:Destroy()
- --   end)
-    
     task.wait(duration or 5)
     local destroyTween = TweenService:Create(notification, TweenInfoSetting, { TextTransparency = 1 })
     destroyTween:Play() 

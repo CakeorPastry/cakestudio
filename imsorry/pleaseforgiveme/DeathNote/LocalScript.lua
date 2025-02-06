@@ -208,7 +208,8 @@ end
 -- 🎨 GUI Creation
 -- Command Bar
 local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "ꯂꯋꯥꯏ ꯃꯆꯥ"
+-- ScreenGui.Name = "ꯂꯋꯥꯏ ꯃꯆꯥ"
+ScreenGui.Name = "Nikhil"
 ScreenGui.Parent = game.CoreGui
 
 local Frame = Instance.new("Frame")

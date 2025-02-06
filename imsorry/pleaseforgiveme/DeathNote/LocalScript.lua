@@ -211,6 +211,8 @@ local ScreenGui = Instance.new("ScreenGui")
 -- ScreenGui.Name = "ꯂꯋꯥꯏ ꯃꯆꯥ"
 ScreenGui.Name = "Nikhil"
 ScreenGui.Parent = game.CoreGui
+ScreenGui.IgnoreGuiInset = true
+ScreenGui.ScreenInsets = Enum.ScreenInsets.DeviceSafeInsets
 
 local Frame = Instance.new("Frame")
 Frame.Size = UDim2.new(0, 250, 0, 60)

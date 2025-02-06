@@ -33,8 +33,8 @@ function PlaySound(id)
 end
 
 function FindPlayer(playerName)
-    print("Current Player:"..plr.Name)
     for _, plr in Players:GetPlayers() do
+        print("Current Player:"..plr.Name)
         if string.lower(plr.Name) == string.lower(playerName) then
             print(plr, plr.Name)
             return plr

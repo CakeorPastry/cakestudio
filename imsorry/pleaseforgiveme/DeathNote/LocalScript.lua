@@ -120,11 +120,13 @@ local function monitorId(playerName)
         end
 
         -- Find player using either player object or player name
-        local plr = Player
+        local plr = nil
         if typeof(playerName) == "string" then
             plr = FindPlayer(playerName)  -- If it's a name string, find the player object
         elseif typeof(playerName) == "Instance" and playerName:IsA("Player") then
             plr = playerName  -- If it's already a player object, use it directly
+        else
+            plr = Player
         end
 
         -- If player is not found, exit the function
@@ -144,7 +146,7 @@ local function monitorId(playerName)
             -- Find the closest player at the current ID position
             local closestPlayerRaw = closestPlayerAtPos(id.Position)
             if closestPlayerRaw and closestPlayerRaw["Closest"] ~= samePlayer then
-                Notify("Closest Player", "The closest player to "..plr.Name.."'s ID is "..closestPlayerRaw["Closest"].Name.." and the distance is "..math.floor(closestPlayerRaw["Distance"])..' studs\n"/unmonitorid to stop this.', 10, "Done bro")
+                CreateNotification("The closest player to "..plr.Name.."'s ID is "..closestPlayerRaw["Closest"].Name.." and the distance is "..math.floor(closestPlayerRaw["Distance"])..' studs\n"/unmonitorid to stop this.\nDone bro', Color3.new(0, 255, 0), 10)
                 samePlayer = closestPlayerRaw["Closest"]
             end
         end

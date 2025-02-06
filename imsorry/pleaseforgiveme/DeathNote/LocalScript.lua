@@ -33,13 +33,15 @@ function PlaySound(id)
 end
 
 function FindPlayer(playerName)
+    print("Current Player:"..plr.Name)
     for _, plr in Players:GetPlayers() do
         if string.lower(plr.Name) == string.lower(playerName) then
             print(plr, plr.Name)
             return plr
         end
+        warn(string.lower(plr.Name).." isn't the same as "..playerName)
     end
-    print("FindPlayer function returned nil")
+    print("FindPlayer() function returned nil")
     return nil
 end
 
@@ -118,7 +120,7 @@ local function monitorId(playerName)
         end
 
         -- Find player using either player object or player name
-        local plr = nil
+        local plr = Player
         if typeof(playerName) == "string" then
             plr = FindPlayer(playerName)  -- If it's a name string, find the player object
         elseif typeof(playerName) == "Instance" and playerName:IsA("Player") then
@@ -127,7 +129,9 @@ local function monitorId(playerName)
 
         -- If player is not found, exit the function
         if not plr then 
-            Notify("Error", "There was an error with the \"Player\" argument you provided", 10, "😭💔") 
+            task.spawn(function() 
+                CreateNotification("There was an error with the \"Player\" argument you provided", Color3.new(255, 0, 0), 2.5)
+            end)
             monitor:Disconnect()
             monitorIdBool = false
             monitor = nil
@@ -205,7 +209,9 @@ function ProcessCommand(command)
 
     elseif mainCmd == "/monitorid" then
         monitorIdBool = true
-        CreateNotification("Monitoring Id...", Color3.new(0, 255, 0), 5)
+        task.spawn(function() 
+            CreateNotification("Monitoring Id...", Color3.new(0, 255, 0), 2.5)
+        end)
         monitorId(firstParam)
     elseif mainCmd == "/unmonitorid" then
         monitorIdBool = false
@@ -288,8 +294,9 @@ function CreateNotification(text, color, duration)
     notification.TextScaled = true
     -- print(notification.TextScaled)
     notification.Parent = notificationFrame
-    PlaySound("9102731048")
-
+    task.spawn(function() 
+        PlaySound("9102731048")
+    end)
     -- Optional: Add a fade-out effect before deletion
     task.wait(duration or 5)
     local destroyTween = TweenService:Create(notification, TweenInfoSetting, { TextTransparency = 1 })

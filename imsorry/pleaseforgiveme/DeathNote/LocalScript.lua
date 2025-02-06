@@ -23,7 +23,8 @@ end
 
 function PlaySound(id) 
     local Sound = Instance.new("Sound")
-    Sound.SoundId = "rbxassetid://"..id or "97495881842727"
+    local finalId = id or "97495881842727"
+    Sound.SoundId = "rbxassetid://"..finalId
     -- "DO NOT REDEEM" Meme Btw
     Sound.Parent = workspace
     Sound:Play() 

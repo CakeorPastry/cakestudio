@@ -270,11 +270,12 @@ function CreateNotification(text, color, duration)
     notification.TextColor3 = color or Color3.new(1, 1, 1)
     notification.BackgroundTransparency = 1
     -- notification.TextColor3 = Color3.new(1, 1, 1)
-    notification.TextScaled = true
     notification.TextSize = 20
     notification.Text = text
     notification.TextTransparency = 0
     notification.TextWrapped = false
+    notification.TextScaled = true
+    print(notification.TextScaled)
     notification.Parent = notificationFrame
 
     -- Optional: Add a fade-out effect before deletion

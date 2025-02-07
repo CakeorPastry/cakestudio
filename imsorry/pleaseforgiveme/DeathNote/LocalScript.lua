@@ -233,7 +233,7 @@ function ProcessCommand(command)
 
     elseif mainCmd == "/abortidtp" then
         CanTP = false
-        Notify("Abort ID Teleport", "Aborted ID Teleport", 5, ";)")
+        CreateNotification("Aborted ID Teleport", Color3.new(0, 255, 0), 2.5)
 
     elseif mainCmd == "/fiddlewithprompts" then
         FiddleWithPrompts(workspace.Map)
@@ -242,12 +242,12 @@ function ProcessCommand(command)
         local closestPlayerRaw = closestPlayerAtPos(Character.HumanoidRootPart.Position)
         local closestPlayer, closestPlayerDistance = closestPlayerRaw["Closest"], closestPlayerRaw["Distance"]
         if closestPlayer then
-            Notify("Closest Player", closestPlayer.Name..", Distance: "..closestPlayerDistance, 10, "🔥")
+            CreateNotification("The closest player to your current location is "..closestPlayer.Name.." and the distance is "..math.floor(closestPlayerDistance).." studs.", Color3.new(0, 255, 0), 5)
             if tweenParam and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 TP(Character, closestPlayer.Character.HumanoidRootPart, true)
             end
         else
-            Notify("Closest Player", "No players found", 5, "❌")
+            CreateNotification("No players found", Color3.new(255, 0, 0), 2.5)
         end
 
     elseif mainCmd == "/monitorid" then
@@ -257,10 +257,12 @@ function ProcessCommand(command)
         end)
         ]]
         monitorId(firstParam)
+        
     elseif mainCmd == "/unmonitorid" then
         monitorIdBool = false
         monitor = nil
-        Notify("Disabled Monitor ID", "Monitor ID has been disabled", 5, "Sigma")
+        CreateNotification("Monitor ID has been disabled", Color3.new(0, 255, 0), 5)
+   
     elseif mainCmd == "/notification" then
         CreateNotification("Hello, Notification Test", Color3.new(0, 255, 0), 5)
     end

@@ -109,20 +109,24 @@ end
 local function monitorId(playerName)
     if monitor then
         monitor:Disconnect()  -- Prevent multiple monitors running
+        monitor = nil
     end
 
     monitorIdBool = true
     local lastClosestPlayer = nil
     local lastNotificationTime = 0
-    local hasUpdatedMonitorMessage = false  -- ✅ Prevents spamming the "Monitoring ID for ..." message
+    local hasUpdatedMonitorMessage = false
+    local idMissingNotified = false  -- ✅ Prevents spamming "ID not found" message
 
     -- Initial "Monitoring ID..." message
     CreateNotification("Monitoring ID...", Color3.new(0, 255, 0), 2.5)
 
     monitor = RunService.Heartbeat:Connect(function()
-        if not monitorIdBool then
-            monitor:Disconnect()
-            monitor = nil
+        if not monitorIdBool or not monitor then
+            if monitor then
+                monitor:Disconnect()
+                monitor = nil
+            end
             return
         end
 
@@ -139,8 +143,10 @@ local function monitorId(playerName)
         if not plr then 
             CreateNotification("Error: Invalid Player argument!", Color3.new(255, 0, 0), 2.5)
             monitorIdBool = false
-            monitor:Disconnect()
-            monitor = nil
+            if monitor then
+                monitor:Disconnect()
+                monitor = nil
+            end
             return
         end
 
@@ -153,12 +159,17 @@ local function monitorId(playerName)
         -- Fetch the player's current ID
         local id = FetchCurrentId(workspace.Map, plr)
 
-        -- ✅ If the ID no longer exists, STOP monitoring and notify the user
+        -- ✅ If the ID no longer exists, STOP monitoring and notify ONCE
         if not id then
-            CreateNotification("Error: Could not find "..plr.Name.."'s ID. Stopping monitoring!", Color3.new(255, 0, 0), 5)
+            if not idMissingNotified then
+                idMissingNotified = true
+                CreateNotification("Error: Could not find "..plr.Name.."'s ID. Stopping monitoring!", Color3.new(255, 0, 0), 5)
+            end
             monitorIdBool = false
-            monitor:Disconnect()
-            monitor = nil
+            if monitor then
+                monitor:Disconnect()
+                monitor = nil
+            end
             return
         end
 

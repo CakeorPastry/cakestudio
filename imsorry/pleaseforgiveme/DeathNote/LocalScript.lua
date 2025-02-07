@@ -244,7 +244,6 @@ function ProcessCommand(command)
         if idsAmount == 0 then
             CreateNotification("No IDs found...", Color3.new(255, 0, 0), 2.5)
         end
-    end
 
     elseif mainCmd == "/abortidtp" or mainCmd == "/unidtp" then
         CanTP = false

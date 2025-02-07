@@ -114,6 +114,7 @@ local function monitorId(playerName)
     monitorIdBool = true
     local lastClosestPlayer = nil
     local lastNotificationTime = 0
+    local hasUpdatedMonitorMessage = false  -- ✅ Prevents spamming the "Monitoring ID for ..." message
 
     -- Initial "Monitoring ID..." message
     CreateNotification("Monitoring ID...", Color3.new(0, 255, 0), 2.5)
@@ -143,30 +144,40 @@ local function monitorId(playerName)
             return
         end
 
-        -- Update the notification once when the player is found
-        if lastNotificationTime == 0 then
+        -- ✅ Only show "Monitoring ID for ..." once
+        if not hasUpdatedMonitorMessage then
+            hasUpdatedMonitorMessage = true
             CreateNotification("Monitoring ID for "..plr.Name.."...", Color3.new(0, 255, 0), 2.5)
         end
 
         -- Fetch the player's current ID
         local id = FetchCurrentId(workspace.Map, plr)
-        if id then
-            local closestPlayerData = closestPlayerAtPos(id.Position)
-            if closestPlayerData then
-                local closestPlayer = closestPlayerData["Closest"]
-                local distance = math.floor(closestPlayerData["Distance"])
 
-                -- Notify every 5 seconds only if the closest player changes
-                if closestPlayer ~= lastClosestPlayer or (tick() - lastNotificationTime) >= 5 then
-                    lastNotificationTime = tick()
-                    lastClosestPlayer = closestPlayer
+        -- ✅ If the ID no longer exists, STOP monitoring and notify the user
+        if not id then
+            CreateNotification("Error: Could not find "..plr.Name.."'s ID. Stopping monitoring!", Color3.new(255, 0, 0), 5)
+            monitorIdBool = false
+            monitor:Disconnect()
+            monitor = nil
+            return
+        end
 
-                    CreateNotification(
-                        "Closest player to "..plr.Name.."'s ID is "..closestPlayer.Name.." ("..distance.." studs). Use \"/unmonitorid\" to stop.",
-                        Color3.new(0, 255, 0),
-                        5
-                    )
-                end
+        -- Find the closest player
+        local closestPlayerData = closestPlayerAtPos(id.Position)
+        if closestPlayerData then
+            local closestPlayer = closestPlayerData["Closest"]
+            local distance = math.floor(closestPlayerData["Distance"])
+
+            -- ✅ Notify every 5 seconds only if the closest player changes
+            if closestPlayer ~= lastClosestPlayer or (tick() - lastNotificationTime) >= 5 then
+                lastNotificationTime = tick()
+                lastClosestPlayer = closestPlayer
+
+                CreateNotification(
+                    "Closest player to "..plr.Name.."'s ID is "..closestPlayer.Name.." ("..distance.." studs). Use \"/unmonitorid\" to stop.",
+                    Color3.new(0, 255, 0),
+                    5
+                )
             end
         end
     end)

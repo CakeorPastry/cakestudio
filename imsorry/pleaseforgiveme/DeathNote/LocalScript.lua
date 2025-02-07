@@ -224,7 +224,7 @@ function ProcessCommand(command)
         if CurrentUserId and Character then
             TP(Character, CurrentUserId)
         else
-            CreateNotification("Your ID couldn't be found in the game", Color3.new(255, 0, 0), 2.5)
+            CreateNotification("Your ID couldn't be found in the game.", Color3.new(255, 0, 0), 2.5)
         end
 
     elseif mainCmd == "/idtp" then
@@ -263,14 +263,16 @@ function ProcessCommand(command)
     elseif mainCmd == "/fiddlewithprompts" then
         FiddleWithPrompts(workspace.Map)
         FiddleWithAllPrompts()
-        CreateNotification("All prompts can be interacted in an instant, from any distance. This command is automatically executed when the script gets loaded.", Color3.new(0, 255, 0), 2.5)
+        CreateNotification("All prompts can be interacted in an instant and from any distance. This command is automatically executed when the script gets loaded.", Color3.new(0, 255, 0), 5)
 
     
     elseif mainCmd == "/closestplayer" then
         local closestPlayerRaw = closestPlayerAtPos(Character.HumanoidRootPart.Position)
         local closestPlayer, closestPlayerDistance = closestPlayerRaw["Closest"], closestPlayerRaw["Distance"]
         if closestPlayer then
-            CreateNotification("The closest player to your current location is "..closestPlayer.Name.." and the distance is "..math.floor(closestPlayerDistance).." studs.", Color3.new(0, 255, 0), 5)
+            task.spawn(function() 
+                CreateNotification("The closest player to your current location is "..closestPlayer.Name.." and the distance is "..math.floor(closestPlayerDistance).." studs.", Color3.new(0, 255, 0), 5)
+            end)
             if tweenParam and closestPlayer.Character and closestPlayer.Character:FindFirstChild("HumanoidRootPart") then
                 TP(Character, closestPlayer.Character.HumanoidRootPart, true)
             end

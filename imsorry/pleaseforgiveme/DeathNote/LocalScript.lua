@@ -34,14 +34,14 @@ end
 
 function FindPlayer(playerName)
     for _, plr in Players:GetPlayers() do
-        print("Current Player:"..plr.Name)
+        -- print("Current Player:"..plr.Name)
         if string.lower(plr.Name) == string.lower(playerName) then
             print(plr, plr.Name)
             return plr
         end
-        warn(string.lower(plr.Name).." isn't the same as "..playerName)
+        -- warn(string.lower(plr.Name).." isn't the same as "..playerName)
     end
-    print("FindPlayer() function returned nil")
+     -- print("FindPlayer() function returned nil")
     return nil
 end
 
@@ -119,7 +119,7 @@ local function monitorId(playerName)
     local idMissingNotified = false  -- ✅ Prevents spamming "ID not found" message
 
     -- Initial "Monitoring ID..." message
-    CreateNotification("Monitoring ID...", Color3.new(0, 255, 0), 2.5)
+    CreateNotification("Monitoring ID...", Color3.new(255, 255, 0), 2.5)
 
     monitor = RunService.Heartbeat:Connect(function()
         if not monitorIdBool or not monitor then
@@ -219,30 +219,40 @@ function ProcessCommand(command)
     elseif mainCmd == "/idtp" then
         CanTP = true
         local idsAmount = 0
-        local playerCFrame = Character.HumanoidRootPart.CFrame
+        local playerCFrame = Character and Character:FindFirstChild("HumanoidRootPart") and Character.HumanoidRootPart.CFrame
+
+        if not playerCFrame then
+            CreateNotification("Error: Character missing HumanoidRootPart!", Color3.new(255, 0, 0), 2.5)
+        return
+       end
+
         for _, player in Players:GetPlayers() do
             if not CanTP then break end
+
             local ID = FetchCurrentId(workspace.Map, player)
-            if ID and Character then
+            if ID then
                 TP(Character, ID, tweenParam and true or false)
                 idsAmount = idsAmount + 1
-                task.wait(2)
-            end
-            if spookParam then
-                Character.HumanoidRootPart.CFrame = playerCFrame
-            end
+                task.wait(2)  -- ✅ Only waits if an ID was found
+             end
+          end
+
+        if spookParam and playerCFrame then
+            Character.HumanoidRootPart.CFrame = playerCFrame  -- ✅ Only runs once, outside the loop
         end
+
         if idsAmount == 0 then
             CreateNotification("No IDs found...", Color3.new(255, 0, 0), 2.5)
         end
-        idsAmount = 0
+    end
 
-    elseif mainCmd == "/abortidtp" then
+    elseif mainCmd == "/abortidtp" or mainCmd == "/unidtp" then
         CanTP = false
         CreateNotification("Aborted ID Teleport", Color3.new(0, 255, 0), 2.5)
 
     elseif mainCmd == "/fiddlewithprompts" then
         FiddleWithPrompts(workspace.Map)
+        CreateNotification("All prompts can be interacted with from any distance, in an instant.", Color3.new(0, 255, 0), 2.5)
 
     elseif mainCmd == "/closestplayer" then
         local closestPlayerRaw = closestPlayerAtPos(Character.HumanoidRootPart.Position)
@@ -253,7 +263,7 @@ function ProcessCommand(command)
                 TP(Character, closestPlayer.Character.HumanoidRootPart, true)
             end
         else
-            CreateNotification("No players found", Color3.new(255, 0, 0), 2.5)
+            CreateNotification("No players found.", Color3.new(255, 0, 0), 2.5)
         end
 
     elseif mainCmd == "/monitorid" then
@@ -267,10 +277,10 @@ function ProcessCommand(command)
     elseif mainCmd == "/unmonitorid" then
         monitorIdBool = false
         monitor = nil
-        CreateNotification("Monitor ID has been disabled", Color3.new(0, 255, 0), 5)
+        CreateNotification("Monitor ID has been disabled.", Color3.new(0, 255, 0), 5)
    
     elseif mainCmd == "/notification" then
-        CreateNotification("Hello, Notification Test", Color3.new(0, 255, 0), 5)
+        CreateNotification("Hello, Notification Test.", Color3.new(0, 255, 0), 5)
     end
 end
 

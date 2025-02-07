@@ -111,43 +111,62 @@ local function monitorId(playerName)
         monitor:Disconnect()  -- Prevent multiple monitors running
     end
 
-    -- Start the monitoring loop, fetching the current ID in the Heartbeat
-    local samePlayer = nil
+    monitorIdBool = true
+    local lastClosestPlayer = nil
+    local lastNotificationTime = 0
+
+    -- Initial "Monitoring ID..." message
+    CreateNotification("Monitoring ID...", Color3.new(0, 255, 0), 2.5)
+
     monitor = RunService.Heartbeat:Connect(function()
         if not monitorIdBool then
             monitor:Disconnect()
-            return
-        end
-
-        -- Find player using either player object or player name
-        local plr = nil
-        if typeof(playerName) == "string" then
-            plr = FindPlayer(playerName)  -- If it's a name string, find the player object
-        elseif typeof(playerName) == "Instance" and playerName:IsA("Player") then
-            plr = playerName  -- If it's already a player object, use it directly
-        else
-            plr = Player
-        end
-
-        -- If player is not found, exit the function
-        if not plr then 
-            task.spawn(function() 
-                CreateNotification("There was an error with the \"Player\" argument you provided", Color3.new(255, 0, 0), 2.5)
-            end)
-            monitor:Disconnect()
-            monitorIdBool = false
             monitor = nil
             return
         end
 
-        -- Fetch the current ID
+        -- Ensure we always have a valid player object
+        local plr = nil
+        if typeof(playerName) == "string" then
+            plr = FindPlayer(playerName)
+        elseif typeof(playerName) == "Instance" and playerName:IsA("Player") then
+            plr = playerName
+        end
+        plr = plr or Player -- Default to LocalPlayer if nil
+
+        -- If player is still nil, stop monitoring
+        if not plr then 
+            CreateNotification("Error: Invalid Player argument!", Color3.new(255, 0, 0), 2.5)
+            monitorIdBool = false
+            monitor:Disconnect()
+            monitor = nil
+            return
+        end
+
+        -- Update the notification once when the player is found
+        if lastNotificationTime == 0 then
+            CreateNotification("Monitoring ID for "..plr.Name.."...", Color3.new(0, 255, 0), 2.5)
+        end
+
+        -- Fetch the player's current ID
         local id = FetchCurrentId(workspace.Map, plr)
         if id then
-            -- Find the closest player at the current ID position
-            local closestPlayerRaw = closestPlayerAtPos(id.Position)
-            if closestPlayerRaw and closestPlayerRaw["Closest"] ~= samePlayer then
-                CreateNotification("The closest player to "..plr.Name.."'s ID is "..closestPlayerRaw["Closest"].Name.." and the distance is "..math.floor(closestPlayerRaw["Distance"])..' studs\n"/unmonitorid to stop this.\nDone bro', Color3.new(0, 255, 0), 10)
-                samePlayer = closestPlayerRaw["Closest"]
+            local closestPlayerData = closestPlayerAtPos(id.Position)
+            if closestPlayerData then
+                local closestPlayer = closestPlayerData["Closest"]
+                local distance = math.floor(closestPlayerData["Distance"])
+
+                -- Notify every 5 seconds only if the closest player changes
+                if closestPlayer ~= lastClosestPlayer or (tick() - lastNotificationTime) >= 5 then
+                    lastNotificationTime = tick()
+                    lastClosestPlayer = closestPlayer
+
+                    CreateNotification(
+                        "Closest player to "..plr.Name.."'s ID is "..closestPlayer.Name.." ("..distance.." studs). Use \"/unmonitorid\" to stop.",
+                        Color3.new(0, 255, 0),
+                        5
+                    )
+                end
             end
         end
     end)
@@ -211,9 +230,10 @@ function ProcessCommand(command)
 
     elseif mainCmd == "/monitorid" then
         monitorIdBool = true
-        task.spawn(function() 
+        --[[ task.spawn(function() 
             CreateNotification("Monitoring Id...", Color3.new(0, 255, 0), 2.5)
         end)
+        ]]
         monitorId(firstParam)
     elseif mainCmd == "/unmonitorid" then
         monitorIdBool = false

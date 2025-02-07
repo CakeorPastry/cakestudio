@@ -34,9 +34,10 @@ end
 
 function FindPlayer(playerName)
     for _, plr in Players:GetPlayers() do
+        local plrName = string.lower(playerName)
         -- print("Current Player:"..plr.Name)
-        if string.lower(plr.Name) == string.lower(playerName) then
-            print(plr, plr.Name)
+        if string.lower(plr.Name) == plrName or string.lower(plr.DisplayName) == plrName then
+            -- print(plr, plr.Name)
             return plr
         end
         -- warn(string.lower(plr.Name).." isn't the same as "..playerName)
@@ -88,6 +89,16 @@ local function FiddleWithPrompts(Map)
                 v.IdPrompt.MaxActivationDistance = math.huge
                 v.IdPrompt.RequiresLineOfSight = false
             end
+        end
+    end
+end
+
+local function FiddleWithAllPrompts()
+    for _, v in workspace:GetDescendants() do
+        if v:IsA("ProximityPrompt") then
+            v.HoldDuration = 0
+            v.MaxActivationDistance = math.huge
+            v.RequiresLineOfSight = false
         end
     end
 end
@@ -153,7 +164,7 @@ local function monitorId(playerName)
         -- ✅ Only show "Monitoring ID for ..." once
         if not hasUpdatedMonitorMessage then
             hasUpdatedMonitorMessage = true
-            CreateNotification("Monitoring ID for "..plr.Name.."...", Color3.new(0, 255, 0), 2.5)
+            CreateNotification("Monitoring ID for "..plr.Name.."...", Color3.new(255, 255, 0), 2.5)
         end
 
         -- Fetch the player's current ID
@@ -213,7 +224,7 @@ function ProcessCommand(command)
         if CurrentUserId and Character then
             TP(Character, CurrentUserId)
         else
-            Notify("ID Not Found", "Your ID couldn't be found in the game", 5, "💀")
+            CreateNotification("Your ID couldn't be found in the game", Color3.new(255, 0, 0), 2.5)
         end
 
     elseif mainCmd == "/idtp" then
@@ -247,12 +258,14 @@ function ProcessCommand(command)
 
     elseif mainCmd == "/abortidtp" or mainCmd == "/unidtp" then
         CanTP = false
-        CreateNotification("Aborted ID Teleport", Color3.new(0, 255, 0), 2.5)
+        CreateNotification("Aborted ID Teleport.", Color3.new(0, 255, 0), 2.5)
 
     elseif mainCmd == "/fiddlewithprompts" then
         FiddleWithPrompts(workspace.Map)
-        CreateNotification("All prompts can be interacted with from any distance, in an instant.", Color3.new(0, 255, 0), 2.5)
+        FiddleWithAllPrompts()
+        CreateNotification("All prompts can be interacted in an instant, from any distance. This command is automatically executed when the script gets loaded.", Color3.new(0, 255, 0), 2.5)
 
+    
     elseif mainCmd == "/closestplayer" then
         local closestPlayerRaw = closestPlayerAtPos(Character.HumanoidRootPart.Position)
         local closestPlayer, closestPlayerDistance = closestPlayerRaw["Closest"], closestPlayerRaw["Distance"]
@@ -422,5 +435,7 @@ end)
 
 -- 🎉 Notify Script Loaded
 Notify("Script Loaded", "Fixed GUI dragging & improved ID monitoring!", 10, "thank you my goat")
+FiddleWithPrompts(workspace.Map)
+FiddleWithAllPrompts() 
 CreateNotification("NIKHIL_FBI is raiding your house!", Color3.new(255, 0, 0), 5)
 PlaySound() 

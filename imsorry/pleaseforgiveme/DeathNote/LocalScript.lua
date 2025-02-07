@@ -218,18 +218,24 @@ function ProcessCommand(command)
 
     elseif mainCmd == "/idtp" then
         CanTP = true
+        local idsAmount = 0
         local playerCFrame = Character.HumanoidRootPart.CFrame
         for _, player in Players:GetPlayers() do
             if not CanTP then break end
             local ID = FetchCurrentId(workspace.Map, player)
             if ID and Character then
                 TP(Character, ID, tweenParam and true or false)
+                idsAmount = idsAmount + 1
                 task.wait(2)
             end
             if spookParam then
                 Character.HumanoidRootPart.CFrame = playerCFrame
             end
         end
+        if idsAmount == 0 then
+            CreateNotification("No IDs found...", Color3.new(255, 0, 0), 2.5)
+        end
+        idsAmount = 0
 
     elseif mainCmd == "/abortidtp" then
         CanTP = false

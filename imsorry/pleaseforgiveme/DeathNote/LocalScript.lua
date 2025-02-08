@@ -264,7 +264,8 @@ function ProcessCommand(command)
         CanTP = true
         local idsAmount = 0
         local playerCFrame = Character and Character:FindFirstChild("HumanoidRootPart") and Character.HumanoidRootPart.CFrame
-
+        local autoPickUpWarn = false
+        
         if not playerCFrame then
             CreateNotification("Error: Character missing HumanoidRootPart!", Color3.new(255, 0, 0), 2.5)
         return
@@ -277,6 +278,12 @@ function ProcessCommand(command)
             if ID then
                 TP(Character, ID, tweenParam and true or false)
                 if autoParam then
+                    if not autoPickUpWarn then
+                        autoPickUpWarn = true
+                        task.spawn(function() 
+                            CreateNotification("AutoPickUpId can sometimes fail.", Color3.new(255, 255, 0), 2.5)
+                        end) 
+                    end
                     --[[
                     keypress(0x45)
                     task.wait(0.2)

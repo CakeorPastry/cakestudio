@@ -80,6 +80,7 @@ local function closestPlayerAtPos(Position)
 end
 
 -- 🎛 Adjusts Prompt Properties
+--[[
 local function FiddleWithPrompts(Map)
     if not Map then return end
     for _, v in Map:GetChildren() do
@@ -92,6 +93,19 @@ local function FiddleWithPrompts(Map)
         end
     end
 end
+]]
+
+local function FiddleWithPrompts(Map) 
+    if not Map then return end
+    for _, v in Map:GetDescendants() do
+        if v.Name == "IdPrompt" or v.Name == "BinPrompt" then
+            v.HoldDuration = 0
+            v.MaxActivationDistance = math.huge
+            v.RequiresLineOfSight = false
+        end
+    end
+end
+
 
 local function FiddleWithAllPrompts()
     for _, v in workspace:GetDescendants() do
@@ -271,10 +285,15 @@ function ProcessCommand(command)
 
     elseif mainCmd == "/fiddlewithprompts" then
         FiddleWithPrompts(workspace.Map)
+        CreateNotification("All main prompts (ID and Search Prompts) can be interacted with in an instant and from any distance. This command is automatically executed when the script gets loaded.", Color3.new(0, 255, 0), 5)
+    elseif mainCmd == "/fiddlewithallprompts" then
         FiddleWithAllPrompts()
-        CreateNotification("All prompts can be interacted in an instant and from any distance. This command is automatically executed when the script gets loaded.", Color3.new(0, 255, 0), 5)
-
-    
+        task.spawn(function() 
+            CreateNotification("All prompts can be interacted with in an instant and from any distance.", Color3.new(0, 255, 0), 5)
+            CreateNotification("This command isn't recommended if you are going to use features like Auto Search and to pick up IDs automatically.", Color3.new(255, 0, 0), 5)
+            CreateNotification("You can use \"/fiddlewithprompts\" to fiddle only the main prompts.", Color3.new(255, 0, 0), 5)
+        end) 
+        
     elseif mainCmd == "/closestplayer" then
         local closestPlayerRaw = closestPlayerAtPos(Character.HumanoidRootPart.Position)
         local closestPlayer, closestPlayerDistance = closestPlayerRaw["Closest"], closestPlayerRaw["Distance"]
@@ -447,6 +466,6 @@ end)
 -- 🎉 Notify Script Loaded
 Notify("Script Loaded", "Fixed GUI dragging & improved ID monitoring!", 10, "thank you my goat")
 FiddleWithPrompts(workspace.Map)
-FiddleWithAllPrompts() 
+-- FiddleWithAllPrompts() 
 CreateNotification("NIKHIL_FBI is raiding your house!", Color3.new(255, 0, 0), 5)
 PlaySound() 

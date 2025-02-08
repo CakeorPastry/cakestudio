@@ -278,6 +278,7 @@ function ProcessCommand(command)
             if ID then
                 TP(Character, ID, tweenParam and true or false)
                 if autoParam then
+                FiddleWithPrompts(workspace.Map)
                     if not autoPickUpWarn then
                         autoPickUpWarn = true
                         task.spawn(function() 

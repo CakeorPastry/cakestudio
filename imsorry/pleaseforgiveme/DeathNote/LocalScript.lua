@@ -117,6 +117,24 @@ local function FiddleWithAllPrompts()
     end
 end
 
+--[[
+local function FillStashListForId()
+    local StashList = {}
+    for _, v in workspace.Map:GetChildren() do
+        if v.Name == "Id" then
+            table.insert(StashList, v)
+        end
+    end 
+    return StashList
+end
+]]
+
+local function AutoKeyPressE()
+    keypress(0x45)
+    task.wait(0.2)      
+    keyrelease(0x45)  
+end
+
 -- 🚀 Teleport Function (With Tweening Support)
 local function TP(target, destination, tween)
     if target and destination and target:FindFirstChild("HumanoidRootPart") then
@@ -259,10 +277,13 @@ function ProcessCommand(command)
             if ID then
                 TP(Character, ID, tweenParam and true or false)
                 if autoParam then
+                    --[[
                     keypress(0x45)
                     task.wait(0.2)
                     keyrelease(0x45)
                     task.wait(0.2)
+                    ]]
+                    AutoKeyPressE()
                 else
                     task.wait(2) -- ✅ Only waits if an ID was found
                 end

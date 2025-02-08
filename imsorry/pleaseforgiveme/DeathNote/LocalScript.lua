@@ -285,12 +285,22 @@ function ProcessCommand(command)
 
     elseif mainCmd == "/fiddlewithprompts" then
         FiddleWithPrompts(workspace.Map)
-        CreateNotification("All main prompts (ID and Search Prompts) can be interacted with in an instant and from any distance. This command is automatically executed when the script gets loaded.", Color3.new(0, 255, 0), 5)
+        task.spawn(function() 
+           CreateNotification("All main prompts (ID and Search Prompts) can be interacted with in an instant and from any distance.", Color3.new(0, 255, 0), 5) 
+        end)
+        task.spawn(function() 
+            CreateNotification("This command is automatically executed when the script gets loaded.", Color3.new(255, 255, 0), 5)
+        end)
+                
     elseif mainCmd == "/fiddlewithallprompts" then
         FiddleWithAllPrompts()
         task.spawn(function() 
             CreateNotification("All prompts can be interacted with in an instant and from any distance.", Color3.new(0, 255, 0), 5)
+        end)
+        task.spawn(function()
             CreateNotification("This command isn't recommended if you are going to use features like Auto Search and to pick up IDs automatically.", Color3.new(255, 0, 0), 5)
+        end) 
+        task.spawn(function()
             CreateNotification("You can use \"/fiddlewithprompts\" to fiddle only the main prompts.", Color3.new(255, 0, 0), 5)
         end) 
         

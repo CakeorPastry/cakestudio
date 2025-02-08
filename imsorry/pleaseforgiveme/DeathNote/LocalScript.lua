@@ -218,6 +218,7 @@ function ProcessCommand(command)
     local fullyLowered = string.lower(command)
     local spookParam = string.find(fullyLowered, "?spook")
     local tweenParam = string.find(fullyLowered, "?tween")
+    local autoParam = string.find(fullyLowered, "?auto")
 
     if mainCmd == "/myid" then
         local CurrentUserId = FetchCurrentId(workspace.Map, Player)
@@ -243,8 +244,16 @@ function ProcessCommand(command)
             local ID = FetchCurrentId(workspace.Map, player)
             if ID then
                 TP(Character, ID, tweenParam and true or false)
+                if autoParam then
+                    keypress(0x45)
+                    task.wait(0.2)
+                    keyrelease(0x45)
+                    task.wait(0.2)
+                else
+                    task.wait(2) -- ✅ Only waits if an ID was found
+                end
                 idsAmount = idsAmount + 1
-                task.wait(2)  -- ✅ Only waits if an ID was found
+                -- task.wait(2)  -- ✅ Only waits if an ID was found
              end
           end
 

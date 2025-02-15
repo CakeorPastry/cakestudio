@@ -3,10 +3,12 @@ local UserInputService = game:GetService("UserInputService")
 local StarterGui = game:GetService("StarterGui")
 local TweenService = game:GetService("TweenService") 
 local RunService = game:GetService("RunService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
+local GamePhase = ReplicatedStorage:WaitForChild("Game"):WaitForChild("GamePhase")
 local CanTP = true
 local monitor = nil
 local monitorIdBool = false
@@ -129,6 +131,16 @@ local function FillStashListForId()
 end
 ]]
 
+local function FillStashListForCrate() 
+    local StashList = {}
+    for _, v in workspace.Map:GetChildren() do
+        if v.Name == "Crate" then
+            table.insert(StashList, v)
+        end
+    end
+    return StashList
+end
+
 local function AutoKeyPressE()
     keypress(0x45)
     task.wait(0.2)      
@@ -237,7 +249,29 @@ local function monitorId(playerName)
     end)
 end
 
--- 📜 Processes User Commands
+function AutoSearch(amountPerSecond, cooldown) 
+    if not GamePhase or GamePhase.Value ~= "Search" or workspace.Map == nil then
+        CreateNotification("Game isn't in searching phase.", Color3.new(255, 0, 0), 5)
+        return
+    end
+    local StashList = FillStashListForCrate() 
+    if StashList then
+        FiddleWithPrompts(workspace.Map)
+        local amount = tonumber(amountPerSecond) or 3
+        local x = 0
+        for i, v in StashList do
+            Character.HumanoidRootPart.CFrame = crate.CFrame * CFrame.new(Vector3.new(0,1,0))
+            AutoKeyPressE()
+            x = x + 1
+            if x >= amount then
+                task.wait(tonumber(cooldown) or 3)
+                x = 0
+            end
+        end
+    end
+end
+
+-- 📜 Process User Commands
 function ProcessCommand(command)
     if command == "" then return end
     if not command:match("^/") then
@@ -246,7 +280,8 @@ function ProcessCommand(command)
 
     local args = string.split(command, " ")
     local mainCmd = string.lower(args[1])
-    local firstParam = string.lower(args[2] or "")
+    
+    local arguments = {table.unpack(args, 2)}
     local fullyLowered = string.lower(command)
     local spookParam = string.find(fullyLowered, "?spook")
     local tweenParam = string.find(fullyLowered, "?tween")
@@ -353,7 +388,7 @@ function ProcessCommand(command)
             CreateNotification("Monitoring Id...", Color3.new(0, 255, 0), 2.5)
         end)
         ]]
-        monitorId(firstParam)
+        monitorId(arguments[1])
         
     elseif mainCmd == "/unmonitorid" then
         monitorIdBool = false
@@ -362,6 +397,11 @@ function ProcessCommand(command)
    
     elseif mainCmd == "/notification" then
         CreateNotification("Hello, Notification Test.", Color3.new(0, 255, 0), 5)
+    
+    elseif mainCmd == "/autosearch" then
+        local amountPerSecond = arguments[1]
+        local cooldown = arguments[2]
+        AutoSearch(amountPerSecond, cooldown)
     end
 end
 
@@ -506,5 +546,6 @@ end)
 Notify("Script Loaded", "Fixed GUI dragging & improved ID monitoring!", 10, "thank you my goat")
 FiddleWithPrompts(workspace.Map)
 -- FiddleWithAllPrompts() 
-CreateNotification("NIKHIL_FBI is raiding your house!", Color3.new(255, 0, 0), 5)
-PlaySound() 
+-- CreateNotification("NIKHIL_FBI is raiding your house!", Color3.new(255, 0, 0), 5)
+CreateNotification("Ниггер", Color3.new(0, 255, 0), 5)
+-- PlaySound() 

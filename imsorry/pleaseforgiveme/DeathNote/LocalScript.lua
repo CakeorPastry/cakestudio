@@ -137,7 +137,7 @@ end
 
 local function FillStashListForCrate() 
     local StashList = {}
-    for _, v in workspace.Map:GetChildren() do
+    for _, v in workspace.Map:GetDescendants() do
         if v.Name == "Crate" then
             table.insert(StashList, v)
         end

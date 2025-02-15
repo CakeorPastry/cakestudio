@@ -250,6 +250,7 @@ local function monitorId(playerName)
 end
 
 function AutoSearch(amountPerSecond, cooldown) 
+    CanSearch = true
     if not GamePhase or GamePhase.Value ~= "Search" or workspace.Map == nil then
         CreateNotification("Game isn't in searching phase.", Color3.new(255, 0, 0), 5)
         return
@@ -259,9 +260,16 @@ function AutoSearch(amountPerSecond, cooldown)
         FiddleWithPrompts(workspace.Map)
         local amount = tonumber(amountPerSecond) or 3
         local x = 0
-        for i, crate in StashList do
+        for i, v in StashList do
+            if not CanSearch then break end
             Character.HumanoidRootPart.CFrame = crate.CFrame * CFrame.new(Vector3.new(0,1,0))
             AutoKeyPressE()
+            local Hint = GameUI.Hint:FindFirstChild("TextLabel")
+            local findMessage = string.find(string.lower(Hint.Text), "you have f")
+            if Hint and findMessage then 
+                CanSearch = false
+                break 
+            end
             x = x + 1
             if x >= amount then
                 task.wait(tonumber(cooldown) or 3)
@@ -399,9 +407,14 @@ function ProcessCommand(command)
         CreateNotification("Hello, Notification Test.", Color3.new(0, 255, 0), 5)
     
     elseif mainCmd == "/autosearch" then
+        CanSearch = true
         local amountPerSecond = arguments[1]
         local cooldown = arguments[2]
         AutoSearch(amountPerSecond, cooldown)
+   
+    elseif mainCmd == "/unautosearch" or mainCmd == "/abortautosearch" then
+        CanSearch = false
+        CreateNotification("Aborted Auto Search", Color3.new(0, 255, 0), 2.5)
     end
 end
 

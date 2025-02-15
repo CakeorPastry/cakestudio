@@ -5,13 +5,17 @@ local TweenService = game:GetService("TweenService")
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
+
+local GameUI = Player.PlayerGui.GameUI
 local GamePhase = ReplicatedStorage:WaitForChild("Game"):WaitForChild("GamePhase")
+
 local CanTP = true
 local monitor = nil
 local monitorIdBool = false
+
+local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 
 -- 🔔 Notification Function
 function Notify(title, text, duration, button1)

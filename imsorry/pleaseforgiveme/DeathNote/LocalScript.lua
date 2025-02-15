@@ -259,31 +259,37 @@ function AutoSearch(amountPerSecond, cooldown)
         CreateNotification("Game isn't in searching phase.", Color3.new(255, 0, 0), 5)
         return
     end
-    local StashList = FillStashListForCrate() 
+
+    local StashList = FillStashListForCrate()
     if StashList then
         FiddleWithPrompts(workspace.Map)
         local amount = tonumber(amountPerSecond) or 3
-        local x = 0
-        for i, crate in StashList do
+        local delay = tonumber(cooldown) or 3
+        local searchCount = 0
+
+        for _, crate in ipairs(StashList) do
             if not CanSearch then break end
-            Character.HumanoidRootPart.CFrame = crate.CFrame * CFrame.new(Vector3.new(0,1,0))
+
+            -- Move to crate and search
+            Character.HumanoidRootPart.CFrame = crate.CFrame * CFrame.new(0, 1, 0)
             AutoKeyPressE()
+
             local HintText = GameUI.Hint:FindFirstChild("TextLabel")
-            local findMessage
-            if Hint then
-                findMessage = string.find(string.lower(HintText.Text), "you have f")
-            end
-            if findMessage then 
+            if HintText and string.find(string.lower(HintText.Text), "you have f") then
                 CanSearch = false
-                break 
+                break
             end
-            x = x + 1
-            if x >= amount then
-                task.wait(tonumber(cooldown) or 3)
-                x = 0
+
+            searchCount = searchCount + 1
+
+            -- Wait after searching 'amount' of crates
+            if searchCount >= amount then
+                task.wait(delay)
+                searchCount = 0
             end
         end
     end
+
     CreateNotification("AutoSearch completed.", Color3.new(0, 255, 0), 2)
 end
 

@@ -277,6 +277,7 @@ function AutoSearch(amountPerSecond, cooldown)
             end
         end
     end
+    CreateNotification("AutoSearch completed.", Color3.new(0, 255, 0), 2)
 end
 
 -- 📜 Process User Commands

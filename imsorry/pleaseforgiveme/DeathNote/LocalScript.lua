@@ -20,7 +20,12 @@ local monitorIdBool = false
 local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 
 local function getPath(destination) 
-    local path = PathfindingService:CreatePath()
+    local pathParams = {
+        ["AgentHeight"] = 6,
+        ["AgentRadius"] = 2,
+        ["AgentCanJump"] = true
+    }
+    local path = PathfindingService:CreatePath(pathParams)
     
     path:ComputeAsync(Character.HumanoidRootPart.Position, destination.Position)
     
@@ -272,7 +277,7 @@ local function monitorId(playerName)
     end)
 end
 
-function AutoSearch(amountPerSecond, cooldown) 
+function AutoSearchExploit(amountPerSecond, cooldown) 
     CanSearch = true
     if not GamePhase or GamePhase.Value ~= "Search" or workspace.Map == nil then
         CreateNotification("Game isn't in searching phase.", Color3.new(255, 0, 0), 5)
@@ -286,7 +291,7 @@ function AutoSearch(amountPerSecond, cooldown)
         local delay = tonumber(cooldown) or 3
         local searchCount = 0
 
-        for _, crate in ipairs(StashList) do
+        for _, crate in StashList do
             if not CanSearch then break end
 
             -- Move to crate and search
@@ -294,7 +299,7 @@ function AutoSearch(amountPerSecond, cooldown)
             AutoKeyPressE()
 
             local HintText = GameUI.Hint:FindFirstChild("TextLabel")
-            if HintText and string.find(string.lower(HintText.Text), "you have f") then
+            if (HintText and string.find(string.lower(HintText.Text), "you have f")) or (not CanSearch) or (GamePhase.Value ~= "Search") then
                 CanSearch = false
                 break
             end
@@ -306,6 +311,42 @@ function AutoSearch(amountPerSecond, cooldown)
                 task.wait(delay)
                 searchCount = 0
             end
+        end
+    end
+
+    CreateNotification("AutoSearch completed.", Color3.new(0, 255, 0), 2)
+end
+
+function AutoSearchLegit()
+    CanSearch = true
+    if not GamePhase or GamePhase.Value ~= "Search" or workspace.Map == nil then
+        CreateNotification("Game isn't in searching phase.", Color3.new(255, 0, 0), 5)
+        return
+    end
+
+    local StashList = FillStashListForCrate()
+    if StashList then
+        FiddleWithPrompts(workspace.Map)
+        -- local amount = tonumber(amountPerSecond) or 3
+        -- local delay = tonumber(cooldown) or 3
+        local delay = 0.5
+        -- local searchCount = 0
+
+        for _, crate in StashList do
+            if not CanSearch then break end
+
+            -- Move to crate and search
+            walkTo(crate)
+            AutoKeyPressE()
+            task.wait(delay)
+
+            local HintText = GameUI.Hint:FindFirstChild("TextLabel")
+            if (HintText and string.find(string.lower(HintText.Text), "you have f")) or (not CanSearch) or (GamePhase.Value ~= "Search") then
+                CanSearch = false
+                break
+            end
+
+            -- searchCount = searchCount + 1
         end
     end
 
@@ -443,8 +484,12 @@ function ProcessCommand(command)
         CanSearch = true
         local amountPerSecond = arguments[1]
         local cooldown = arguments[2]
-        AutoSearch(amountPerSecond, cooldown)
-   
+        if amountPerSecond and cooldown then
+            AutoSearchExploit(amountPerSecond, cooldown)
+        else
+            AutoSearchLegit() 
+        end
+        
     elseif mainCmd == "/unautosearch" or mainCmd == "/abortautosearch" then
         CanSearch = false
         CreateNotification("Aborted Auto Search", Color3.new(0, 255, 0), 2.5)

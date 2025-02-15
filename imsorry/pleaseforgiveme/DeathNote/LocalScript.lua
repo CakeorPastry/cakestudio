@@ -4,9 +4,11 @@ local StarterGui = game:GetService("StarterGui")
 local TweenService = game:GetService("TweenService") 
 local RunService = game:GetService("RunService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local PathfindingService = game:GetService("PathfindingService")
 
 local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait()
+local Humanoid = Character:WaitForChild("Humanoid")
 
 local GameUI = Player.PlayerGui.GameUI
 local GamePhase = ReplicatedStorage:WaitForChild("Game"):WaitForChild("GamePhase")
@@ -16,6 +18,23 @@ local monitor = nil
 local monitorIdBool = false
 
 local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
+
+local function getPath(destination) 
+    local path = PathfindingService:CreatePath()
+    
+    path:ComputeAsync(Character.HumanoidRootPart.Position, destination.Position)
+    
+    return path
+end
+
+local function walkTo(destination)
+    local path = getPath(destination)
+
+    for index, waypoint in pairs(path:GetWaypoints()) do
+        Humanoid:MoveTo(waypoint.Position)
+        Humanoid.MoveToFinished:Wait() 
+    end
+end
 
 -- 🔔 Notification Function
 function Notify(title, text, duration, button1)

@@ -317,6 +317,21 @@ function AutoSearchExploit(amountPerSecond, cooldown)
     CreateNotification("AutoSearch completed.", Color3.new(0, 255, 0), 2)
 end
 
+local function getClosestCrate(stashList)
+    local closestCrate = nil
+    local shortestDistance = math.huge
+    local playerPosition = Character.HumanoidRootPart.Position
+
+    for _, crate in pairs(stashList) do
+        local distance = (playerPosition - crate.Position).magnitude
+        if distance < shortestDistance then
+            shortestDistance = distance
+            closestCrate = crate
+        end
+    end
+    return closestCrate
+end
+
 function AutoSearchLegit()
     CanSearch = true
     if not GamePhase or GamePhase.Value ~= "Search" or workspace.Map == nil then
@@ -324,29 +339,35 @@ function AutoSearchLegit()
         return
     end
 
-    local StashList = FillStashListForCrate()
-    if StashList then
+    local stashList = FillStashListForCrate()
+    if stashList then
         FiddleWithPrompts(workspace.Map)
-        -- local amount = tonumber(amountPerSecond) or 3
-        -- local delay = tonumber(cooldown) or 3
         local delay = 0.5
-        -- local searchCount = 0
 
-        for _, crate in StashList do
-            if not CanSearch then break end
+        while CanSearch and GamePhase.Value == "Search" and #stashList > 0 do
+            local closestCrate = getClosestCrate(stashList)
+            if not closestCrate then break end
 
             -- Move to crate and search
-            walkTo(crate)
-            AutoKeyPressE()
-            task.wait(delay)
+            if walkTo(closestCrate) then
+                AutoKeyPressE()
+                task.wait(delay)
 
-            local HintText = GameUI.Hint:FindFirstChild("TextLabel")
-            if (HintText and string.find(string.lower(HintText.Text), "you have f")) or (not CanSearch) or (GamePhase.Value ~= "Search") then
-                CanSearch = false
-                break
+                local hintText = GameUI.Hint:FindFirstChild("TextLabel")
+                local hintLower = hintText and string.lower(hintText.Text) or ""
+                if string.find(hintLower, "you have f") or GamePhase.Value ~= "Search" then
+                    CanSearch = false
+                    break
+                end
             end
 
-            -- searchCount = searchCount + 1
+            -- Remove searched crate from list
+            for i, crate in pairs(stashList) do
+                if crate == closestCrate then
+                    table.remove(stashList, i)
+                    break
+                end
+            end
         end
     end
 

@@ -268,9 +268,12 @@ function AutoSearch(amountPerSecond, cooldown)
             if not CanSearch then break end
             Character.HumanoidRootPart.CFrame = crate.CFrame * CFrame.new(Vector3.new(0,1,0))
             AutoKeyPressE()
-            local Hint = GameUI.Hint:FindFirstChild("TextLabel")
-            local findMessage = string.find(string.lower(Hint.Text), "you have f")
-            if Hint and findMessage then 
+            local HintText = GameUI.Hint:FindFirstChild("TextLabel")
+            local findMessage
+            if Hint then
+                findMessage = string.find(string.lower(HintText.Text), "you have f")
+            end
+            if findMessage then 
                 CanSearch = false
                 break 
             end

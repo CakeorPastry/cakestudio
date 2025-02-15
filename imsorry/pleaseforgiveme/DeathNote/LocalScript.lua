@@ -259,7 +259,7 @@ function AutoSearch(amountPerSecond, cooldown)
         FiddleWithPrompts(workspace.Map)
         local amount = tonumber(amountPerSecond) or 3
         local x = 0
-        for i, v in StashList do
+        for i, crate in StashList do
             Character.HumanoidRootPart.CFrame = crate.CFrame * CFrame.new(Vector3.new(0,1,0))
             AutoKeyPressE()
             x = x + 1

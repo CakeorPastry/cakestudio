@@ -1,9 +1,14 @@
 local Players = game:GetService("Players") 
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait() 
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
 local Humanoid = Character:WaitForChild("Humanoid") 
+
+local GameSettings = ReplicatedStorage:WaitForChild("GameSettings")
+local currentLevel = GameSettings:WaitForChild("currentLevel")
+local gamemode = GameSettings:WaitForChild("gamemode")
 
 local exits = {
     [0] = Vector3.new(-902.1170654296875, 11.285065650939941, -92.56808471679688), 
@@ -14,4 +19,5 @@ local exits = {
     [5] = Vector3.new(-609.9652099609375, 10.679997444152832, 3556.015869140625), 
     [6] = Vector3.new(720.712646484375, 6.783085823059082, -2330.336181640625)
 }
+
 

@@ -9,6 +9,8 @@ local Humanoid = Character:WaitForChild("Humanoid")
 local GameSettings = ReplicatedStorage:WaitForChild("GameSettings")
 local currentLevel = GameSettings:WaitForChild("currentLevel")
 local gamemode = GameSettings:WaitForChild("gamemode")
+local infiniteMode = GameSettings:WaitForChild("infinitemode")
+local gameReady = GameSettings:WaitForChild("gameReady")
 
 local exits = {
     [0] = Vector3.new(-902.1170654296875, 11.285065650939941, -92.56808471679688), 

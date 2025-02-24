@@ -30,13 +30,16 @@ local exits = {
 }
 
 local function Start()
-    if not canAuto then
-        return
-    end
+    if not canAuto then return end
     local connection
+    local notifiedExit = false  -- Prevents notification spam
+    local currentTween  -- Holds the active tween to prevent multiple tweens
+
     connection = RunService.Heartbeat:Connect(function()
         if infiniteMode.Value ~= true then
-            CreateNotification("Gamemode isn't Infinity.", Color3.new(255, 0, 0), 5)
+            task.spawn(function()
+                CreateNotification("Gamemode isn't Infinity.", Color3.new(255, 0, 0), 5)
+            end)
             if connection then connection:Disconnect() end
             canAuto = false
             return
@@ -46,27 +49,38 @@ local function Start()
             return
         end
 
-        -- Wait for the game to be ready or a cutscene to start
+        -- Wait until either game is ready OR a cutscene starts
         while gameReady.Value == false and isCutscene.Value == false do
             task.wait(0.1)
         end
 
         -- Skip cutscene if there is one
-        while isCutscene.Value do
-            keypress(0x20)
-            task.wait(0.1)
+        if isCutscene.Value then
+            while isCutscene.Value do
+                keypress(0x20)
+                task.wait(0.1)
+            end
+            task.wait(0.5) -- Small delay after skipping
         end
 
         -- Find exit, default to [1] if not found
         local findLevel = exits[currentLevel.Value] or exits[1]
-        if not exits[currentLevel.Value] then
-            CreateNotification("Exit not found for this level. Going to Exit [1].", Color3.new(255, 255, 0), 5)
+        if not exits[currentLevel.Value] and not notifiedExit then
+            task.spawn(function()
+                CreateNotification("Exit not found for this level. Going to Exit [1].", Color3.new(255, 255, 0), 5)
+            end)
+            notifiedExit = true  -- Prevent repeated notifications
+        end
+
+        -- Stop any previous tween before starting a new one
+        if currentTween then
+            currentTween:Cancel()
         end
 
         -- Move to the exit
-        local Tween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {Position = findLevel})
-        Tween:Play()
-        Tween.Completed:Wait()
+        currentTween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {Position = findLevel})
+        currentTween:Play()
+        currentTween.Completed:Wait()
     end)
 end
 

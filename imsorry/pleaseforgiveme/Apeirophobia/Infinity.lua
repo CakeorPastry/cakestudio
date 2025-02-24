@@ -34,8 +34,13 @@ local function Start()
     local connection
     local notifiedExit = false  -- Prevents notification spam
     local currentTween  -- Holds the active tween to prevent multiple tweens
-
+    
     connection = RunService.Heartbeat:Connect(function()
+        if not canAuto then
+            if connection then connection:Disconnect() end
+            return
+        end
+
         if infiniteMode.Value ~= true then
             task.spawn(function()
                 CreateNotification("Gamemode isn't Infinity.", Color3.new(255, 0, 0), 5)
@@ -44,21 +49,18 @@ local function Start()
             canAuto = false
             return
         end
-        if not canAuto then
-            if connection then connection:Disconnect() end
-            return
-        end
 
-        -- Wait until either game is ready OR a cutscene starts
-        while gameReady.Value == false and isCutscene.Value == false do
+        -- Wait until game is ready or a cutscene starts
+        while not gameReady.Value and not isCutscene.Value do
             task.wait(0.1)
         end
 
-        -- Skip cutscene if there is one
+        -- Handle cutscene skipping
         if isCutscene.Value then
             while isCutscene.Value do
-                keypress(0x20)
-                task.wait(0.1)
+                keypress(0x20) -- Skip cutscene
+                task.wait(0.5)
+                -- task.wait(0.1)
             end
             task.wait(0.5) -- Small delay after skipping
         end
@@ -72,6 +74,11 @@ local function Start()
             notifiedExit = true  -- Prevent repeated notifications
         end
 
+        -- Ensure player is unanchored before moving
+        while HumanoidRootPart.Anchored do
+            task.wait(0.1) -- Wait until the player is unanchored
+        end
+
         -- Stop any previous tween before starting a new one
         if currentTween then
             currentTween:Cancel()
@@ -81,6 +88,22 @@ local function Start()
         currentTween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {Position = findLevel})
         currentTween:Play()
         currentTween.Completed:Wait()
+
+        -- Wait for gameReady to turn false, meaning level transition started
+        while gameReady.Value do
+            task.wait(0.1)
+        end
+
+        -- Wait for respawn and cutscene if any
+        task.wait(0.5) -- Delay before cutscene starts (if applicable)
+        while isCutscene.Value do
+            task.wait(0.1)
+        end
+
+        -- Wait for gameReady to turn true again (new level is ready)
+        while not gameReady.Value do
+            task.wait(0.1)
+        end
     end)
 end
 

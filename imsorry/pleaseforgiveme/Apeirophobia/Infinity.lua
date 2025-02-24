@@ -37,26 +37,21 @@ local function Start()
     connection = RunService.Heartbeat:Connect(function()
         if infiniteMode.Value ~= true then
             CreateNotification("Gamemode isn't Infinity.", Color3.new(255, 0, 0), 5)
-            connection:Disconnect()
+            if connection then connection:Disconnect() end
             canAuto = false
             return
         end
         if not canAuto then
-            connection:Disconnect()
+            if connection then connection:Disconnect() end
             return
         end
 
-        -- Wait for the game to be ready
-        if gameReady.Value == false then
-            return
-        end
-
-        -- Wait for the cutscene to start before spamming keypress
-        while not isCutscene.Value do
+        -- Wait for the game to be ready or a cutscene to start
+        while gameReady.Value == false and isCutscene.Value == false do
             task.wait(0.1)
         end
 
-        -- Skip cutscene
+        -- Skip cutscene if there is one
         while isCutscene.Value do
             keypress(0x20)
             task.wait(0.1)
@@ -74,6 +69,7 @@ local function Start()
         Tween.Completed:Wait()
     end)
 end
+
 
 -- 🔔 Notification Function
 function Notify(title, text, duration, button1)

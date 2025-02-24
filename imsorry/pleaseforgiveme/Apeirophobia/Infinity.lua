@@ -1,12 +1,14 @@
-local Players = game:GetService("Players") 
+local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local StarterGui = game:GetService("StarterGui")
 
 local Player = Players.LocalPlayer
-local Character = Player.Character or Player.CharacterAdded:Wait() 
+local Character = Player.Character or Player.CharacterAdded:Wait()
 local HumanoidRootPart = Character:WaitForChild("HumanoidRootPart")
-local Humanoid = Character:WaitForChild("Humanoid") 
+local Humanoid = Character:WaitForChild("Humanoid")
 
 local GameSettings = ReplicatedStorage:WaitForChild("GameSettings")
 local currentLevel = GameSettings:WaitForChild("currentLevel")
@@ -18,40 +20,58 @@ local canAuto = false
 local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 
 local exits = {
-    [0] = Vector3.new(-902.1170654296875, 11.285065650939941, -92.56808471679688), 
-    [1] = Vector3.new(-793.73486328125, -147.79653930664062, -1067.9468994140625), 
-    [2] = Vector3.new(-652.2662963867188, -308.5695495605469, -2364.93896484375), 
-    [3] = Vector3.new(602.577880859375, 6.558300971984863, -108.53520965576172), 
-    [4] = Vector3.new(-289.4031982421875, 202.6591796875, 1225.1724853515625), 
-    [5] = Vector3.new(-609.9652099609375, 10.679997444152832, 3556.015869140625), 
-    [6] = Vector3.new(720.712646484375, 6.783085823059082, -2330.336181640625)
+    [0] = Vector3.new(-902.117, 11.285, -92.568),
+    [1] = Vector3.new(-793.735, -147.797, -1067.947),
+    [2] = Vector3.new(-652.266, -308.570, -2364.939),
+    [3] = Vector3.new(602.578, 6.558, -108.535),
+    [4] = Vector3.new(-289.403, 202.659, 1225.172),
+    [5] = Vector3.new(-609.965, 10.680, 3556.016),
+    [6] = Vector3.new(720.713, 6.783, -2330.336)
 }
 
-local function Start() 
-    if not canAuto then return end
+local function Start()
+    if not canAuto then
+        return
+    end
     local connection
     connection = RunService.Heartbeat:Connect(function()
         if infiniteMode.Value ~= true then
-            task.spawn(function()
-                CreateNotification("Gamemode isn't Infinity.", Color3.new(255, 0, 0), 5)
-            end)
+            CreateNotification("Gamemode isn't Infinity.", Color3.new(255, 0, 0), 5)
             connection:Disconnect()
             canAuto = false
             return
         end
-        if not canAuto then connection:Disconnect() return end
-        if isCutscene.Value == true then 
-            repeat
-                keypress(0x20)
-                task.wait(0.1)
-            until isCutscene.Value == false
+        if not canAuto then
+            connection:Disconnect()
+            return
         end
-        local findLevel = exits[currentLevel.Value]
-        if findLevel then
-            local Tween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, { Position = findLevel })
-            Tween:Play()
-            Tween.Completed:Wait()
+
+        -- Wait for the game to be ready
+        if gameReady.Value == false then
+            return
         end
+
+        -- Wait for the cutscene to start before spamming keypress
+        while not isCutscene.Value do
+            task.wait(0.1)
+        end
+
+        -- Skip cutscene
+        while isCutscene.Value do
+            keypress(0x20)
+            task.wait(0.1)
+        end
+
+        -- Find exit, default to [1] if not found
+        local findLevel = exits[currentLevel.Value] or exits[1]
+        if not exits[currentLevel.Value] then
+            CreateNotification("Exit not found for this level. Going to Exit [1].", Color3.new(255, 255, 0), 5)
+        end
+
+        -- Move to the exit
+        local Tween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {Position = findLevel})
+        Tween:Play()
+        Tween.Completed:Wait()
     end)
 end
 

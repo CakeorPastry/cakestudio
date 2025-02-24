@@ -1,5 +1,6 @@
 local Players = game:GetService("Players") 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
 
 local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait() 
@@ -11,6 +12,8 @@ local currentLevel = GameSettings:WaitForChild("currentLevel")
 local gamemode = GameSettings:WaitForChild("gamemode")
 local infiniteMode = GameSettings:WaitForChild("infinitemode")
 local gameReady = GameSettings:WaitForChild("gameReady")
+local isCutscene = Character:WaitForChild("Scripts"):WaitForChild("vars"):WaitForChild("isCutscene")
+local canAuto = false
 
 local exits = {
     [0] = Vector3.new(-902.1170654296875, 11.285065650939941, -92.56808471679688), 
@@ -21,6 +24,32 @@ local exits = {
     [5] = Vector3.new(-609.9652099609375, 10.679997444152832, 3556.015869140625), 
     [6] = Vector3.new(720.712646484375, 6.783085823059082, -2330.336181640625)
 }
+
+local function Start() 
+    if not canAuto then return end
+    local connection
+    connection = RunService.Heartbeat:Connect(function()
+        if infiniteMode.Value ~= true then
+            task.spawn(function()
+                CreateNotification("Gamemode isn't Infinity.", Color3.new(255, 0, 0), 5)
+            end)
+            connection:Disconnect()
+            canAuto = false
+            return
+        end
+        if not canAuto then connection:Disconnect() return end
+        if isCutscene.Value == true then 
+            repeat
+                keypress(0x20)
+                task.wait(0.1)
+            until isCutscene.Value == false
+        end
+        local findLevel = exits[currentLevel.Value]
+        if findLevel then
+            -- TODO
+        end
+    end)
+end
 
 -- 🔔 Notification Function
 function Notify(title, text, duration, button1)
@@ -56,6 +85,7 @@ function ProcessCommand(command)
     local fullyLowered = string.lower(command)
 
     if mainCmd == "/start" then
+        canAuto = true
         task.spawn(function()
             CreateNotification("Started Auto Infinity.", Color3.new(0, 255, 0), 5)
         end) 

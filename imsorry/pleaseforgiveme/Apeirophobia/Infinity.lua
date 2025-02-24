@@ -1,6 +1,7 @@
 local Players = game:GetService("Players") 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
+local TweenService = game:GetService("TweenService")
 
 local Player = Players.LocalPlayer
 local Character = Player.Character or Player.CharacterAdded:Wait() 
@@ -14,6 +15,7 @@ local infiniteMode = GameSettings:WaitForChild("infinitemode")
 local gameReady = GameSettings:WaitForChild("gameReady")
 local isCutscene = Character:WaitForChild("Scripts"):WaitForChild("vars"):WaitForChild("isCutscene")
 local canAuto = false
+local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 
 local exits = {
     [0] = Vector3.new(-902.1170654296875, 11.285065650939941, -92.56808471679688), 
@@ -46,7 +48,9 @@ local function Start()
         end
         local findLevel = exits[currentLevel.Value]
         if findLevel then
-            -- TODO
+            local Tween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, { Position = findLevel })
+            Tween:Play()
+            Tween.Completed:Wait()
         end
     end)
 end
@@ -94,7 +98,8 @@ function ProcessCommand(command)
         task.spawn(function()
             CreateNotification("Stopped Auto Infinity.", Color3.new(0, 255, 0), 5)
         end)
-        Stop()
+        --Stop()
+        canAuto = false
     end
 end
 

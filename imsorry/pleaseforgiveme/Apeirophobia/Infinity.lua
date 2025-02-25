@@ -52,6 +52,7 @@ local function Start()
 
         -- Wait until game is ready or a cutscene starts
         while not gameReady.Value and not isCutscene.Value do
+            print("game ain't ready and iscutscene is false")
             task.wait(0.1)
         end
 
@@ -76,32 +77,39 @@ local function Start()
 
         -- Ensure player is unanchored before moving
         while HumanoidRootPart.Anchored do
+            warn("anchored")
             task.wait(0.1) -- Wait until the player is unanchored
         end
 
         -- Stop any previous tween before starting a new one
         if currentTween then
+            warn("stopped tween")
             currentTween:Cancel()
         end
 
         -- Move to the exit
         currentTween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {Position = findLevel})
         currentTween:Play()
+        print("playing")
         currentTween.Completed:Wait()
+        print("done bro")
 
         -- Wait for gameReady to turn false, meaning level transition started
         while gameReady.Value do
+            error("game ready is false, since it's not ready, we r waiting")
             task.wait(0.1)
         end
 
         -- Wait for respawn and cutscene if any
         task.wait(0.5) -- Delay before cutscene starts (if applicable)
         while isCutscene.Value do
+            error("there's no cutscene, so waiting, isCutscene is flase")
             task.wait(0.1)
         end
 
         -- Wait for gameReady to turn true again (new level is ready)
         while not gameReady.Value do
+            print("game isn't ready")
             task.wait(0.1)
         end
     end)

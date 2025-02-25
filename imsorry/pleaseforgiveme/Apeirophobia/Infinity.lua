@@ -84,8 +84,11 @@ local function Start()
 
         -- Move to the exit smoothly
         currentTween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {Position = findLevel})
+        warn("gonna start tween")
         currentTween:Play()
+        warn("started tween", currentTween)
         currentTween.Completed:Wait()
+        error("done bro")
 
         -- Wait for gameReady to turn false (meaning level transition started)
         while gameReady.Value do

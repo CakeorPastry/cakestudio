@@ -31,12 +31,19 @@ local exits = {
 
 local function Start()
     if not canAuto then return end
-    local connection
+
+    -- Ensure only one connection exists
+    if connection then
+        connection:Disconnect()
+        warn("Disconnected old connection to prevent multiple loops.")
+    end
+
     local notifiedExit = false  -- Prevents notification spam
     local currentTween  -- Holds the active tween to prevent multiple tweens
 
     connection = RunService.Heartbeat:Connect(function()
         if not canAuto then
+            warn("Auto mode disabled, stopping...")
             if connection then connection:Disconnect() end
             return
         end
@@ -45,6 +52,7 @@ local function Start()
             task.spawn(function()
                 CreateNotification("Gamemode isn't Infinity.", Color3.new(255, 0, 0), 5)
             end)
+            warn("Gamemode isn't Infinity, stopping auto mode.")
             if connection then connection:Disconnect() end
             canAuto = false
             return
@@ -52,15 +60,18 @@ local function Start()
 
         -- Wait until game is ready or a cutscene starts
         while not gameReady.Value and not isCutscene.Value do
+            warn("Waiting for gameReady or isCutscene...")
             task.wait(0.1)
         end
 
         -- Skip any cutscene automatically
         if isCutscene.Value then
+            warn("Cutscene detected, skipping...")
             repeat
                 keypress(0x20) -- Keep pressing space to skip
                 task.wait(0.1)
             until not isCutscene.Value
+            warn("Cutscene skipped.")
         end
 
         -- Find exit, default to [1] if not found
@@ -70,51 +81,61 @@ local function Start()
                 CreateNotification("Exit not found for this level. Going to Exit [1].", Color3.new(255, 255, 0), 5)
             end)
             notifiedExit = true  -- Prevent repeated notifications
+            warn("Exit not found! Defaulting to Exit [1].")
         end
 
         -- Ensure player is unanchored before moving
         while HumanoidRootPart.Anchored do
+            warn("Player is anchored, waiting to be unanchored...")
             task.wait(0.1) -- Wait until the player is unanchored
         end
 
         -- Stop any previous tween before starting a new one
         if currentTween then
+            warn("Cancelling previous tween before starting a new one.")
             currentTween:Cancel()
+            currentTween = nil
         end
 
         -- Move to the exit smoothly
+        warn("Starting tween to exit position:", findLevel)
         currentTween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {Position = findLevel})
-        warn("gonna start tween")
         currentTween:Play()
-        warn("started tween", currentTween)
+        warn("Tween started:", currentTween)
         currentTween.Completed:Wait()
-        error("done bro")
+        warn("Tween finished!")
 
         -- Wait for gameReady to turn false (meaning level transition started)
         while gameReady.Value do
+            warn("Waiting for level transition (gameReady = false)...")
             task.wait(0.1)
         end
 
         -- Wait for respawn and cutscene loading
         while not gameReady.Value and not isCutscene.Value do
-            task.wait(0.1) -- Wait until the game is ready or a cutscene starts
+            warn("Waiting for next level to load...")
+            task.wait(0.1)
         end
 
-        -- Ensure cutscene is skipped
+        -- Ensure cutscene is skipped after respawn
         if isCutscene.Value then
+            warn("New cutscene detected after respawn, skipping...")
             repeat
                 keypress(0x20) -- Keep pressing space to skip
                 task.wait(0.1)
             until not isCutscene.Value
+            warn("Cutscene skipped after respawn.")
         end
 
         -- Wait for gameReady to turn true again (new level is ready)
         while not gameReady.Value do
+            warn("Waiting for new level to be fully ready...")
             task.wait(0.1)
         end
+        warn("New level is ready! Restarting loop.")
+
     end)
 end
-
 
 -- 🔔 Notification Function
 function Notify(title, text, duration, button1)

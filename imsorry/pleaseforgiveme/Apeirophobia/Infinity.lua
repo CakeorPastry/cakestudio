@@ -34,7 +34,7 @@ local function Start()
     local connection
     local notifiedExit = false  -- Prevents notification spam
     local currentTween  -- Holds the active tween to prevent multiple tweens
-    
+
     connection = RunService.Heartbeat:Connect(function()
         if not canAuto then
             if connection then connection:Disconnect() end
@@ -52,18 +52,15 @@ local function Start()
 
         -- Wait until game is ready or a cutscene starts
         while not gameReady.Value and not isCutscene.Value do
-            print("game ain't ready and iscutscene is false")
             task.wait(0.1)
         end
 
-        -- Handle cutscene skipping
+        -- Skip any cutscene automatically
         if isCutscene.Value then
-            while isCutscene.Value do
-                keypress(0x20) -- Skip cutscene
-                task.wait(0.5)
-                -- task.wait(0.1)
-            end
-            task.wait(0.5) -- Small delay after skipping
+            repeat
+                keypress(0x20) -- Keep pressing space to skip
+                task.wait(0.1)
+            until not isCutscene.Value
         end
 
         -- Find exit, default to [1] if not found
@@ -77,39 +74,39 @@ local function Start()
 
         -- Ensure player is unanchored before moving
         while HumanoidRootPart.Anchored do
-            warn("anchored")
             task.wait(0.1) -- Wait until the player is unanchored
         end
 
         -- Stop any previous tween before starting a new one
         if currentTween then
-            warn("stopped tween")
             currentTween:Cancel()
         end
 
-        -- Move to the exit
+        -- Move to the exit smoothly
         currentTween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {Position = findLevel})
         currentTween:Play()
-        print("playing")
         currentTween.Completed:Wait()
-        print("done bro")
 
-        -- Wait for gameReady to turn false, meaning level transition started
+        -- Wait for gameReady to turn false (meaning level transition started)
         while gameReady.Value do
-            error("game ready is false, since it's not ready, we r waiting")
             task.wait(0.1)
         end
 
-        -- Wait for respawn and cutscene if any
-        task.wait(0.5) -- Delay before cutscene starts (if applicable)
-        while isCutscene.Value do
-            error("there's no cutscene, so waiting, isCutscene is flase")
-            task.wait(0.1)
+        -- Wait for respawn and cutscene loading
+        while not gameReady.Value and not isCutscene.Value do
+            task.wait(0.1) -- Wait until the game is ready or a cutscene starts
+        end
+
+        -- Ensure cutscene is skipped
+        if isCutscene.Value then
+            repeat
+                keypress(0x20) -- Keep pressing space to skip
+                task.wait(0.1)
+            until not isCutscene.Value
         end
 
         -- Wait for gameReady to turn true again (new level is ready)
         while not gameReady.Value do
-            print("game isn't ready")
             task.wait(0.1)
         end
     end)

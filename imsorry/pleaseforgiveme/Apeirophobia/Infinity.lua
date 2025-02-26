@@ -100,11 +100,15 @@ local function Start()
         end
 
         -- Move to the exit
+        --[[
         currentTween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {Position = findLevel})
         warn("Starting tween to exit...")
         currentTween:Play()
         currentTween.Completed:Wait()
+        ]]
+        HumanoidRootPart.Position = findLevel
         warn("Reached exit.")
+        
 
         -- Wait for level transition
         while gameReady.Value do

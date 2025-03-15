@@ -23,9 +23,10 @@
 const urlParams = new URLSearchParams(window.location.search);
 const redirectParamRaw = urlParams.get("redirect") || "/";
 const redirectParam = (redirectParamRaw.startsWith("/") ? redirectParamRaw : "/" + redirectParamRaw);
-const jwtToken = localStorage.getItem("jwtToken");
+const jwtToken = localStorage.getItem("token");
 if (jwtToken) {
-    localStorage.removeItem("jwtToken");
+    // localStorage.removeItem("jwtToken");
+    localStorage.removeItem("token");
 };
 window.location.href = `https://cakeorpastry.netlify.app${redirectParam}`;
 </SCRIPT>

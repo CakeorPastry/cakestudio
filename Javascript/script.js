@@ -1,6 +1,7 @@
 // Define the functions in the global scope so they can be accessed by script B
 function minorErrorMessageHandler(message) {
     const minorErrorMessage = document.getElementById("minorErrorMessage");
+    const sendButton = document.getElementById("sendButton");
 
     if (!minorErrorMessage) { 
         return; 
@@ -8,13 +9,18 @@ function minorErrorMessageHandler(message) {
 
     minorErrorMessage.innerText = message;
     minorErrorMessage.parentNode.parentNode.style.display = "flex";
-    sendButton.disabled = true;
+
+    if (sendButton) {
+        sendButton.disabled = true;
+    };
 
     setTimeout(() => {
-        sendButton.disabled = false;
+        if (sendButton) {
+            sendButton.disabled = false;
+        };
         minorErrorMessage.parentNode.parentNode.style.display = "none";
     }, 3000);
-}
+};
 
 function errorIndicatorImageHandler() {
     const errorIndicatorImage = document.getElementById("errorIndicatorImage");

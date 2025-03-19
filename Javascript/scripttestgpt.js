@@ -10,8 +10,8 @@ document.addEventListener("DOMContentLoaded", async function() {
         const statusCode = document.getElementById("statusCode");
         const statusImage = document.getElementById("statusImage");
         const statusMessage = document.getElementById("statusMessage");
-        const minorErrorMessage = document.getElementById("minorErrorMessage");
-        const errorIndicatorImage = document.getElementById("errorIndicatorImage");
+        // const minorErrorMessage = document.getElementById("minorErrorMessage");
+        // const errorIndicatorImage = document.getElementById("errorIndicatorImage");
         
         sendButton.disabled = false;
         statusMessage.innerText = "Waiting for user's question...";
@@ -96,6 +96,7 @@ ${userInfoDescription}`, 16711680);
     });
 });
 
+/*
 function minorErrorMessageHandler(message) {
     minorErrorMessage.innerText = message;
     minorErrorMessage.parentNode.parentNode.style.display = "flex"
@@ -123,6 +124,7 @@ function errorIndicatorImageHandler() {
         errorIndicatorImage.style.display = "none"; // Hide after fade-out
     }, 2500); // Match this to the fade-out duration (opacity transition time)
 }
+*/
 
 function copyTextToClipboard(copyFrom, copyBtn) {
     const textToCopy = document.getElementById(copyFrom).innerText || "";

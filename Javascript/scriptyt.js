@@ -87,7 +87,10 @@ document.addEventListener("DOMContentLoaded", function () {
     async function checkLink() {
         controller = new AbortController();
         const signal = controller.signal;
+        checkButton.disabled = true;
+        checkLinkInput.disabled = true;
         terminateCheckButton.disabled = false;
+        checkingLink = true;
 
         try {
             const response = await fetch(apiUrl, { signal });
@@ -113,10 +116,16 @@ document.addEventListener("DOMContentLoaded", function () {
             terminateCheckButton.disabled = true;
             controller = null;
         }
+        checkingLink = false;
+        checkButton.disabled = false;
+        checkInput.disabled = false;
     }
 
     // Ignored: Link input handler for enabling/disabling the check button
     linkInput.addEventListener("input", function () {
+        if (checkingLink) {
+            return;
+        }
         checkButton.disabled = linkInput.value.trim() === "";
     });
 

@@ -88,7 +88,7 @@ document.addEventListener("DOMContentLoaded", function () {
         controller = new AbortController();
         const signal = controller.signal;
         checkButton.disabled = true;
-        checkLinkInput.disabled = true;
+        linkInput.disabled = true;
         terminateCheckButton.disabled = false;
         checkingLink = true;
 
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         checkingLink = false;
         checkButton.disabled = false;
-        checkInput.disabled = false;
+        linkInput.disabled = false;
     }
 
     // Ignored: Link input handler for enabling/disabling the check button

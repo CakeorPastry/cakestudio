@@ -18,5 +18,25 @@ document.addEventListener('DOMContentLoaded', function() {
         sendButton.disabled = false;
         minorErrorMessage.parentNode.parentNode.style.display = "none";
     }, 3000)
+};
+
+function errorIndicatorImageHandler() {
+            const errorIndicatorImage = document.getElementById("errorIndicatorImage");
+    if (!errorIndicatorImage) { return; };
+    // Step 1: Make the element visible and start fading in
+    errorIndicatorImage.style.display = "inline-block";  
+    setTimeout(() => {  
+        errorIndicatorImage.style.opacity = 1; // Fade-in
+    }, 10);
+
+    // Step 2: After some time, start fading it out
+    setTimeout(() => {
+        errorIndicatorImage.style.opacity = 0; // Fade-out
+    }, 1500); // This will happen 1.5 seconds after fade-in starts
+
+    // Step 3: After the fade-out is complete (after 2.5 seconds), hide the element
+    setTimeout(() => {
+        errorIndicatorImage.style.display = "none"; // Hide after fade-out
+    }, 2500); // Match this to the fade-out duration (opacity transition time)
 }
 });

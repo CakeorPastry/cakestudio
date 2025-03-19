@@ -4,7 +4,7 @@
 <!-- META TAGS -->
 <meta property="og:title" content="Cake's Studio">
 <meta property="og:description" content="A website made for the funny testing lol. This was made for learning basic coding and has only a few projects.">
-<meta property="og:url" content="https://cakeorpastry.netlify.app/yt">
+<meta property="og:url" content="https://cakeorpastry.netlify.app/bgcolor">
 <meta property="og:image" content="https://cakestudio.onrender.com/assets/favicon">
 <meta property="og:type" content="website">
 <meta charset="UTF-8">
@@ -12,12 +12,12 @@
 <!-- FAVICON -->
 <LINK REL="icon" HREF="/Assets/Studio/favicon.png" TYPE="image/png">
 <!-- STYLESHEETS -->
-<LINK REL="stylesheet" HREF="/CSS/style.css">
+<LINK REL="stylesheet" HREF="https://cakeorpastry.netlify.app/CSS/style.css">
 <!-- SCRIPTS -->
-<SCRIPT SRC="/Javascript/script.js"></SCRIPT>
-<SCRIPT SRC="/Javascript/scriptyt.js"></SCRIPT>
+<SCRIPT SRC="https://cakeorpastry.netlify.app/Javascript/script.js"></SCRIPT>
+<SCRIPT SRC=".js"></SCRIPT>
 <!-- TITLE -->
-<TITLE>YT - Cake's Studio</TITLE>
+<TITLE>BGCOLOR - Cake's Studio</TITLE>
 </HEAD>
 
 <BODY STYLE="/*background: black; color: white;*/">
@@ -27,7 +27,7 @@
 <DIV CLASS="header" ID="top">
 <A HREF="https://cakeorpastry.netlify.app" CLASS="emoji">
 <SPAN CLASS="logo">
-<IMG SRC="/Assets/Studio/favicon.png">
+<IMG SRC="https://cakeorpastry.netlify.app/Assets/Studio/favicon.png">
 </SPAN>
 </A>
 <H2>Cake's Studio</H2>
@@ -35,6 +35,9 @@
 🌙
 </BUTTON>
 </DIV>
+
+<IMG SRC="https://cakeorpastry.netlify.app/Assets/Icons/Error.png" ALT="Error" STYLE="position: fixed; top: 50%; left: 30%; transform: translate(-50%, -50%); height: 150px; width: 150px; display: none; opacity: 0; transition: opacity 1s;" 
+CLASS="animate-bounce" ID="errorIndicatorImage">
 
 <HR SIZE="5" WIDTH="100%" COLOR="BLUE" STYLE="margin-top: 50px;">
     
@@ -45,11 +48,22 @@ YT Video Downloader
 <P><B>
 Enter a youtube video link, click the "Check" button, if the link is working, buttons will show up to download the videos. Click any of the buttons, and the video will be downloaded. 
 </B></P>
+
 <INPUT PLACEHOLDER="Enter Link..." ID="linkInput">
+
+<DIV STYLE="overflow-x: auto; white-space: nowrap; display: none; flex-direction: column; gap: 10px; font-weight: bold;">
+<DIV STYLE="display: flex; align-items: center; gap: 10px;">
+<IMG SRC="https://cakeorpastry.netlify.app/Assets/Icons/Error.png" STYLE="height: 20px; width: 20px;">
+<SPAN ID="minorErrorMessage" STYLE="text-shadow: 0 0 1px white, 0 0 2px white;">No Errors!</SPAN>
+</DIV>
+</DIV>
+
 <BUTTON CLASS="primary-button" DISABLED ID="checkButton">Check Link</BUTTON>
+<BUTTON CLASS="danger-button terminatorButton" DISABLED ID="terminateCheckButton">Terminate</BUTTON>
 
 <DIV STYLE="display: flex; flex-direction: column; margin-top: 20px;">
 <BUTTON CLASS="secondary-button" ID="checkServerButton" STYLE="margin-top: 20px;">Check Server</BUTTON>
+<BUTTON CLASS="danger-button terminatorButton" ID="terminateCheckServerButton" DISABLED STYLE="margin-top: 10px;">Terminate</BUTTON>
 <P ID="checkServerP"><B>Press the button above to check if the server is alive or not.</B></P>
 </DIV>
 </DIV> 

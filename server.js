@@ -99,11 +99,11 @@ Token : ${token}`)
     });
 }
 
-app.get('/', (req, res) => {
+app.get('/', cors(), (req, res) => {
     res.status(200).json({ error: 'Nice try diddy.' });
 });
 
-app.get('/api', (req, res) => {
+app.get('/api', cors(), (req, res) => {
     res.status(400).json({ error: 'Please provide a valid API endpoint.' });
 });
 
@@ -113,7 +113,7 @@ const decancerLimiter = rateLimit({
     message: { error: 'Too many requests. Please wait a few seconds.' },
 });
 
-app.get('/api/decancer', decancerLimiter, (req, res) => {
+app.get('/api/decancer', cors(), decancerLimiter, (req, res) => {
     const username = req.query.username;
 
     if (!username) {
@@ -130,7 +130,7 @@ const dehoistLimiter = rateLimit({
     message: { error: 'Too many requests. Please wait a few seconds.' },
 });
 
-app.get('/api/dehoist', dehoistLimiter, (req, res) => {
+app.get('/api/dehoist', cors(), dehoistLimiter, (req, res) => {
     const queryParams = req.query;
 
     if (Object.keys(queryParams).length === 0) {
@@ -148,7 +148,7 @@ app.get('/api/dehoist', dehoistLimiter, (req, res) => {
     res.json(sanitizedUsernames);
 });
 
-app.get('/api/auth/discord', (req, res) => {
+app.get('/api/auth/discord', cors(), (req, res) => {
     const redirectUri = process.env.DISCORD_REDIRECT_URI;
     const clientId = process.env.DISCORD_CLIENT_ID;
     const scope = 'identify email';
@@ -158,7 +158,7 @@ app.get('/api/auth/discord', (req, res) => {
     res.redirect(discordAuthUrl);
 });
 
-app.get('/api/auth/discord/callback', async (req, res) => {
+app.get('/api/auth/discord/callback', cors(), async (req, res) => {
     const code = req.query.code;
 
     const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
@@ -277,11 +277,11 @@ app.get('/api/ipinfo', restrictedCors, async (req, res) => {
     }
 });
 
-app.get('/assets', (req, res) => {
+app.get('/assets', cors(), (req, res) => {
      res.status(400).json({ error: 'Please provide a valid asset name.' });
 });
 
-app.get('/test-error', (req, res) => {
+app.get('/test-error', cors(), (req, res) => {
   res.render('error', {
     title: 'Test - Cake\'s Studio',
     errorCode: 'TEST',
@@ -290,7 +290,7 @@ app.get('/test-error', (req, res) => {
   });
 });
 
-app.get('/err', (req, res) => {
+app.get('/err', cors(), (req, res) => {
     console.log(LOL);
 });
 
@@ -307,7 +307,7 @@ app.use((err, req, res, next) => {
     });
 });
 
-app.get('*', (req, res) => {
+app.get('*', cors(), (req, res) => {
   console.log(`Wildcard route triggered for URL: ${req.originalUrl}`);
   res.status(404).render('error', {
     title: '404 - Cake\'s Studio',

@@ -324,3 +324,5 @@ UserInputService.InputChanged:Connect(function(input)
         update(input)
     end
 end)
+
+CreateNotification("I hate niggers.", Color3.new(0, 255, 0), 5)

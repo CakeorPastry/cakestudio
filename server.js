@@ -42,6 +42,11 @@ function restrictedCors(req, res, next) {
     }
 }
 
+const ytRoutes = require("/routes/yt");
+
+app.use("/api/yt", cors(), ytRoutes); 
+// All YouTube API under /api/yt
+
 function sanitizeUsername(username) {
     // Store the original username for logging
     const originalUsername = username;

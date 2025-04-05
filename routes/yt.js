@@ -5,7 +5,7 @@ const ytdl = require("ytdl-core");
 // GET /api/yt/info?url=...
 router.get("/info", async (req, res) => {
     const url = req.query.url;
-    x();return;
+
     if (!ytdl.validateURL(url)) {
         return res.status(400).json({ error: "Invalid YouTube URL" });
     }
@@ -51,6 +51,7 @@ router.get("/download", async (req, res) => {
 });
 */
 
+/*
 function x() {
 const fs = require('fs');
 const ytdl = require('ytdl-core');
@@ -61,5 +62,6 @@ const ytdl = require('ytdl-core');
 ytdl('http://www.youtube.com/watch?v=aqz-KE-bpKQ')
   .pipe(fs.createWriteStream('video.mp4'));
 };
+*/
 
 module.exports = router;

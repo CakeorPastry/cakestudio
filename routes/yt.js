@@ -20,7 +20,7 @@ router.get("/info", async (req, res) => {
         }));
         res.json({ title: info.videoDetails.title, formats });
     } catch (err) {
-        res.status(500).json({ error: "Error fetching video info" });
+        res.status(500).json({ error: `Error fetching video info : ${err}` });
         console.error(err);
     }
 });

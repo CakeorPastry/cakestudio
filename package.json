@@ -17,6 +17,7 @@
     "unidecode": "^1.1.0", 
     "serve-favicon": "^2.5.0",
     "express-rate-limit": "^7.4.1", 
-    "express-session": "^1.18.1"
+    "express-session": "^1.18.1", 
+    "ytdl-core": "4.11.5"
   }
 }

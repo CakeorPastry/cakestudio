@@ -28,6 +28,8 @@ app.use(session({
     cookie: { secure: false }
 }));
 
+process.env.YTDL_NO_UPDATE = "1";
+
 // cookie: { secure: process.env.NODE_ENV === 'production' }
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];

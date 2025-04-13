@@ -155,7 +155,7 @@ local function Start()
         warn("Starting tween to exit...")
         currentTween:Play()
         currentTween.Completed:Wait()
-        ]]
+        ]]--[[
         HumanoidRootPart.Position = findLevel
         warn("Reached exit.")
         

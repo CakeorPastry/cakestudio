@@ -30,44 +30,60 @@ local exits = {
 }
 
 local function Start()
-    if infiniteMode.Value ~= true then
-        CreateNotification("Gamemode is not Infinity. Aborting Auto.", Color3.new(1, 0, 0), 5)
+    if not infiniteMode.Value then
+        CreateNotification("Infinity Mode is not enabled. Aborting Auto.", Color3.new(1, 0, 0), 5)
         return
     end
 
     task.spawn(function()
-        local notifiedGameReady = false
+        local notifiedWaiting = false
 
         while canAuto do
-            -- Wait until game is ready
-            while not gameReady.Value and canAuto do
-                if not notifiedGameReady then
-                    CreateNotification("Waiting for game to be ready...", Color3.new(1, 1, 0), 3)
-                    notifiedGameReady = true
+            -- Wait until either game is ready or a cutscene is playing
+            while not gameReady.Value and not isCutscene.Value and canAuto do
+                if not notifiedWaiting then
+                    CreateNotification("Waiting for game to load...", Color3.new(1, 1, 0), 3)
+                    notifiedWaiting = true
                 end
                 task.wait(0.5)
             end
-            notifiedGameReady = false
+            notifiedWaiting = false
 
-            -- Skip cutscene if active
+            -- Skip cutscene by spamming spacebar
             while isCutscene.Value and canAuto do
-                keypress(0x20) -- Spacebar
-                task.wait(0.5)
+                keypress(0x20)
+                task.wait()
             end
 
             if not canAuto then break end
 
-            -- Get current level's exit
+            -- Exit position logic
             local level = currentLevel.Value
             local exitPosition = exits[level] or exits[1]
 
             if exitPosition then
+                -- Reset position (optional, just in case)
+                HumanoidRootPart.CFrame = CFrame.new(HumanoidRootPart.Position)
+
+                -- Tween with a timeout fallback
+                local finished = false
                 local tween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {CFrame = CFrame.new(exitPosition)})
                 tween:Play()
-                tween.Completed:Wait()
+
+                tween.Completed:Connect(function()
+                    finished = true
+                end)
+
+                local timer = 0
+                while not finished and timer < 3 and canAuto do
+                    task.wait(0.1)
+                    timer += 0.1
+                end
+
+                tween:Cancel() -- cleanup if it somehow hangs
             end
 
-            task.wait(1) -- short delay before repeating
+            task.wait(1) -- short cooldown
         end
     end)
 end

@@ -30,6 +30,56 @@ local exits = {
 }
 
 local function Start()
+    if infiniteMode.Value ~= true then
+        CreateNotification("Gamemode is not Infinity. Aborting Auto.", Color3.new(1, 0, 0), 5)
+        return
+    end
+
+    task.spawn(function()
+        local notifiedGameReady = false
+
+        while canAuto do
+            -- Wait until game is ready
+            while not gameReady.Value and canAuto do
+                if not notifiedGameReady then
+                    CreateNotification("Waiting for game to be ready...", Color3.new(1, 1, 0), 3)
+                    notifiedGameReady = true
+                end
+                task.wait(0.5)
+            end
+            notifiedGameReady = false
+
+            -- Skip cutscene if active
+            while isCutscene.Value and canAuto do
+                keypress(0x20) -- Spacebar
+                task.wait(0.5)
+            end
+
+            if not canAuto then break end
+
+            -- Get current level's exit
+            local level = currentLevel.Value
+            local exitPosition = exits[level] or exits[1]
+
+            if exitPosition then
+                local tween = TweenService:Create(HumanoidRootPart, TweenInfoSetting, {CFrame = CFrame.new(exitPosition)})
+                tween:Play()
+                tween.Completed:Wait()
+            end
+
+            task.wait(1) -- short delay before repeating
+        end
+    end)
+end
+
+local function Stop()
+    canAuto = false
+    CreateNotification("Stopped Auto Infinity.", Color3.new(1, 0, 0), 5)
+end
+
+
+--[[
+local function Start()
     if not canAuto then return end
     local connection
     local notifiedExit = false  -- Prevents notification spam
@@ -139,6 +189,7 @@ local function Start()
         warn("New level is ready, restarting cycle.")
     end)
 end
+]]
 
 -- 🔔 Notification Function
 function Notify(title, text, duration, button1)

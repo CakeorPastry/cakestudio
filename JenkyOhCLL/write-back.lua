@@ -1,9 +1,8 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local Teams = game:GetService("Teams")
 local player = Players.LocalPlayer
 
--- GUI SETUP
+-- GUI
 local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
 screenGui.Name = "CurvePassGui"
 screenGui.ResetOnSpawn = false
@@ -18,11 +17,12 @@ button.Draggable = true
 button.Active = true
 button.Parent = screenGui
 
--- Find ball and teammate
+-- Find football
 local function findFootball()
 	return workspace:FindFirstChild("Football")
 end
 
+-- Get teammates
 local function getTeammates()
 	local teammates = {}
 	for _, plr in pairs(Players:GetPlayers()) do
@@ -36,6 +36,7 @@ local function getTeammates()
 	return teammates
 end
 
+-- Find best pass target
 local function findTargetTeammate()
 	local cam = workspace.CurrentCamera
 	local bestDot = -1
@@ -56,7 +57,7 @@ local function findTargetTeammate()
 	return chosen
 end
 
--- Actual pass function
+-- Launch crazy curve pass
 local function launchCurvePass(ball, target)
 	local root = target:FindFirstChild("HumanoidRootPart")
 	if not root then return end
@@ -64,7 +65,6 @@ local function launchCurvePass(ball, target)
 	local startPos = ball.Position
 	local endPos = root.Position + Vector3.new(0, 2.5, 0)
 
-	-- Initial forward force
 	local direction = (endPos - startPos).Unit
 	local bv = Instance.new("BodyVelocity")
 	bv.MaxForce = Vector3.new(1e5, 1e5, 1e5)
@@ -82,7 +82,6 @@ local function launchCurvePass(ball, target)
 		end
 		time += dt
 
-		-- Apply side and vertical wave curves
 		local cam = workspace.CurrentCamera
 		local right = cam.CFrame.RightVector
 		local up = cam.CFrame.UpVector
@@ -93,19 +92,25 @@ local function launchCurvePass(ball, target)
 		bv.Velocity += (right * waveX + up * waveY) * dt
 	end)
 
-	-- Cleanup
 	task.delay(2.5, function()
 		if bv then bv:Destroy() end
 	end)
 end
 
--- Button press
-button.MouseButton1Click:Connect(function()
+-- Button logic
+button.Activated:Connect(function()
 	local char = player.Character
 	if not char then return end
 
 	local ball = findFootball()
-	if not ball or ball.Parent ~= char then return end
+	if not ball or not ball:IsDescendantOf(char) then return end
+
+	-- Try releasing ball (jump + force parent to workspace)
+	char:FindFirstChildOfClass("Humanoid"):ChangeState(Enum.HumanoidStateType.Jumping)
+	ball.Parent = workspace
+
+	-- Wait just a bit to ensure ball is free
+	task.wait(0.15)
 
 	local target = findTargetTeammate()
 	if not target then warn("No teammate found!") return end

@@ -1,5 +1,3 @@
-// Now, the DOMContentLoaded event listener can remain as it is, 
-// but it doesn't need to define the functions anymore
 document.addEventListener('DOMContentLoaded', function() {
     const toggleButton = document.getElementById('toggleDarkModeButton');
 

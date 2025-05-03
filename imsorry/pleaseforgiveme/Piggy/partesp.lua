@@ -1,29 +1,6 @@
-if imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED then
-    task.spawn(function()
-        CreateNotification("This script is already running!", Color3.new(255, 0, 0), 5)
-    end)
-    error("/imsorry/pleaseforgiveme/Piggy/partesp.lua is already running!", 0)
-    return
-end
-
-pcall(function() getgenv().imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED = true end)
-
 local player = game.Players.LocalPlayer
 local runService = game:GetService("RunService")
 local playerGui = player:WaitForChild("PlayerGui")
-
--- GUI Setup
--- local screenGui = Instance.new("ScreenGui", playerGui)
-local screenGui = Instance.new("ScreenGui", game.CoreGui)
-screenGui.ResetOnSpawn = false
-
-local notificationFrame = Instance.new("Frame")
-notificationFrame.Size = UDim2.new(0, 626, 0, 59)
-notificationFrame.Position = UDim2.new(0.5, 0, 0.268415093, 0)
-notificationFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-notificationFrame.BackgroundTransparency = 1
-notificationFrame.Parent = screenGui
-notificationFrame.Name = "Output"
 
 -- Function to create notifications
 function CreateNotification(text, color, duration)
@@ -51,6 +28,29 @@ function CreateNotification(text, color, duration)
     destroyTween.Completed:Wait() 
     notification:Destroy() 
 end
+
+if imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED then
+    task.spawn(function()
+        CreateNotification("This script is already running!", Color3.new(255, 0, 0), 5)
+    end)
+    error("/imsorry/pleaseforgiveme/Piggy/partesp.lua is already running!", 0)
+    return
+end
+
+pcall(function() getgenv().imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED = true end)
+
+-- GUI Setup
+-- local screenGui = Instance.new("ScreenGui", playerGui)
+local screenGui = Instance.new("ScreenGui", game.CoreGui)
+screenGui.ResetOnSpawn = false
+
+local notificationFrame = Instance.new("Frame")
+notificationFrame.Size = UDim2.new(0, 626, 0, 59)
+notificationFrame.Position = UDim2.new(0.5, 0, 0.268415093, 0)
+notificationFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+notificationFrame.BackgroundTransparency = 1
+notificationFrame.Parent = screenGui
+notificationFrame.Name = "Output"
 
 -- Add UIGridLayout
 local gridLayout = Instance.new("UIGridLayout")

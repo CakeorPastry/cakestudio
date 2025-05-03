@@ -1,0 +1,18 @@
+local Players = game:GetService("Players")
+local Player = Players.LocalPlayer
+
+local workspaceChildren = workspace:GetChildren() 
+
+local function removeNumbers(x)
+	return ({x:gsub("%d", "")})[1]
+end
+
+local function fetchMainFolder(n)
+    for index, value in n do
+        local name = value.Name
+        if value:IsA("Folder") then
+            local result = removeNumbers(name)
+            print("Result, after "..index.." attempts, We got... "..name.." into "..result)
+        end
+    end
+end

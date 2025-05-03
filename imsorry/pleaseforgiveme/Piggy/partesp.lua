@@ -41,16 +41,6 @@ function CreateNotification(text, color, duration)
     notification:Destroy() 
 end
 
-if imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED then
-    task.spawn(function()
-        CreateNotification("This script is already running!", Color3.new(255, 0, 0), 5)
-    end)
-    error("/imsorry/pleaseforgiveme/Piggy/partesp.lua is already running!", 0)
-    return
-end
-
-pcall(function() getgenv().imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED = true end)
-
 -- GUI Setup
 -- local screenGui = Instance.new("ScreenGui", playerGui)
 local screenGui = Instance.new("ScreenGui", game.CoreGui)
@@ -73,6 +63,17 @@ gridLayout.StartCorner = Enum.StartCorner.TopLeft
 gridLayout.CellPadding = UDim2.new(0, 0, 0, 0)
 gridLayout.CellSize = UDim2.new(1, 0, 0.349999994, 0) -- Matching the TextLabel size
 gridLayout.Parent = notificationFrame
+
+if imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED then
+    task.spawn(function()
+        CreateNotification("This script is already running!", Color3.new(255, 0, 0), 5)
+        screenGui:Destroy() 
+    end)
+    error("/imsorry/pleaseforgiveme/Piggy/partesp.lua is already running!", 0)
+    return
+end
+
+pcall(function() getgenv().imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED = true end)
 
 local frame = Instance.new("Frame", screenGui)
 frame.Size = UDim2.new(0, 150, 0, 80)

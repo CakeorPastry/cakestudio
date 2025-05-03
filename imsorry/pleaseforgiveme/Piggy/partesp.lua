@@ -1,3 +1,4 @@
+--// Setup
 local player = game.Players.LocalPlayer
 local runService = game:GetService("RunService")
 local playerGui = player:WaitForChild("PlayerGui")
@@ -13,7 +14,7 @@ function randomString()
     return table.concat(array)
 end
 
--- GUI Setup
+--// GUI Setup
 local screenGui = Instance.new("ScreenGui", game.CoreGui)
 screenGui.Name = randomString()
 screenGui.ResetOnSpawn = false
@@ -36,7 +37,6 @@ gridLayout.CellSize = UDim2.new(1, 0, 0.349999994, 0)
 gridLayout.Parent = notificationFrame
 
 function PlaySound(id)
-
     --[[
     9070284921 - Beautiful Girls (LOUD) (SHORT)
     97495881842727 - DO NOT REDEEM
@@ -57,7 +57,7 @@ function PlaySound(id)
     }
     local Sound = Instance.new("Sound")
     local finalId = id or table[math.random(1, #table)]
-    Sound.SoundId = "rbxassetid://" .. finalId
+    Sound.SoundId = "rbxassetid://"..finalId
     Sound.Parent = workspace
     Sound:Play()
     Sound.Ended:Wait()
@@ -115,7 +115,6 @@ frame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
 frame.Active = true
 frame.Draggable = true
 frame.Name = randomString()
-
 pcall(function() getgenv().imsorry_pleaseforgiveme_Piggy_partesp_lua_frame = frame end)
 
 local mainButton = Instance.new("TextButton", frame)
@@ -134,30 +133,34 @@ allButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 allButton.TextColor3 = Color3.new(1, 1, 1)
 allButton.Name = randomString()
 
-local distanceBox = Instance.new("TextBox", frame)
-distanceBox.Size = UDim2.new(1, -10, 0, 25)
-distanceBox.Position = UDim2.new(0, 5, 0, 75)
-distanceBox.PlaceholderText = "Max distance (0 = no limit)"
-distanceBox.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-distanceBox.TextColor3 = Color3.new(1, 1, 1)
-distanceBox.ClearTextOnFocus = false
-distanceBox.Text = ""
-
-local maxDistance = 0
-
-distanceBox.FocusLost:Connect(function()
-    local input = tonumber(distanceBox.Text)
-    maxDistance = input or 0
-    CreateNotification("The script will now highlight objects in a " .. (maxDistance > 0 and tostring(maxDistance) or "unlimited") .. " studs range. (Set 0 or empty for no limit)", Color3.fromRGB(255, 255, 0), 5)
-end)
+local textBox = Instance.new("TextBox", frame)
+textBox.Size = UDim2.new(1, -10, 0, 25)
+textBox.Position = UDim2.new(0, 5, 0, 75)
+textBox.PlaceholderText = "Max Distance (0 = No limit)"
+textBox.Text = ""
+textBox.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
+textBox.TextColor3 = Color3.new(1, 1, 1)
+textBox.TextScaled = true
+textBox.ClearTextOnFocus = false
 
 local mainEnabled, allEnabled = false, false
+local maxDistance = 0
+local nameCache = {}
 
-local billboardFolder = Instance.new("Folder", screenGui)
-billboardFolder.Name = "ESP_Billboards"
-
-local highlightFolder = Instance.new("Folder", screenGui)
-highlightFolder.Name = "ESP_Highlights"
+textBox.FocusLost:Connect(function()
+    local val = tonumber(textBox.Text)
+    if val then
+        maxDistance = val
+        if maxDistance > 0 then
+            CreateNotification("The script will now highlight objects in a "..maxDistance.." studs range. (Set to 0 or empty for no limit)", Color3.fromRGB(100, 255, 100), 5)
+        else
+            CreateNotification("The script will now highlight objects in an unlimited range.", Color3.fromRGB(100, 255, 100), 5)
+        end
+    else
+        maxDistance = 0
+        CreateNotification("The script will now highlight objects in an unlimited range.", Color3.fromRGB(100, 255, 100), 5)
+    end
+end)
 
 local function isFolderMatch(name)
     return name:gsub("[%d%-]", "") == ""
@@ -171,14 +174,33 @@ local function hasItemScript(obj)
     return obj:FindFirstChild("ItemPickupScript") and obj.ItemPickupScript:IsA("Script")
 end
 
+local billboardFolder = Instance.new("Folder", screenGui)
+billboardFolder.Name = "ESP_Billboards"
+
+local highlightFolder = Instance.new("Folder", screenGui)
+highlightFolder.Name = "ESP_Highlights"
+
+local function getCachedOrCurrentName(obj)
+    local currentName = obj.Name
+    if not isAllMatch(currentName) then
+        nameCache[obj] = currentName
+    end
+    return nameCache[obj] or currentName
+end
+
 local function applyESP(obj)
     if not obj:IsA("BasePart") then return end
-    local distance = (obj.Position - player.Character.HumanoidRootPart.Position).Magnitude
-    if maxDistance > 0 and distance > maxDistance then return end
 
-    if not highlightFolder:FindFirstChild(obj:GetFullName()) then
+    local char = player.Character
+    if maxDistance > 0 and char and char:FindFirstChild("HumanoidRootPart") then
+        if (char.HumanoidRootPart.Position - obj.Position).Magnitude > maxDistance then
+            return
+        end
+    end
+
+    if not obj:FindFirstChild("ESP_Highlight") then
         local highlight = Instance.new("Highlight")
-        highlight.Name = obj:GetFullName()
+        highlight.Name = "ESP_Highlight"
         highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
         highlight.FillColor = hasItemScript(obj) and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
         highlight.OutlineColor = Color3.new(1, 1, 1)
@@ -186,9 +208,12 @@ local function applyESP(obj)
         highlight.Parent = highlightFolder
     end
 
-    if not billboardFolder:FindFirstChild(obj:GetFullName()) then
+    local id = obj:GetFullName()
+    local existingBillboard = billboardFolder:FindFirstChild(id)
+
+    if not existingBillboard then
         local billboard = Instance.new("BillboardGui")
-        billboard.Name = obj:GetFullName()
+        billboard.Name = id
         billboard.Size = UDim2.new(0, 100, 0, 25)
         billboard.AlwaysOnTop = true
         billboard.StudsOffset = Vector3.new(0, 2, 0)
@@ -196,42 +221,38 @@ local function applyESP(obj)
         billboard.Parent = billboardFolder
 
         local label = Instance.new("TextLabel")
+        label.Name = "Label"
         label.Size = UDim2.new(1, 0, 1, 0)
         label.BackgroundTransparency = 1
         label.TextColor3 = Color3.new(1, 1, 1)
         label.TextStrokeTransparency = 0
         label.TextScaled = true
         label.Font = Enum.Font.SourceSansBold
-        label.Text = obj.Name .. (hasItemScript(obj) and " (Item)" or "")
-        label.Name = "ESP_Label"
+        label.Text = getCachedOrCurrentName(obj) .. (hasItemScript(obj) and " (Item)" or "")
         label.Parent = billboard
-
-        task.spawn(function()
-            local originalName = obj.Name
-            for _ = 1, 60 do
-                task.wait(1)
-                if obj.Name ~= originalName and not tonumber(obj.Name) then
-                    label.Text = obj.Name .. (hasItemScript(obj) and " (Item)" or "")
-                    break
-                end
-            end
-        end)
+    else
+        local label = existingBillboard:FindFirstChild("Label")
+        if label then
+            label.Text = getCachedOrCurrentName(obj) .. (hasItemScript(obj) and " (Item)" or "")
+        end
     end
 end
 
 local function removeESP()
-    if billboardFolder then billboardFolder:ClearAllChildren() end
-    if highlightFolder then highlightFolder:ClearAllChildren() end
+    billboardFolder:ClearAllChildren()
+    highlightFolder:ClearAllChildren()
 end
 
 runService.RenderStepped:Connect(function()
     if not (mainEnabled or allEnabled) then return end
+
     for _, obj in ipairs(workspace:GetDescendants()) do
         if mainEnabled and obj:IsA("Folder") and isFolderMatch(obj.Name) then
             for _, child in ipairs(obj:GetChildren()) do
                 applyESP(child)
             end
         end
+
         if allEnabled and obj:IsA("BasePart") and isAllMatch(obj.Name) then
             applyESP(obj)
         end

@@ -7,6 +7,24 @@ local playerGui = player:WaitForChild("PlayerGui")
 local screenGui = Instance.new("ScreenGui", game.CoreGui)
 screenGui.ResetOnSpawn = false
 
+local notificationFrame = Instance.new("Frame")
+notificationFrame.Size = UDim2.new(0, 626, 0, 59)
+notificationFrame.Position = UDim2.new(0.5, 0, 0.268415093, 0)
+notificationFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+notificationFrame.BackgroundTransparency = 1
+notificationFrame.Parent = screenGui
+notificationFrame.Name = "Output"
+
+-- Add UIGridLayout
+local gridLayout = Instance.new("UIGridLayout")
+gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+gridLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
+gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+gridLayout.StartCorner = Enum.StartCorner.TopLeft
+gridLayout.CellPadding = UDim2.new(0, 0, 0, 0)
+gridLayout.CellSize = UDim2.new(1, 0, 0.349999994, 0) -- Matching the TextLabel size
+gridLayout.Parent = notificationFrame
+
 local frame = Instance.new("Frame", screenGui)
 frame.Size = UDim2.new(0, 150, 0, 80)
 frame.Position = UDim2.new(0, 10, 0.5, -40)

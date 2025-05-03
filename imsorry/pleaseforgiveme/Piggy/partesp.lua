@@ -38,6 +38,12 @@ gridLayout.CellSize = UDim2.new(1, 0, 0.349999994, 0) -- Matching the TextLabel 
 gridLayout.Parent = notificationFrame
 
 function PlaySound(id) 
+    --[[
+    9070284921 - Beautiful Girls (LOUD) (SHORT)
+    97495881842727 - DO NOT REDEEM
+    6204175492 - ara ara 2
+    ]]
+
     local Sound = Instance.new("Sound")
     local finalId = id or "97495881842727"
     Sound.SoundId = "rbxassetid://"..finalId
@@ -207,14 +213,17 @@ runService.RenderStepped:Connect(function()
 end)
 
 -- Button toggles
-mainButton.MouseButton1Click:Connect(function()
+mainButton.Activated:Connect(function()
 	mainEnabled = not mainEnabled
 	mainButton.Text = "Main: " .. (mainEnabled and "ON" or "OFF")
 	if not (mainEnabled or allEnabled) then removeESP() end
 end)
 
-allButton.MouseButton1Click:Connect(function()
+allButton.Activated:Connect(function()
 	allEnabled = not allEnabled
 	allButton.Text = "All: " .. (allEnabled and "ON" or "OFF")
 	if not (mainEnabled or allEnabled) then removeESP() end
 end)
+
+CreateNotification("TheFuckBoom is a big nigger monkey.", Color3.new(0, 255, 0), 5) 
+PlaySound(

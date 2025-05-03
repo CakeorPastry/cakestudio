@@ -68,6 +68,7 @@ end
 
 -- Function to create notifications
 function CreateNotification(text, color, duration)
+    task.spawn(function() 
     local notification = Instance.new("TextLabel")
     notification.Size = UDim2.new(1, 0, 1, 0)
     notification.AnchorPoint = Vector2.new(0.5, 0, 0.5, 0)
@@ -91,6 +92,14 @@ function CreateNotification(text, color, duration)
     destroyTween:Play() 
     destroyTween.Completed:Wait() 
     notification:Destroy() 
+    end)
+end
+
+if game.GameId ~= 4623386862 then
+    task.spawn(function() 
+    CreateNotification("This script is only for the game \"Piggy\".")
+    end)
+    PlaySound()
 end
 
 

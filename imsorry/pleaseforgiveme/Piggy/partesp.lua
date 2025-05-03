@@ -1,4 +1,4 @@
-if imsorry_pleaseforgiveme_Piggy_partesp.lua_LOADED then
+if imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED then
     task.spawn(function()
         CreateNotification("This script is already running!", Color3.new(255, 0, 0), 5)
     end)
@@ -6,7 +6,7 @@ if imsorry_pleaseforgiveme_Piggy_partesp.lua_LOADED then
     return
 end
 
-pcall(function() getgenv().imsorry_pleaseforgiveme_Piggy_partesp.lua_LOADED = true end)
+pcall(function() getgenv().imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED = true end)
 
 local player = game.Players.LocalPlayer
 local runService = game:GetService("RunService")

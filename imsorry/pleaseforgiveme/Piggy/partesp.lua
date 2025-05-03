@@ -93,7 +93,7 @@ function CreateNotification(text, color, duration)
     notification:Destroy() 
 end
 
-if game.GameId ~= 4623386862 then
+if game.GameId ~= 1516533665 then
     task.spawn(function() 
         CreateNotification("This script is only for the game \"Piggy\".", Color3.new(255, 0, 0), 5)
         screenGui:Destroy() 

@@ -1,6 +1,6 @@
 if KEKMA_LOADED then
     error("/imsorry/pleaseforgiveme/Piggy/partesp.lua is already running!", 0)
-    CreateNoification("This script is already running!, Color3.new(255, 0, 0), 5)
+    CreateNoification("This script is already running!", Color3.new(255, 0, 0), 5)
     return
 end
 

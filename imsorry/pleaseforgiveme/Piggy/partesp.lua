@@ -81,7 +81,7 @@ if imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED then
         CreateNotification("This script is already running!", Color3.new(255, 0, 0), 5)
         screenGui:Destroy() 
     end)
-    pcall(function() msorry_pleaseforgiveme_Piggy_partesp_lua_frame.Position = UDim2.new(0, 10, 0.5, -40) end)
+    pcall(function() imsorry_pleaseforgiveme_Piggy_partesp_lua_frame.Position = UDim2.new(0, 10, 0.5, -40) end)
     error("/imsorry/pleaseforgiveme/Piggy/partesp.lua is already running!", 0)
     return
 end

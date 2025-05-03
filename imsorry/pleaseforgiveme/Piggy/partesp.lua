@@ -101,7 +101,7 @@ end
 runService.RenderStepped:Connect(function()
 	if not (mainEnabled or allEnabled) then return end
 
-	for _, obj in ipairs(workspace:GetChildren()) do
+	for _, obj in ipairs(workspace:GetDescendants()) do
 		if mainEnabled and obj:IsA("Folder") and isFolderMatch(obj.Name) then
 			for _, child in ipairs(obj:GetChildren()) do
 				applyESP(child)

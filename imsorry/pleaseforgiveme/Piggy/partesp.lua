@@ -1,47 +1,75 @@
--- Create GUI
-local screenGui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
+local player = game.Players.LocalPlayer
+local runService = game:GetService("RunService")
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- GUI Setup
+local screenGui = Instance.new("ScreenGui", playerGui)
 screenGui.ResetOnSpawn = false
 
-local toggleButton = Instance.new("TextButton", screenGui)
-toggleButton.Size = UDim2.new(0, 120, 0, 30)
-toggleButton.Position = UDim2.new(0, 10, 0.5, -15)
-toggleButton.Text = "Toggle ESP"
-toggleButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-toggleButton.TextColor3 = Color3.new(1, 1, 1)
-toggleButton.Active = true
-toggleButton.Draggable = true
+local frame = Instance.new("Frame", screenGui)
+frame.Size = UDim2.new(0, 150, 0, 80)
+frame.Position = UDim2.new(0, 10, 0.5, -40)
+frame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
+frame.Active = true
+frame.Draggable = true
 
-local runService = game:GetService("RunService")
-local enabled = true
+local mainButton = Instance.new("TextButton", frame)
+mainButton.Size = UDim2.new(1, -10, 0, 30)
+mainButton.Position = UDim2.new(0, 5, 0, 5)
+mainButton.Text = "Main: OFF"
+mainButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+mainButton.TextColor3 = Color3.new(1, 1, 1)
 
--- Utility: Strip digits and hyphens
-local function isTargetFolder(name)
-	local stripped = name:gsub("%d", ""):gsub("%-", "")
-	return stripped == ""
+local allButton = Instance.new("TextButton", frame)
+allButton.Size = UDim2.new(1, -10, 0, 30)
+allButton.Position = UDim2.new(0, 5, 0, 40)
+allButton.Text = "All: OFF"
+allButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+allButton.TextColor3 = Color3.new(1, 1, 1)
+
+local mainEnabled, allEnabled = false, false
+
+-- Utility functions
+local function isFolderMatch(name)
+	return name:gsub("[%d%-]", "") == ""
 end
 
--- Create Highlight and Billboard
-local function applyESP(part)
-	if not part:IsA("BasePart") then return end
+local function isAllMatch(name)
+	return name:match("^%d+$")
+end
 
-	-- Highlight
-	if not part:FindFirstChildOfClass("Highlight") then
-		local h = Instance.new("Highlight")
-		h.FillColor = Color3.new(1, 0, 0)
-		h.OutlineColor = Color3.new(1, 1, 1)
-		h.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
-		h.Parent = part
+local function hasItemScript(obj)
+	return obj:FindFirstChild("ItemPickupScript") and obj.ItemPickupScript:IsA("Script")
+end
+
+-- ESP Application
+local function applyESP(obj)
+	if not obj:IsA("BasePart") then return end
+
+	-- BillboardGui: parented to PlayerGui
+	if not playerGui:FindFirstChild("ESP_Billboards") then
+		local folder = Instance.new("Folder", playerGui)
+		folder.Name = "ESP_Billboards"
+	end
+	local billboardFolder = playerGui:FindFirstChild("ESP_Billboards")
+
+	if not obj:FindFirstChild("ESP_Highlight") then
+		local highlight = Instance.new("Highlight")
+		highlight.Name = "ESP_Highlight"
+		highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
+		highlight.FillColor = hasItemScript(obj) and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
+		highlight.OutlineColor = Color3.new(1, 1, 1)
+		highlight.Parent = obj
 	end
 
-	-- BillboardGui
-	if not part:FindFirstChild("NameTag") then
+	if not billboardFolder:FindFirstChild(obj:GetFullName()) then
 		local billboard = Instance.new("BillboardGui")
-		billboard.Name = "NameTag"
-		billboard.Size = UDim2.new(0, 100, 0, 30)
-		billboard.StudsOffset = Vector3.new(0, 2, 0)
+		billboard.Name = obj:GetFullName()
+		billboard.Size = UDim2.new(0, 100, 0, 25)
 		billboard.AlwaysOnTop = true
-		billboard.Adornee = part
-		billboard.Parent = part
+		billboard.StudsOffset = Vector3.new(0, 2, 0)
+		billboard.Adornee = obj
+		billboard.Parent = billboardFolder
 
 		local label = Instance.new("TextLabel")
 		label.Size = UDim2.new(1, 0, 1, 0)
@@ -49,44 +77,51 @@ local function applyESP(part)
 		label.TextColor3 = Color3.new(1, 1, 1)
 		label.TextStrokeTransparency = 0
 		label.TextScaled = true
-		label.Text = part.Name
-		label.Font = Enum.Font.ArialBold
+		label.Font = Enum.Font.SourceSansBold
+		label.Text = obj.Name .. (hasItemScript(obj) and " (Item)" or "")
 		label.Parent = billboard
 	end
 end
 
--- Main ESP loop
-runService.RenderStepped:Connect(function()
-	if not enabled then return end
+-- Cleanup
+local function removeESP()
+	if playerGui:FindFirstChild("ESP_Billboards") then
+		playerGui.ESP_Billboards:Destroy()
+	end
+	for _, desc in ipairs(workspace:GetDescendants()) do
+		if desc:IsA("BasePart") then
+			local h = desc:FindFirstChild("ESP_Highlight")
+			if h then h:Destroy() end
+		end
+	end
+end
 
-	for _, folder in ipairs(workspace:GetChildren()) do
-		if folder:IsA("Folder") and isTargetFolder(folder.Name) then
-			for _, obj in ipairs(folder:GetChildren()) do
-				applyESP(obj)
+-- Update loop
+runService.RenderStepped:Connect(function()
+	if not (mainEnabled or allEnabled) then return end
+
+	for _, obj in ipairs(workspace:GetChildren()) do
+		if mainEnabled and obj:IsA("Folder") and isFolderMatch(obj.Name) then
+			for _, child in ipairs(obj:GetChildren()) do
+				applyESP(child)
 			end
+		end
+
+		if allEnabled and obj:IsA("BasePart") and isAllMatch(obj.Name) then
+			applyESP(obj)
 		end
 	end
 end)
 
--- Toggle ESP
-toggleButton.MouseButton1Click:Connect(function()
-	enabled = not enabled
-	toggleButton.Text = enabled and "ESP: ON" or "ESP: OFF"
+-- Button toggles
+mainButton.MouseButton1Click:Connect(function()
+	mainEnabled = not mainEnabled
+	mainButton.Text = "Main: " .. (mainEnabled and "ON" or "OFF")
+	if not (mainEnabled or allEnabled) then removeESP() end
+end)
 
-	if not enabled then
-		-- Remove Highlights and Billboards
-		for _, folder in ipairs(workspace:GetChildren()) do
-			if folder:IsA("Folder") and isTargetFolder(folder.Name) then
-				for _, obj in ipairs(folder:GetChildren()) do
-					if obj:IsA("BasePart") then
-						local h = obj:FindFirstChildOfClass("Highlight")
-						if h then h:Destroy() end
-
-						local b = obj:FindFirstChild("NameTag")
-						if b then b:Destroy() end
-					end
-				end
-			end
-		end
-	end
+allButton.MouseButton1Click:Connect(function()
+	allEnabled = not allEnabled
+	allButton.Text = "All: " .. (allEnabled and "ON" or "OFF")
+	if not (mainEnabled or allEnabled) then removeESP() end
 end)

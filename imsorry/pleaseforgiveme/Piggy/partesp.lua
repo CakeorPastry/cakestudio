@@ -42,12 +42,24 @@ function PlaySound(id)
     9070284921 - Beautiful Girls (LOUD) (SHORT)
     97495881842727 - DO NOT REDEEM
     6204175492 - ara ara 2
+    7784389087 - DJ Snake - YAMH
+    7510781592 - slap oh
+    80959855784919 - Man screaming meme sound effect
+    
     ]]
 
+    local table = {
+        9070284921,
+        97495881842727,
+        6204175492,
+        7784389087,
+        7510781592,
+        80959855784919
+    }
+
     local Sound = Instance.new("Sound")
-    local finalId = id or "97495881842727"
+    local finalId = id or table[math.random(1, #table)]
     Sound.SoundId = "rbxassetid://"..finalId
-    -- "DO NOT REDEEM" Meme Btw
     Sound.Parent = workspace
     Sound:Play() 
     Sound.Ended:Wait() 

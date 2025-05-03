@@ -1,6 +1,7 @@
 local player = game.Players.LocalPlayer
 local runService = game:GetService("RunService")
 local playerGui = player:WaitForChild("PlayerGui")
+local TweenService = game:GetService("TweenService")
 
 -- Function to create notifications
 function CreateNotification(text, color, duration)
@@ -168,6 +169,17 @@ runService.RenderStepped:Connect(function()
 		end
 	end
 end)
+
+function PlaySound(id) 
+    local Sound = Instance.new("Sound")
+    local finalId = id or "97495881842727"
+    Sound.SoundId = "rbxassetid://"..finalId
+    -- "DO NOT REDEEM" Meme Btw
+    Sound.Parent = workspace
+    Sound:Play() 
+    Sound.Ended:Wait() 
+    Sound:Destroy()
+end
 
 -- Button toggles
 mainButton.MouseButton1Click:Connect(function()

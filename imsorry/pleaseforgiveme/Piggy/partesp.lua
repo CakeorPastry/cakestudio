@@ -162,11 +162,13 @@ local function applyESP(obj)
 	if not obj:IsA("BasePart") then return end
 
 	-- BillboardGui: parented to PlayerGui
-	if not playerGui:FindFirstChild("ESP_Billboards") then
-		local folder = Instance.new("Folder", playerGui)
+	if not screenGui:FindFirstChild("ESP_Billboards") then
+		local folder = Instance.new("Folder", screenGui)
 		folder.Name = "ESP_Billboards"
 	end
-	local billboardFolder = playerGui:FindFirstChild("ESP_Billboards")
+	local billboardFolder = screenGui:FindFirstChild("ESP_Billboards")
+ local hFolder = Instance.new("Folder", screenGui)
+ hFolder.Name = randomString()
 
 	if not obj:FindFirstChild("ESP_Highlight") then
 		local highlight = Instance.new("Highlight")
@@ -176,8 +178,6 @@ local function applyESP(obj)
 		highlight.OutlineColor = Color3.new(1, 1, 1)
 
   highlight.Adornee = obj
-  local hFolder = Instance.new("Folder", screenGui)
-  hFolder.Name = randomString() 
   highlight.Parent = hFolder
 		-- highlight.Parent = obj
 	end
@@ -205,15 +205,18 @@ end
 
 -- Cleanup
 local function removeESP()
-	if playerGui:FindFirstChild("ESP_Billboards") then
-		playerGui.ESP_Billboards:Destroy()
+	if screenGui:FindFirstChild("ESP_Billboards") then
+		screenGui.ESP_Billboards:Destroy()
 	end
+ --[[
 	for _, desc in ipairs(workspace:GetDescendants()) do
 		if desc:IsA("BasePart") then
 			local h = desc:FindFirstChild("ESP_Highlight")
 			if h then h:Destroy() end
 		end
 	end
+ ]]
+ hFolder:ClearAllChildren()
 end
 
 -- Update loop

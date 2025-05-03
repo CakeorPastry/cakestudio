@@ -1,3 +1,11 @@
+if KEKMA_LOADED then
+    error("/imsorry/pleaseforgiveme/Piggy/partesp.lua is already running!", 0)
+    CreateNoification("This script is already running!, Color3.new(255, 0, 0), 5)
+    return
+end
+
+pcall(function() getgenv().KEKMA_LOADED = true end)
+
 local player = game.Players.LocalPlayer
 local runService = game:GetService("RunService")
 local playerGui = player:WaitForChild("PlayerGui")
@@ -14,6 +22,33 @@ notificationFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 notificationFrame.BackgroundTransparency = 1
 notificationFrame.Parent = screenGui
 notificationFrame.Name = "Output"
+
+-- Function to create notifications
+function CreateNotification(text, color, duration)
+    local notification = Instance.new("TextLabel")
+    notification.Size = UDim2.new(1, 0, 1, 0)
+    notification.AnchorPoint = Vector2.new(0.5, 0, 0.5, 0)
+    notification.Position = UDim2.new(0, 0, 0, 0)
+    notification.TextColor3 = color or Color3.new(1, 1, 1)
+    notification.BackgroundTransparency = 1
+    -- notification.TextColor3 = Color3.new(1, 1, 1)
+    notification.TextSize = 20
+    notification.Text = text
+    notification.TextTransparency = 0
+    notification.TextWrapped = false
+    notification.TextScaled = true
+    -- print(notification.TextScaled)
+    notification.Parent = notificationFrame
+    task.spawn(function() 
+        PlaySound("9102731048")
+    end)
+    -- Optional: Add a fade-out effect before deletion
+    task.wait(duration or 5)
+    local destroyTween = TweenService:Create(notification, TweenInfoSetting, { TextTransparency = 1 })
+    destroyTween:Play() 
+    destroyTween.Completed:Wait() 
+    notification:Destroy() 
+end
 
 -- Add UIGridLayout
 local gridLayout = Instance.new("UIGridLayout")

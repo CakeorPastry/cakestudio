@@ -4,9 +4,19 @@ local playerGui = player:WaitForChild("PlayerGui")
 local TweenService = game:GetService("TweenService")
 local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 
+function randomString()
+	local length = math.random(10,20)
+	local array = {}
+	for i = 1, length do
+		array[i] = string.char(math.random(32, 126))
+	end
+	return table.concat(array)
+end
+
 -- GUI Setup
 -- local screenGui = Instance.new("ScreenGui", playerGui)
 local screenGui = Instance.new("ScreenGui", game.CoreGui)
+screenGui.Name = randomString() 
 screenGui.ResetOnSpawn = false
 
 local notificationFrame = Instance.new("Frame")
@@ -71,6 +81,7 @@ if imsorry_pleaseforgiveme_Piggy_partesp_lua_LOADED then
         CreateNotification("This script is already running!", Color3.new(255, 0, 0), 5)
         screenGui:Destroy() 
     end)
+    pcall(function() msorry_pleaseforgiveme_Piggy_partesp_lua_frame.Position = UDim2.new(0, 10, 0.5, -40) end)
     error("/imsorry/pleaseforgiveme/Piggy/partesp.lua is already running!", 0)
     return
 end
@@ -83,6 +94,10 @@ frame.Position = UDim2.new(0, 10, 0.5, -40)
 frame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
 frame.Active = true
 frame.Draggable = true
+frame.Name = randomString() 
+
+pcall(function() getgenv().imsorry_pleaseforgiveme_Piggy_partesp_lua_frame = frame end)
+
 
 local mainButton = Instance.new("TextButton", frame)
 mainButton.Size = UDim2.new(1, -10, 0, 30)
@@ -90,6 +105,7 @@ mainButton.Position = UDim2.new(0, 5, 0, 5)
 mainButton.Text = "Main: OFF"
 mainButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 mainButton.TextColor3 = Color3.new(1, 1, 1)
+mainButton.Name = randomString() 
 
 local allButton = Instance.new("TextButton", frame)
 allButton.Size = UDim2.new(1, -10, 0, 30)
@@ -97,6 +113,7 @@ allButton.Position = UDim2.new(0, 5, 0, 40)
 allButton.Text = "All: OFF"
 allButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 allButton.TextColor3 = Color3.new(1, 1, 1)
+allButton.Name = randomString() 
 
 local mainEnabled, allEnabled = false, false
 
@@ -130,7 +147,12 @@ local function applyESP(obj)
 		highlight.DepthMode = Enum.HighlightDepthMode.AlwaysOnTop
 		highlight.FillColor = hasItemScript(obj) and Color3.fromRGB(0, 255, 0) or Color3.fromRGB(255, 0, 0)
 		highlight.OutlineColor = Color3.new(1, 1, 1)
-		highlight.Parent = obj
+
+  highlight.Adornee = obj
+  local hFolder = Instance.new("Folder", screenGui)
+  hFolder = randomString() 
+  highlight.Parent = hFolder
+		-- highlight.Parent = obj
 	end
 
 	if not billboardFolder:FindFirstChild(obj:GetFullName()) then

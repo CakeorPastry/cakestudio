@@ -2,6 +2,7 @@ local player = game.Players.LocalPlayer
 local runService = game:GetService("RunService")
 local playerGui = player:WaitForChild("PlayerGui")
 local TweenService = game:GetService("TweenService")
+local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 
 function PlaySound(id) 
     local Sound = Instance.new("Sound")

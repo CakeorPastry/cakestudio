@@ -238,4 +238,4 @@ allButton.Activated:Connect(function()
 end)
 
 CreateNotification("TheFuckBoom is a big nigger monkey.", Color3.new(0, 255, 0), 5) 
-PlaySound(
+PlaySound() 

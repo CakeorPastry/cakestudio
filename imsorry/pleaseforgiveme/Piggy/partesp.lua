@@ -3,7 +3,8 @@ local runService = game:GetService("RunService")
 local playerGui = player:WaitForChild("PlayerGui")
 
 -- GUI Setup
-local screenGui = Instance.new("ScreenGui", playerGui)
+-- local screenGui = Instance.new("ScreenGui", playerGui)
+local screenGui = Instance.new("ScreenGui", game.CoreGui)
 screenGui.ResetOnSpawn = false
 
 local frame = Instance.new("Frame", screenGui)

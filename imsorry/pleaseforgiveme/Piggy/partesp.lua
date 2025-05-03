@@ -177,7 +177,7 @@ local function applyESP(obj)
 
   highlight.Adornee = obj
   local hFolder = Instance.new("Folder", screenGui)
-  hFolder = randomString() 
+  hFolder.Name = randomString() 
   highlight.Parent = hFolder
 		-- highlight.Parent = obj
 	end

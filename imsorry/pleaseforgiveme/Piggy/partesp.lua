@@ -97,9 +97,11 @@ end
 
 if game.GameId ~= 4623386862 then
     task.spawn(function() 
-    CreateNotification("This script is only for the game \"Piggy\".")
+        CreateNotification("This script is only for the game \"Piggy\".")
+        screenGui:Destroy() 
     end)
     PlaySound()
+    return
 end
 
 

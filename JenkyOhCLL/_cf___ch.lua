@@ -16,3 +16,5 @@ local function fetchMainFolder(n)
         end
     end
 end
+
+fetchMainFolder(workspaceChildren)

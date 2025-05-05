@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async function() {
         
         sendButton.disabled = false;
         statusMessage.innerText = "Waiting for user's question...";
-        statusImage.src = "https://cakeorpastry.netlify.app/Assets/Icons/Info.png";
+        statusImage.src = "/Assets/Icons/Waiting.png";
         
         sendButton.addEventListener("click", async function() {
             const question = questionInput.value;
@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             sendButton.disabled = true;
          // sendButton.innerText = "...";
             statusMessage.innerText = " Waiting for API's response...";
-            statusImage.src = "/Assets/Icons/Waiting.png";
+            statusImage.src = "/Assets/Icons/Ellipsis.png";
             
             try {
                 const response = await fetch(`${apiUrl}/testgpt?question=${encodeURIComponent(question)}&token=${encodeURIComponent(jwtToken)}`);
@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 ${userInfoDescription}`, Math.floor(Math.random() * 16777215));
               responseContainer.innerText = data.reply;
               statusMessage.innerText = "The API is all good.";
-              statusImage.src = "https://cakeorpastry.netlify.app/Assets/Icons/Check.png";
+              statusImage.src = "/Assets/Icons/Check.png";
               statusCode.innerText = response.status;
               statusCodeSymbol.setAttribute("fill", "lime");
             }
@@ -81,7 +81,7 @@ ${userInfoDescription}`, Math.floor(Math.random() * 16777215));
 **HTTP Status Code:** ${err.status}
 ${userInfoDescription}`, 16711680);
                 statusMessage.innerText = err.message;
-                statusImage.src = "https://cakeorpastry.netlify.app/Assets/Icons/Error.png";
+                statusImage.src = "/Assets/Icons/Error.png";
                 statusCode.innerText = err.status;
                 statusCodeSymbol.setAttribute("fill", "red");
                 errorIndicatorImageHandler();

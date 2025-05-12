@@ -35,7 +35,22 @@ V: Ok chak now\nMe:Wow those who glasses 😈 (reply to ok chak now) : Ok bye no
 me:{"God sent opportunity to talk to huzz but mf got afraid, and didn't accept it" Ahh moment 😔💔
 (It didn't happen today mf arrived LATE AS USUAL 😈)"};
 
+{
+(replying to "ok take photo nex..."):
+No recharge so I don't carry phone 💔
++
+The phone I carry is laggy af 🥀 
++
+Why tf would I take a pic of smn 😭💔
++
+Ok it was dark no lights 🤧
+}
 
+
+Mf my English tuition ends last week of April
+But class 10 mfs upto May cuz they gonna do Literature
+My parents telling me to join the class 10 literature 😔💔😈 (1)
+reply to(1) by V : No  
 
 
 (TODO : PLS FIX) 

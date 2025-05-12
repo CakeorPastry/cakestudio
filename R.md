@@ -56,5 +56,49 @@ Does that mean i can see that huzz again even after tuition for ppl of my class 
 v: IDK\n
 LOL
 
+me replytto "IDK" : ZZART THOSE WHO GLASSES 😝🔥🥀
+
+;;;
+
+
+**4th April 2025:**
+
+Those who RISC'ed the opportunity AGAIN cuz scared to talk 😈
+Ok those who wanna yap THE today thingy and how it's different from 2 days ago but idk if I wanna 💔
+v: Just yap anything
+
+
+My dad's vehicle and that huzz dad vehicle the same Fuckjng color and same uh *type*(?) /company thingy
+Those who know one night parked next to each other ts confusing pmo 💔
+Ts funny cuz 
+Vehicle color same 💔
+AND
+MY SHIRT AND HER SHIRT WERE THE SAME COLOR TODAY 💔
+v: What r the chances
+Her dad vehicle color = My dad vehicle color = Her shirt color today = My shirt color today = Maroon = All the same fucking color
+*unlike yesterday, smth different happened on 4th April:*
+
+HER DAD DIDN'T WAIT EARLY
+Mg was standing there waiting with her bags in the front 💔
+Yk when I carry my bag, not on my back, on my front at school during exams, mg was doing that
+THE CARRY BAG THINGY FRONT
+v: YES \n ZAAAA\n MG
+
+
+So like, I was standing in position A, and she in position B right? 
+Few months ago I once took pics of those two positions 🤫
+THOSE WHO STAND NEXT TO THIS RED GATE *(referring to squid game gate)*
+Bro this "squid game" True kekma thingy is gone now, the red gate don't got ts anymore...  💔
+If it was only me and her I would have approached and talked to her 🤫
+BUT some mf class 10 Josephite was also there so I didn't 💔
+"Getting an opportunity, easy first day, next day harder, next day harder and harder, finally impossible"
+Ahh moment
+
+Nig I reached tuition at 4:10, and I took a peak, and MF SHE WAS STUDYING (ok couldn't talk, it wasn't like the 2 days ago one because there were already a few ppl 💔)
+BRO 4:10 IS TOO EARLY FOR HER (THOSE WHO ARRIVE 4:40) 😈 LAIRIK
+Ok those who were writing I think
+v: Ok bro u need to start aura farming now
+
+
 
 (TODO : PLS FIX) 

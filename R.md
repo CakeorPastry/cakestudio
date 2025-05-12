@@ -52,5 +52,9 @@ But class 10 mfs upto May cuz they gonna do Literature
 My parents telling me to join the class 10 literature 😔💔😈 (1)
 reply to(1) by V : No  
 
+Does that mean i can see that huzz again even after tuition for ppl of my class finishes??😈
+v: IDK\n
+LOL
+
 
 (TODO : PLS FIX) 

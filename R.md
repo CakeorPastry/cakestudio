@@ -32,4 +32,10 @@ __
 (according to the words of V, R was clocked out)
 V: Ok chak now\nMe:Wow those who glasses 😈 (reply to ok chak now) : Ok bye now\nV:Yes takes photo next time\nBye f​
 
+me:{"God sent opportunity to talk to huzz but mf got afraid, and didn't accept it" Ahh moment 😔💔
+(It didn't happen today mf arrived LATE AS USUAL 😈)"};
+
+
+
+
 (TODO : PLS FIX) 

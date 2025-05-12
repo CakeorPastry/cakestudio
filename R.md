@@ -99,6 +99,40 @@ BRO 4:10 IS TOO EARLY FOR HER (THOSE WHO ARRIVE 4:40) 😈 LAIRIK
 Ok those who were writing I think
 v: Ok bro u need to start aura farming now
 
+I walked in the opposite direction Like further away from her then I turn around (means I wasn't facing at her) and I got bored so I picked up a stone and wanted to throw it in the drains (still water) 🤫 \n When I picked up the stone, ​​​Mf Peter came! And he called me and I turned around
+v: What if it splashed (x)
+me replying to  x :I threw like a lot of small stones and some big ones and some splashed yesterday 💔(small drops)
+
+v:THIS IS THE REAL LIGMA WHATTS HER NAME THO ~~(ZZZ)~~
+Small drops = big bacteria thi😱😱
+That is the thing I wanna know I have some theory but not confirmed
+v:Ask ur benchmates u gotta be mastermind 🤫 If u ask "yo bro u know her name" They would think that u like her try smth in different way ~~(YYY)~~
+v: You need to learn how to rizz
+
+Ok bro so This isn't the first time me ans her clothes matched up like it happened few weeks ago when it first happened I got mf fast heart beat like a jumpscare I told Mikir "ts some jumpscare" (​​​I said in manipuri) So it's js, since then, everytime she entered class using this green path (there's other ways to enter class), and we got same shirt, that mf Mikhiljit would say "this is ur jumpscare" Ok same shirt after like two weeks. 
+
+
+me replying to ~~(YYY)~~ :
+
+Mf can't even look at the girls row, like when the teacher is standing at the left side, and I look, then basically my eye sight at the girls row a bit right? 
+That mf miggerjit would say 
+"Why u lookin at the girls AYYYYYYYYY 🥶😏"
+
+LIKE BRO WHAT ?? 
+IT'S 2025
+
+me to ~~(ZZZ)~~:
+Stupid Theory :
+1. Attendance started before she came. 
+2. A girl's name was called out, and everyone said "absent" And that was the only name where everyone said absent... Idk if that's the only one but idk. 
+3. But few mins later that mf arrived lol (4:40)
+4. So for now I'm taking that name as her name. 
+But that's just a theory 
+The 
+🥀
+Ok one time she didn't walk through the path (the green one, which was next to me) and her name was present (prolly walked from other Paths out of my sight late while sir was doing attendance Or smth 💔)
+
+
 
 
 (TODO : PLS FIX) 

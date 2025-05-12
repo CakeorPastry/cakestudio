@@ -18,3 +18,15 @@ Mf was reading only tuition papers 🤫
 AND BRO THE KEKMA/FUNNY THING IS (to me) MF WAS SUPER LOCKED IN. 
 YOU KNOW WHEN PPL R LIKE STRESSING, THEY SIT, BEND DOWN AND STARE DEEEEEEP INTO THEIR BOOKS AND STUFF?? MF WAS DOING THAT
 V: And we were clocked
+
+V: YES I KNOW MG \n WHAT HAPPENED 
+Idk 
+either she was locked in or cooked 
+Those who wanted to talk cus only me and her but afraid and didn't 😔💔 
+V: Maybe she was clocked
+
+__
+Who knows\n"replying to the "yk whtn ppl r str.." (Me) :"LIKE THIS IS SOME REAL SIGMA" \N ("REPLYING TO "MAYBE SHE WAS CLOCKSD" (ME): Clock in or out​​ \n V:replied to the "those who wa..." "Those who were scared of women or 😈😈""
+__
+
+(TODO: PLS FIX)

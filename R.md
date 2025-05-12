@@ -29,4 +29,7 @@ __
 Who knows\n"replying to the "yk whtn ppl r str.." (Me) :"LIKE THIS IS SOME REAL SIGMA" \N ("REPLYING TO "MAYBE SHE WAS CLOCKSD" (ME): Clock in or out​​ \n V:replied to the "those who wa..." "Those who were scared of women or 😈😈""
 __
 
-(TODO: PLS FIX)
+(according to the words of V, R was clocked out)
+V: Ok chak now\nMe:Wow those who glasses 😈 (reply to ok chak now) : Ok bye now\nV:Yes takes photo next time\nBye f​
+
+(TODO : PLS FIX) 

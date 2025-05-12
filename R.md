@@ -12,3 +12,9 @@ I was like...
 "Who is this? Hmm the glasses are familiar. This face is familiar." Then I was like... "No way..." It was that mf huzz... WHAT WAS MF DOING EARLY 🥀
 Mf was studying 🤫
 FOR EXAMS
+ARGHHH 😈
+Vemeer said, "Wow those who come early for reading"
+Mf was reading only tuition papers 🤫
+AND BRO THE KEKMA/FUNNY THING IS (to me) MF WAS SUPER LOCKED IN. 
+YOU KNOW WHEN PPL R LIKE STRESSING, THEY SIT, BEND DOWN AND STARE DEEEEEEP INTO THEIR BOOKS AND STUFF?? MF WAS DOING THAT
+V: And we were clocked

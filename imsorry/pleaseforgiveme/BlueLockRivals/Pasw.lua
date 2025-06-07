@@ -12,7 +12,7 @@ local team = player.Team
 
 -- Auto-update team when changed
 player:GetPropertyChangedSignal("Team"):Connect(function()
-	team = player.Team
+        team = player.Team
 end)
 
 function randomString()
@@ -26,10 +26,10 @@ end
 
 function releaseBall()
     local args = {
-		5, 
-		[4] = vector.create(5, 5, 5)
-	}
-	game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("BallService"):WaitForChild("RE"):WaitForChild("Shoot"):FireServer(unpack(args))
+                5, 
+                [4] = vector.create(5, 5, 5)
+        }
+        game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("BallService"):WaitForChild("RE"):WaitForChild("Shoot"):FireServer(unpack(args))
 end
 
 local screenGui = Instance.new("ScreenGui", game.CoreGui)
@@ -147,37 +147,37 @@ local canUse = true
 
 -- 👤 Manual teammate target finder
 local function getBestTarget()
-	local camera = workspace.CurrentCamera
-	local hrp = character:FindFirstChild("HumanoidRootPart")
-	if not hrp then return end
+        local camera = workspace.CurrentCamera
+        local hrp = character:FindFirstChild("HumanoidRootPart")
+        if not hrp then return end
 
-	local furthest, furthestDist = nil, -1
-	local bestInView, viewAngle = nil, math.huge
+        local furthest, furthestDist = nil, -1
+        local bestInView, viewAngle = nil, math.huge
 
-	for _, p in ipairs(Players:GetPlayers()) do
-		if p ~= player and p.Team == team and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-			local targetHRP = p.Character.HumanoidRootPart
-			local dirToTarget = (targetHRP.Position - hrp.Position).Unit
-			local cameraDir = camera.CFrame.LookVector
-			local angle = math.deg(math.acos(dirToTarget:Dot(cameraDir)))
+        for _, p in ipairs(Players:GetPlayers()) do
+                if p ~= player and p.Team == team and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                        local targetHRP = p.Character.HumanoidRootPart
+                        local dirToTarget = (targetHRP.Position - hrp.Position).Unit
+                        local cameraDir = camera.CFrame.LookVector
+                        local angle = math.deg(math.acos(dirToTarget:Dot(cameraDir)))
 
-			local dist = (hrp.Position - targetHRP.Position).Magnitude
+                        local dist = (hrp.Position - targetHRP.Position).Magnitude
 
-			if dist > furthestDist then
-				furthest = p
-				furthestDist = dist
-			end
+                        if dist > furthestDist then
+                                furthest = p
+                                furthestDist = dist
+                        end
 
-			if angle <= 25 then -- 👀 close to where player is looking
-				if angle < viewAngle then
-					viewAngle = angle
-					bestInView = p
-				end
-			end
-		end
-	end
+                        if angle <= 25 then -- 👀 close to where player is looking
+                                if angle < viewAngle then
+                                        viewAngle = angle
+                                        bestInView = p
+                                end
+                        end
+                end
+        end
 
-	return bestInView or furthest
+        return bestInView or furthest
 end
 
 -- 🏃 ABC Simulation
@@ -185,86 +185,80 @@ local ABC = {}
 ABC.Connections = {}
 
 function ABC:Connect(signal, func)
-	local conn = signal:Connect(func)
-	table.insert(self.Connections, conn)
+        local conn = signal:Connect(func)
+        table.insert(self.Connections, conn)
 end
 
 function ABC:Clean()
-	for _, conn in ipairs(self.Connections) do
-		if conn.Disconnect then conn:Disconnect() end
-	end
-	self.Connections = {}
+        for _, conn in ipairs(self.Connections) do
+                if conn.Disconnect then conn:Disconnect() end
+        end
+        self.Connections = {}
 end
 
 
 
 -- 🎯 Pasw Ability
 local function Pasw()
-	if not canUse then
-		CreateNotification("Ability is on cooldown.", Color3.new(255, 255, 0), 5)
-		return
-	end
+        if not canUse then
+                CreateNotification("Ability is on cooldown.", Color3.new(255, 255, 0), 5)
+                return
+        end
 
-	local hasBall = character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
-	local football = character:FindFirstChild("Football")
-	local hrp = character:FindFirstChild("HumanoidRootPart")
+        local hasBall = character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
+        local football = character:FindFirstChild("Football")
+        local hrp = character:FindFirstChild("HumanoidRootPart")
 
-	if not (hasBall and hasBall.Value)  then
-		CreateNotification("1", Color3.new(255, 0, 0), 5)
-return
-elseif not football then
-CreateNotification("2", Color3.new(255, 0, 0), 5)
-return
-elseif not hrp then
-		CreateNotification("3", Color3.new(255, 0, 0), 5)
-return
-	end
+        if not (hasBall and hasBall.Value) or not football or not hrp then
+                CreateNotification("Missing ball, HumanoidRootPart or you don't have the ball.", Color3.new(255, 0, 0), 5)
+                return
+        end
 
-	local target = getBestTarget()
-	if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
-		CreateNotification("No valid teammate to pass to.", Color3.new(255, 255, 0), 5)
-		return
-	end
+        local target = getBestTarget()
+        if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
+                CreateNotification("No valid teammate to pass to.", Color3.new(255, 255, 0), 5)
+                return
+        end
 
-	local targetHRP = target.Character.HumanoidRootPart
+        local targetHRP = target.Character.HumanoidRootPart
 
-	-- 🕺 Animation
-	local anim = Instance.new("Animation")
-	anim.AnimationId = "rbxassetid://83376040878208"
-	local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
-	track.Priority = Enum.AnimationPriority.Action4
-	track:Play()
+        -- 🕺 Animation
+        local anim = Instance.new("Animation")
+        anim.AnimationId = "rbxassetid://83376040878208"
+        local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
+        track.Priority = Enum.AnimationPriority.Action4
+        track:Play()
  task.spawn(function()
    PlaySound("87838758006658")
  end)
 
-	-- ⏳ Cooldown
-	canUse = false
-	task.delay(1, function()
-		canUse = true
-	end)
+        -- ⏳ Cooldown
+        canUse = false
+        task.delay(1, function()
+                canUse = true
+        end)
 
-	-- 📤 FireServer to simulate pass
+        -- 📤 FireServer to simulate pass
  releaseBall()
 
-	-- 💨 Initial Pass
-	local dir = (targetHRP.Position + targetHRP.AssemblyLinearVelocity * Vector3.new(1, 0, 1) - hrp.Position).Unit + Vector3.new(0, 0.5, 0)
-	local speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 1.5, 0, 150)
-	football.AssemblyLinearVelocity = dir * speed
+        -- 💨 Initial Pass
+        local dir = (targetHRP.Position + targetHRP.AssemblyLinearVelocity * Vector3.new(1, 0, 1) - hrp.Position).Unit + Vector3.new(0, 0.5, 0)
+        local speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 1.5, 0, 150)
+        football.AssemblyLinearVelocity = dir * speed
 
-	-- 📡 Ball Tracking
-	local t0 = tick()
-	ABC:Clean()
-	ABC:Connect(RunService.Heartbeat, function(dt)
-		if tick() - t0 > 10 or not football or not football.Parent then
-			ABC:Clean()
-			return
-		end
+        -- 📡 Ball Tracking
+        local t0 = tick()
+        ABC:Clean()
+        ABC:Connect(RunService.Heartbeat, function(dt)
+                if tick() - t0 > 10 or not football or not football.Parent then
+                        ABC:Clean()
+                        return
+                end
 
-		dir = dir:Lerp((targetHRP.Position - football.Position).Unit + Vector3.new(0, 0.35, 0), 6.5 * dt)
-		speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 2.75, 0, 150)
-		football.AssemblyLinearVelocity = dir * speed
-	end)
+                dir = dir:Lerp((targetHRP.Position - football.Position).Unit + Vector3.new(0, 0.35, 0), 6.5 * dt)
+                speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 2.75, 0, 150)
+                football.AssemblyLinearVelocity = dir * speed
+        end)
 end
 
 -- 🎯 GUI button connection

@@ -360,43 +360,35 @@ local function Pasw()
 end
 
 local function Sublimation()
-    local football, hrp, hasBall = getPlayerComponents()
+    local football, hrp, hasBall = getPlayerComponents()
 
-    if hasBall and hasBall.Value and football then
-        CreateNotification("Must not have the ball!", Color3.new(1, 0, 0), 5)
-        return
-    end
+    if hasBall and hasBall.Value and football then
+        CreateNotification("Must not have the ball!", Color3.new(1, 0, 0), 5)
+        return
+    end
 
-    --[[
-    *THIS ISN'T SUPPOSED TO BE IN THE CODE*
-    if not football then
-        CreateNotification("No ball found!", Color3.new(1, 0, 0), 5)
-        return
-    end
-    ]]
+    local ownerValue = football:FindFirstChild("Char")
+    if not ownerValue or ownerValue.Value ~= character then
+        CreateNotification("You are not the owner of this ball!", Color3.new(1, 0, 0), 5)
+        return
+    end
 
-    local ownerValue = football:FindFirstChild("Char")
-    if not ownerValue or ownerValue.Value ~= character then
-        CreateNotification("You are not the owner of this ball!", Color3.new(1, 0, 0), 5)
-        return
-    end
+    local dir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0)
+    local speed = math.clamp((hrp.Position - football.Position).Magnitude * 3.25, 50, 200) -- Added min speed
 
-    local dir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0)
-    local speed = math.clamp((hrp.Position - football.Position).Magnitude * 3.25, 0, 200)
+    -- Fast homing ball movement
+    local t0 = tick()
+    ABC:Clean()
+    ABC:Connect(RunService.Heartbeat, function(dt)
+        if tick() - t0 > 5 or not football or not football.Parent or football:IsDescendantOf(character) then
+            ABC:Clean()
+            return
+        end
 
-    -- Fast homing ball movement
-    local t0 = tick()
-    ABC:Clean()
-    ABC:Connect(RunService.Heartbeat, function(dt)
-        if tick() - t0 > 5 or not football or not football.Parent then
-            ABC:Clean()
-            return
-        end
-
-        dir = dir:Lerp((hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0), 8.5 * dt)
-        speed = math.clamp((hrp.Position - football.Position).Magnitude * 3.25, 0, 200)
-        football.AssemblyLinearVelocity = dir * speed
-    end)
+        dir = dir:Lerp((hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0), 8.5 * dt)
+        speed = math.clamp((hrp.Position - football.Position).Magnitude * 3.25, 50, 200) -- Maintain minimum speed
+        football.AssemblyLinearVelocity = dir * speed
+    end)
 end
 
 

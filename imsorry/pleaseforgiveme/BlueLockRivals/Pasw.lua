@@ -228,7 +228,9 @@ local function Pasw()
 	local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
 	track.Priority = Enum.AnimationPriority.Action4
 	track:Play()
-  PlaySound("87838758006658")
+ task.spawn(function()
+   PlaySound("87838758006658")
+ end)
 
 	-- ⏳ Cooldown
 	canUse = false

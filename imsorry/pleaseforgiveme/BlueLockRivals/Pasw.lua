@@ -9,10 +9,19 @@ local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local team = player.Team
+local hasBall, football, hrp
 
 -- Auto-update team when changed
 player:GetPropertyChangedSignal("Team"):Connect(function()
         team = player.Team
+end)
+
+task.spawn(function()
+    while wait(1) do
+    hasBall = character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
+        football = character:FindFirstChild("Football")
+        hrp = character:FindFirstChild("HumanoidRootPart")
+end
 end)
 
 function randomString()
@@ -205,10 +214,7 @@ local function Pasw()
                 return
         end
 
-        local hasBall = character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
-        local football = character:FindFirstChild("Football")
-        local hrp = character:FindFirstChild("HumanoidRootPart")
-
+        
         if not (hasBall and hasBall.Value) or not football or not hrp then
                 CreateNotification("Missing ball, HumanoidRootPart or you don't have the ball.", Color3.new(255, 0, 0), 5)
                 return

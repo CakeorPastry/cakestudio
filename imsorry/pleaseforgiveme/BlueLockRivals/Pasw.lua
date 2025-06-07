@@ -158,9 +158,9 @@ gridLayoutScrollingframe.Name = randomString()
 
 pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame = frame end)
 
-local PaswButton = Instance.new("TextButton", frame)
+local PaswButton = Instance.new("TextButton", scrollingFrame)
 PaswButton.Size = UDim2.new(1, -10, 0, 30)
-PaswButton.Position = UDim2.new(0, 5, 0, 5)
+-- PaswButton.Position = UDim2.new(0, 5, 0, 5)
 PaswButton.Text = "Pasw"
 PaswButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 PaswButton.TextColor3 = Color3.new(1, 1, 1)

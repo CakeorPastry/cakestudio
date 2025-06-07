@@ -129,8 +129,11 @@ end
 
 pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_LOADED = true end)
 
+
+
+
 local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 200, 0, 300)
+frame.Size = UDim2.new(0, 200, 0, 150)
 frame.Position = UDim2.new(0, 10, 0.5, -150)
 frame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
 frame.Active = true

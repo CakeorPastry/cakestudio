@@ -138,9 +138,9 @@ local PaswButton = Instance.new("TextButton", frame)
 PaswButton.Size = UDim2.new(1, -10, 0, 30)
 PaswButton.Position = UDim2.new(0, 5, 0, 5)
 PaswButton.Text = "Pasw"
-mainButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
-mainButton.TextColor3 = Color3.new(1, 1, 1)
-mainButton.Name = randomString()
+PaswButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+PaswButton.TextColor3 = Color3.new(1, 1, 1)
+PaswButton.Name = randomString()
 
 -- Cooldown control
 local canUse = true
@@ -261,3 +261,8 @@ end
 
 -- 🎯 GUI button connection
 PaswButton.Activated:Connect(Pasw)
+
+task.spawn(function()
+    CreateNotification("Cf pasw", Color3.new(0, 255, 0), 5)
+end)
+PlaySound()

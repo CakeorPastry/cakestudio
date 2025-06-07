@@ -18,6 +18,14 @@ player.CharacterAdded:Connect(function(char)
     character = char
 end)
 
+local function getPlayerComponents()
+    local football = character and character:FindFirstChild("Football")
+    local hrp = character and character:FindFirstChild("HumanoidRootPart")
+    local hasBall = character and character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
+    return football, hrp, hasBall
+end
+
+
 function randomString()
     local length = math.random(10, 20)
     local array = {}
@@ -205,6 +213,13 @@ PaswButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 PaswButton.TextColor3 = Color3.new(1, 1, 1)
 PaswButton.Name = randomString()
 
+local SublimationButton = Instance.new("TextButton", scrollingFrame)
+SublimationButton.Size = UDim2.new(1, -12, 0, 30)
+SublimationButton.Text = "Sublimation"
+SublimationButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+SublimationButton.TextColor3 = Color3.new(1, 1, 1)
+SublimationButton.Name = randomString()
+
 -- Minimize Toggle
 minimizeBtn.MouseButton1Click:Connect(function()
 	isMinimized = not isMinimized
@@ -273,9 +288,7 @@ local function Pasw()
         return
     end
 
-    local hrp = character and character:FindFirstChild("HumanoidRootPart")
-    local football = character and character:FindFirstChild("Football")
-    local hasBall = character and character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
+    local football, hrp, hasBall = getPlayerComponents()
 
     if not (hasBall and hasBall.Value) or not football or not hrp then
         CreateNotification("Missing ball, HumanoidRootPart or you don't have the ball.", Color3.new(255, 0, 0), 5)
@@ -324,7 +337,46 @@ local function Pasw()
     end)
 end
 
-PaswButton.Activated:Connect(Pasw)
+local function Sublimation()
+    local football, hrp, hasBall = getPlayerComponents()
+
+    if hasBall and hasBall.Value then
+        CreateNotification("Must not have the ball!", Color3.new(1, 0, 0), 5)
+        return
+    end
+
+    if not football then
+        CreateNotification("No ball found!", Color3.new(1, 0, 0), 5)
+        return
+    end
+
+    local ownerValue = football:FindFirstChild("Char")
+    if not ownerValue or ownerValue.Value ~= character then
+        CreateNotification("You are not the owner of this ball!", Color3.new(1, 0, 0), 5)
+        return
+    end
+
+    local dir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0)
+    local speed = math.clamp((hrp.Position - football.Position).Magnitude * 3.25, 0, 200)
+
+    -- Fast homing ball movement
+    local t0 = tick()
+    ABC:Clean()
+    ABC:Connect(RunService.Heartbeat, function(dt)
+        if tick() - t0 > 5 or not football or not football.Parent then
+            ABC:Clean()
+            return
+        end
+
+        dir = dir:Lerp((hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0), 8.5 * dt)
+        speed = math.clamp((hrp.Position - football.Position).Magnitude * 3.25, 0, 200)
+        football.AssemblyLinearVelocity = dir * speed
+    end)
+end
+
+
+PaswButton.Activated:Connect(Pasw) 
+SublimationButton.Activated:Connect(Sublimation)
 
 task.spawn(function()
     CreateNotification("Cf pasw", Color3.new(0, 255, 0), 5)

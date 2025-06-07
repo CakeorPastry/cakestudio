@@ -359,37 +359,67 @@ local function Pasw()
     end)
 end
 
+-- This is your smart avoidance helper function
+local function GetAvoidanceOffset(footballPos, baseDir)
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= Players.LocalPlayer and player.Character then
+            local otherHRP = player.Character:FindFirstChild("HumanoidRootPart")
+            if otherHRP then
+                local toOther = otherHRP.Position - footballPos
+                local dist = toOther.Magnitude
+                local angle = math.acos(baseDir:Dot(toOther.Unit))
+
+                if dist < 10 and angle < math.rad(35) then
+                    -- Offset direction to steer slightly away
+                    return (footballPos - otherHRP.Position).Unit * 0.75
+                end
+            end
+        end
+    end
+    return Vector3.zero
+end
+
+-- Main homing ball function
 local function Sublimation()
     local football, hrp, hasBall = getPlayerComponents()
 
+    -- Can't use while holding ball
     if hasBall and hasBall.Value and football then
         CreateNotification("Must not have the ball!", Color3.new(1, 0, 0), 5)
         return
     end
 
+    -- Must be your ball
     local ownerValue = football:FindFirstChild("Char")
     if not ownerValue or ownerValue.Value ~= character then
         CreateNotification("You are not the owner of this ball!", Color3.new(1, 0, 0), 5)
         return
     end
 
+    local speed = 150 -- constant speed
     local dir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0)
-    local speed = math.clamp((hrp.Position - football.Position).Magnitude * 3.25, 50, 200) -- Added min speed
 
-    -- Fast homing ball movement
     local t0 = tick()
     ABC:Clean()
+
     ABC:Connect(RunService.Heartbeat, function(dt)
         if tick() - t0 > 5 or not football or not football.Parent or football:IsDescendantOf(character) then
             ABC:Clean()
             return
         end
 
-        dir = dir:Lerp((hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0), 8.5 * dt)
-        speed = math.clamp((hrp.Position - football.Position).Magnitude * 3.25, 50, 200) -- Maintain minimum speed
+        local baseDir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0)
+        baseDir = baseDir.Unit
+
+        -- Call our new helper function!
+        local avoidOffset = GetAvoidanceOffset(football.Position, baseDir)
+        local finalDir = (baseDir + avoidOffset).Unit
+
+        dir = dir:Lerp(finalDir, 8.5 * dt)
         football.AssemblyLinearVelocity = dir * speed
     end)
 end
+
 
 
 PaswButton.Activated:Connect(Pasw) 

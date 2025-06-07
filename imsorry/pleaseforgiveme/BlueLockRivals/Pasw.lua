@@ -29,8 +29,8 @@ end
 
 function releaseBall()
     local args = {
-        15,
-        [4] = vector.create(5, 5, 15)
+        30,
+        [4] = vector.create(5, 15, 15)
     }
     game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("BallService"):WaitForChild("RE"):WaitForChild("Shoot"):FireServer(unpack(args))
 end

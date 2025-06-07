@@ -133,16 +133,16 @@ pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_LOADE
 
 
 local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 200, 0, 150)
-frame.Position = UDim2.new(0, 10, 0.5, -150)
+frame.Size = UDim2.new(0, 220, 0, 180)
+frame.Position = UDim2.new(0, 10, 0.5, -90)
 frame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
 frame.Active = true
 frame.Draggable = true
 frame.Name = randomString()
 
 local scrollingFrame = Instance.new("ScrollingFrame", frame)
-scrollingFrame.Size = UDim2.new(1, -10, 1, -10)
-scrollingFrame.Position = UDim2.new(0, 5, 0, 5)
+scrollingFrame.Size = UDim2.new(1, -20, 1, -20)
+scrollingFrame.Position = UDim2.new(0, 10, 0, 10)
 scrollingFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
 scrollingFrame.ScrollBarThickness = 6
 scrollingFrame.BackgroundTransparency = 1
@@ -155,15 +155,16 @@ gridLayoutScrollingframe.HorizontalAlignment = Enum.HorizontalAlignment.Left
 gridLayoutScrollingframe.VerticalAlignment = Enum.VerticalAlignment.Top
 gridLayoutScrollingframe.SortOrder = Enum.SortOrder.LayoutOrder
 gridLayoutScrollingframe.StartCorner = Enum.StartCorner.TopLeft
-gridLayoutScrollingframe.CellPadding = UDim2.new(0, 4, 0, 4)
-gridLayoutScrollingframe.CellSize = UDim2.new(1, -8, 0, 40)
+gridLayoutScrollingframe.CellPadding = UDim2.new(0, 6, 0, 6)
+gridLayoutScrollingframe.CellSize = UDim2.new(1, -12, 0, 40)
 gridLayoutScrollingframe.Name = randomString()
 
-pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame = frame end)
+pcall(function()
+	getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame = frame
+end)
 
 local PaswButton = Instance.new("TextButton", scrollingFrame)
-PaswButton.Size = UDim2.new(1, -10, 0, 30)
--- PaswButton.Position = UDim2.new(0, 5, 0, 5)
+PaswButton.Size = UDim2.new(1, -12, 0, 30)
 PaswButton.Text = "Pasw"
 PaswButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 PaswButton.TextColor3 = Color3.new(1, 1, 1)

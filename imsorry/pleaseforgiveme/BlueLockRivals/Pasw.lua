@@ -209,9 +209,15 @@ local function Pasw()
 	local football = character:FindFirstChild("Football")
 	local hrp = character:FindFirstChild("HumanoidRootPart")
 
-	if not (hasBall and hasBall.Value) or not football or not hrp then
+	if not (hasBall and hasBall.Value)  then
 		CreateNotification("Missing ball, HumanoidRootPart or you don't have the ball.", Color3.new(255, 0, 0), 5)
-		return
+return
+elseif not football then
+CreateNotification("2", Color3.new(255, 0, 0), 5)
+return
+elseif not hrp then
+		CreateNotification("3", Color3.new(255, 0, 0), 5)
+return
 	end
 
 	local target = getBestTarget()

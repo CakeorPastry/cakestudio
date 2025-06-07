@@ -104,7 +104,7 @@ function CreateNotification(text, color, duration)
     notification:Destroy()
 end
 
-if game.GameId ~= 1516533665 then
+if game.GameId ~= 6325068386 then
     task.spawn(function()
         CreateNotification("This script is only for the game \"Blue Lock: Rivals\".", Color3.new(255, 0, 0), 5)
         screenGui:Destroy()

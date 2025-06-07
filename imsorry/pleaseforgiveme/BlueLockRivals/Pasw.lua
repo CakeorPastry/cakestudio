@@ -132,15 +132,54 @@ pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_LOADE
 
 
 
+local frameHeight = 220
+local headerHeight = 36
+local isMinimized = false
+
 local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 220, 0, 180)
-frame.Position = UDim2.new(0, 10, 0.5, -90)
+frame.Size = UDim2.new(0, 240, 0, frameHeight)
+frame.Position = UDim2.new(0, 10, 0.5, -frameHeight / 2)
 frame.BackgroundColor3 = Color3.new(0.1, 0.1, 0.1)
 frame.Active = true
 frame.Draggable = true
 frame.Name = randomString()
+frame.BorderSizePixel = 0
 
-local scrollingFrame = Instance.new("ScrollingFrame", frame)
+-- Title Bar
+local header = Instance.new("Frame", frame)
+header.Size = UDim2.new(1, 0, 0, headerHeight)
+header.BackgroundColor3 = Color3.new(0.15, 0.15, 0.15)
+header.BorderSizePixel = 0
+header.Name = "Header"
+
+local title = Instance.new("TextLabel", header)
+title.Size = UDim2.new(1, -36, 1, 0)
+title.Position = UDim2.new(0, 6, 0, 0)
+title.BackgroundTransparency = 1
+title.Text = "Pasw Menu"
+title.TextColor3 = Color3.new(1, 1, 1)
+title.Font = Enum.Font.SourceSansBold
+title.TextSize = 18
+title.TextXAlignment = Enum.TextXAlignment.Left
+
+local minimizeBtn = Instance.new("TextButton", header)
+minimizeBtn.Size = UDim2.new(0, 30, 0, 30)
+minimizeBtn.Position = UDim2.new(1, -32, 0, 3)
+minimizeBtn.Text = "-"
+minimizeBtn.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+minimizeBtn.TextColor3 = Color3.new(1, 1, 1)
+minimizeBtn.Font = Enum.Font.SourceSansBold
+minimizeBtn.TextSize = 20
+minimizeBtn.BorderSizePixel = 0
+
+-- Content Section
+local content = Instance.new("Frame", frame)
+content.Position = UDim2.new(0, 0, 0, headerHeight)
+content.Size = UDim2.new(1, 0, 1, -headerHeight)
+content.BackgroundTransparency = 1
+content.Name = "Content"
+
+local scrollingFrame = Instance.new("ScrollingFrame", content)
 scrollingFrame.Size = UDim2.new(1, -20, 1, -20)
 scrollingFrame.Position = UDim2.new(0, 10, 0, 10)
 scrollingFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
@@ -150,18 +189,14 @@ scrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
 scrollingFrame.ScrollingDirection = Enum.ScrollingDirection.Y
 scrollingFrame.Name = randomString()
 
-local gridLayoutScrollingframe = Instance.new("UIGridLayout", scrollingFrame)
-gridLayoutScrollingframe.HorizontalAlignment = Enum.HorizontalAlignment.Left
-gridLayoutScrollingframe.VerticalAlignment = Enum.VerticalAlignment.Top
-gridLayoutScrollingframe.SortOrder = Enum.SortOrder.LayoutOrder
-gridLayoutScrollingframe.StartCorner = Enum.StartCorner.TopLeft
-gridLayoutScrollingframe.CellPadding = UDim2.new(0, 6, 0, 6)
-gridLayoutScrollingframe.CellSize = UDim2.new(1, -12, 0, 40)
-gridLayoutScrollingframe.Name = randomString()
-
-pcall(function()
-	getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame = frame
-end)
+local gridLayout = Instance.new("UIGridLayout", scrollingFrame)
+gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+gridLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+gridLayout.StartCorner = Enum.StartCorner.TopLeft
+gridLayout.CellPadding = UDim2.new(0, 6, 0, 6)
+gridLayout.CellSize = UDim2.new(1, -12, 0, 40)
+gridLayout.Name = randomString()
 
 local PaswButton = Instance.new("TextButton", scrollingFrame)
 PaswButton.Size = UDim2.new(1, -12, 0, 30)
@@ -169,6 +204,20 @@ PaswButton.Text = "Pasw"
 PaswButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 PaswButton.TextColor3 = Color3.new(1, 1, 1)
 PaswButton.Name = randomString()
+
+-- Minimize Toggle
+minimizeBtn.MouseButton1Click:Connect(function()
+	isMinimized = not isMinimized
+	if isMinimized then
+		content.Visible = false
+		frame.Size = UDim2.new(0, 240, 0, headerHeight)
+	else
+		content.Visible = true
+		frame.Size = UDim2.new(0, 240, 0, frameHeight)
+	end
+end)
+
+pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame = frame end)
 
 local canUse = true
 

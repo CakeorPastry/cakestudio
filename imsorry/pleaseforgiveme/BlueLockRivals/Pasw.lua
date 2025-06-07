@@ -19,11 +19,33 @@ player.CharacterAdded:Connect(function(char)
 end)
 
 local function getPlayerComponents()
-    local football = character and character:FindFirstChild("Football")
     local hrp = character and character:FindFirstChild("HumanoidRootPart")
     local hasBall = character and character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
+
+    local football = nil
+
+    -- Check if any player currently has the football
+    for _, player in ipairs(Players:GetPlayers()) do
+        local char = player.Character
+        if char and char:FindFirstChild("Football") then
+            football = char:FindFirstChild("Football")
+            break -- We found it, stop looking
+        end
+    end
+
+    -- If not in a character, maybe it's in workspace (dropped or in the air)
+    if not football then
+        football = workspace:FindFirstChild("Football")
+    end
+
+    -- Optional fallback: check player's own character again
+    if not football then
+        football = character and character:FindFirstChild("Football")
+    end
+
     return football, hrp, hasBall
 end
+
 
 
 function randomString()
@@ -340,15 +362,18 @@ end
 local function Sublimation()
     local football, hrp, hasBall = getPlayerComponents()
 
-    if hasBall and hasBall.Value then
+    if hasBall and hasBall.Value and football then
         CreateNotification("Must not have the ball!", Color3.new(1, 0, 0), 5)
         return
     end
 
+    --[[
+    *THIS ISN'T SUPPOSED TO BE IN THE CODE*
     if not football then
         CreateNotification("No ball found!", Color3.new(1, 0, 0), 5)
         return
     end
+    ]]
 
     local ownerValue = football:FindFirstChild("Char")
     if not ownerValue or ownerValue.Value ~= character then

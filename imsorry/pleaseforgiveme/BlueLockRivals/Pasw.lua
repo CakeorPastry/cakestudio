@@ -29,8 +29,8 @@ end
 
 function releaseBall()
     local args = {
-        5,
-        [4] = vector.create(5, 5, 5)
+        15,
+        [4] = vector.create(5, 5, 15)
     }
     game:GetService("ReplicatedStorage"):WaitForChild("Packages"):WaitForChild("Knit"):WaitForChild("Services"):WaitForChild("BallService"):WaitForChild("RE"):WaitForChild("Shoot"):FireServer(unpack(args))
 end
@@ -232,6 +232,7 @@ local function Pasw()
     end)
 
     releaseBall()
+    task.wait(0.5)
 
     local dir = (targetHRP.Position + targetHRP.AssemblyLinearVelocity * Vector3.new(1, 0, 1) - hrp.Position).Unit + Vector3.new(0, 0.5, 0)
     local speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 1.5, 0, 150)

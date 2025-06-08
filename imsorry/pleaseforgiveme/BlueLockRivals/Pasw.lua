@@ -18,6 +18,9 @@ player.CharacterAdded:Connect(function(char)
     character = char
 end)
 
+
+--[[
+
 local function getPlayerComponents()
     local hrp = character and character:FindFirstChild("HumanoidRootPart")
     local hasBall = character and character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
@@ -45,6 +48,10 @@ local function getPlayerComponents()
 
     return football, hrp, hasBall
 end
+
+
+]]
+
 
 
 

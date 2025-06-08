@@ -269,27 +269,72 @@ local function getBestTarget()
     local furthest, furthestDist = nil, -1
     local bestInView, viewAngle = nil, math.huge
 
-    for _, p in ipairs(Players:GetPlayers()) do
-        if p ~= player and p.Team == team and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-            local targetHRP = p.Character.HumanoidRootPart
-            local dirToTarget = (targetHRP.Position - hrp.Position).Unit
-            local cameraDir = camera.CFrame.LookVector
-            local angle = math.deg(math.acos(dirToTarget:Dot(cameraDir)))
-            local dist = (hrp.Position - targetHRP.Position).Magnitude
+    if passMode == "Enemy" then
+        for _, p in ipairs(Players:GetPlayers()) do
+            if p ~= player and p.Team ~= team and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                local targetHRP = p.Character.HumanoidRootPart
+                local dirToTarget = (targetHRP.Position - hrp.Position).Unit
+                local cameraDir = camera.CFrame.LookVector
+                local angle = math.deg(math.acos(dirToTarget:Dot(cameraDir)))
+                local dist = (hrp.Position - targetHRP.Position).Magnitude
 
-            if dist > furthestDist then
-                furthest = p
-                furthestDist = dist
-            end
+                if dist > furthestDist then
+                    furthest = p
+                    furthestDist = dist
+                end
 
-            if angle <= 25 and angle < viewAngle then
-                viewAngle = angle
-                bestInView = p
+                if angle <= 25 and angle < viewAngle then
+                    viewAngle = angle
+                    bestInView = p
+                end
             end
         end
-    end
 
-    return bestInView or furthest
+        return bestInView or furthest
+
+    elseif passMode == "GK" then
+        for _, p in ipairs(Players:GetPlayers()) do
+            if p.Team == team and p.Character then
+                local valuesFolder = p.Character:FindFirstChild("Values")
+                if valuesFolder then
+                    local goalie = valuesFolder:FindFirstChild("Goalie")
+                    if goalie and goalie.Value and p.Character:FindFirstChild("HumanoidRootPart") then
+                        return p
+                    end
+                end
+            end
+        end
+
+        -- No goalie player found, fallback to AI goalie
+        local aiTeamGK = workspace:FindFirstChild("AI")
+        if aiTeamGK and aiTeamGK:FindFirstChild(team.Name) and aiTeamGK[team.Name]:FindFirstChild("GK") then
+            return aiTeamGK[team.Name].GK -- This is a model, not a Player
+        end
+        return nil
+
+    else -- Normal mode
+        for _, p in ipairs(Players:GetPlayers()) do
+            if p ~= player and p.Team == team and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                local targetHRP = p.Character.HumanoidRootPart
+                local dirToTarget = (targetHRP.Position - hrp.Position).Unit
+                local cameraDir = camera.CFrame.LookVector
+                local angle = math.deg(math.acos(dirToTarget:Dot(cameraDir)))
+                local dist = (hrp.Position - targetHRP.Position).Magnitude
+
+                if dist > furthestDist then
+                    furthest = p
+                    furthestDist = dist
+                end
+
+                if angle <= 25 and angle < viewAngle then
+                    viewAngle = angle
+                    bestInView = p
+                end
+            end
+        end
+
+        return bestInView or furthest
+    end
 end
 
 local ABC = {}
@@ -321,18 +366,32 @@ local function Pasw()
     end
 
     local target = getBestTarget()
-    if not target or not target.Character or not target.Character:FindFirstChild("HumanoidRootPart") then
-        CreateNotification("No valid teammate to pass to.", Color3.new(255, 255, 0), 5)
+    local targetHRP
+
+    if typeof(target) == "Instance" and target:IsA("Model") then
+        targetHRP = target:FindFirstChild("HumanoidRootPart")
+    elseif target and target.Character then
+        targetHRP = target.Character:FindFirstChild("HumanoidRootPart")
+    end
+
+    if not targetHRP then
+        local msg = "No valid teammate to pass to."
+        if passMode == "Enemy" then
+            msg = "No valid enemy/player to pass to."
+        elseif passMode == "GK" then
+            msg = "No valid goalie to pass to."
+        end
+        CreateNotification(msg, Color3.new(255, 255, 0), 5)
         return
     end
 
-    local targetHRP = target.Character.HumanoidRootPart
-
+    -- Animation
     local anim = Instance.new("Animation")
     anim.AnimationId = "rbxassetid://83376040878208"
     local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
     track.Priority = Enum.AnimationPriority.Action4
     track:Play()
+
     task.spawn(function()
         PlaySound("87838758006658")
     end)
@@ -361,6 +420,7 @@ local function Pasw()
         football.AssemblyLinearVelocity = dir * speed
     end)
 end
+
 
 -- This is your smart avoidance helper function
 local function GetAvoidanceOffset(footballPos, baseDir)

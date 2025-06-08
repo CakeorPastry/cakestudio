@@ -47,10 +47,6 @@ local function getPlayerComponents()
 	return football, hrp, hasBall
 end
 
-
-
-
-
 function randomString()
     local length = math.random(10, 20)
     local array = {}
@@ -162,9 +158,6 @@ end
 
 pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_LOADED = true end)
 
-
-
-
 local frameHeight = 220
 local headerHeight = 36
 local isMinimized = false
@@ -259,7 +252,10 @@ end)
 
 pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame = frame end)
 
-local canUse = true
+local canUse = {
+    ["Pasw"] = true,
+    ["Sublimation"] = true
+}
 
 local function getBestTarget()
     local camera = workspace.CurrentCamera
@@ -353,7 +349,7 @@ function ABC:Clean()
 end
 
 local function Pasw()
-    if not canUse then
+    if not canUse["Pasw"] then
         CreateNotification("Ability is on cooldown.", Color3.new(255, 255, 0), 5)
         return
     end
@@ -396,9 +392,9 @@ local function Pasw()
         PlaySound("87838758006658")
     end)
 
-    canUse = false
+    canUse["Pasw"] = false
     task.delay(1, function()
-        canUse = true
+        canUse["Pasw"] = true
     end)
 
     releaseBall()
@@ -444,6 +440,12 @@ end
 
 -- Main homing ball function
 local function Sublimation()
+
+    if not canUse["Sublimation"] then
+        CreateNotification("Ability is on cooldown.", Color3.new(255, 255, 0), 5)
+        return
+    end
+
     local football, hrp, hasBall = getPlayerComponents()
 
     -- Can't use while holding ball
@@ -458,6 +460,12 @@ local function Sublimation()
         CreateNotification("You are not the owner of this ball!", Color3.new(1, 0, 0), 5)
         return
     end
+    
+    canUse["Sublimation"] = false
+    task.delay(1, function()
+        canUse["Sublimation"] = true
+    end)
+
 
     local speed = 150 -- constant speed
     local dir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0)

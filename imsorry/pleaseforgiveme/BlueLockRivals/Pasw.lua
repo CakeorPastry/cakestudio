@@ -275,6 +275,7 @@ local function changePassMode()
     else 
         passMode = "Normal"
     end
+    passModeButton.Text = "Pass Mode:"..passMode
 end
 
 local function getBestTarget()

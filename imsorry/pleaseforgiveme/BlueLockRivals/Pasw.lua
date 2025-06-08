@@ -19,38 +19,34 @@ player.CharacterAdded:Connect(function(char)
 end)
 
 
---[[
-
 local function getPlayerComponents()
-    local hrp = character and character:FindFirstChild("HumanoidRootPart")
-    local hasBall = character and character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
+	local hrp = character and character:FindFirstChild("HumanoidRootPart")
+	local hasBall = character and character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
 
-    local football = nil
+	local football = nil
 
-    -- Check if any player currently has the football
-    for _, player in ipairs(Players:GetPlayers()) do
-        local char = player.Character
-        if char and char:FindFirstChild("Football") then
-            football = char:FindFirstChild("Football")
-            break -- We found it, stop looking
-        end
-    end
+	-- Check if any player currently has the football
+	for _, player in ipairs(Players:GetPlayers()) do
+		local char = player.Character
+		if char and char:FindFirstChild("Football") then
+			football = char:FindFirstChild("Football")
+			break -- We found it, stop looking
+		end
+	end
 
-    -- If not in a character, maybe it's in workspace (dropped or in the air)
-    if not football then
-        football = workspace:FindFirstChild("Football")
-    end
+	-- If not in a character, maybe it's in workspace (dropped or in the air)
+	if not football then
+		football = workspace:FindFirstChild("Football")
+	end
 
-    -- Optional fallback: check player's own character again
-    if not football then
-        football = character and character:FindFirstChild("Football")
-    end
+	-- Optional fallback: check player's own character again
+	if not football then
+		football = character and character:FindFirstChild("Football")
+	end
 
-    return football, hrp, hasBall
+	return football, hrp, hasBall
 end
 
-
-]]
 
 
 

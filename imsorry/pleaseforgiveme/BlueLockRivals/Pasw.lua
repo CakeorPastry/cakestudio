@@ -238,6 +238,14 @@ SublimationButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 SublimationButton.TextColor3 = Color3.new(1, 1, 1)
 SublimationButton.Name = randomString()
 
+local passModeButton = Instance.new("TextButton", scrollingFrame)
+passModeButton.Size = UDim2.new(1, -12, 0, 30)
+passModeButton.Text = "Pass Mode: Normal"
+passModeButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+passModeButton.TextColor3 = Color3.new(1, 1, 1)
+passModeButton.Name = randomString()
+
+
 -- Minimize Toggle
 minimizeBtn.MouseButton1Click:Connect(function()
 	isMinimized = not isMinimized
@@ -256,6 +264,18 @@ local canUse = {
     ["Pasw"] = true,
     ["Sublimation"] = true
 }
+
+local passMode = "Normal"
+
+local function changePassMode() 
+    if passMode == "Normal" then
+        passMode = "Enemy"
+    elseif passMode == "Enemy" then
+        passMode = "GK"
+    else 
+        passMode = "Normal"
+    end
+end
 
 local function getBestTarget()
     local camera = workspace.CurrentCamera
@@ -495,6 +515,7 @@ end
 
 PaswButton.Activated:Connect(Pasw) 
 SublimationButton.Activated:Connect(Sublimation)
+passModeButton.Activated:Connect(changePassMode)
 
 task.spawn(function()
     CreateNotification("Cf pasw", Color3.new(0, 255, 0), 5)

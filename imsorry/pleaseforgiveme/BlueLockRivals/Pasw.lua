@@ -325,11 +325,11 @@ local function getBestTarget()
         -- No goalie player found, fallback to AI goalie
         local aiTeamGK = workspace:FindFirstChild("AI")
         if aiTeamGK and aiTeamGK:FindFirstChild(team.Name) and aiTeamGK[team.Name]:FindFirstChild("GK") then
-            return aiTeamGK[team.Name].GK -- This is a model, not a Player
+            return aiTeamGK[team.Name].GK
         end
         return nil
 
-    else -- Normal mode
+    else
         for _, p in ipairs(Players:GetPlayers()) do
             if p ~= player and p.Team == team and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
                 local targetHRP = p.Character.HumanoidRootPart
@@ -369,16 +369,35 @@ function ABC:Clean()
     self.Connections = {}
 end
 
+-- This is your smart avoidance helper function
+local function GetAvoidanceOffset(footballPos, baseDir)
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= Players.LocalPlayer and player.Character then
+            local otherHRP = player.Character:FindFirstChild("HumanoidRootPart")
+            if otherHRP then
+                local toOther = otherHRP.Position - footballPos
+                local dist = toOther.Magnitude
+                local angle = math.acos(baseDir:Dot(toOther.Unit))
+
+                if dist < 10 and angle < math.rad(35) then
+                    -- Offset direction to steer slightly away
+                    return (footballPos - otherHRP.Position).Unit * 0.75
+                end
+            end
+        end
+    end
+    return Vector3.zero
+end
+
 local function Pasw()
     if not canUse["Pasw"] then
-        CreateNotification("Ability is on cooldown.", Color3.new(255, 255, 0), 5)
+        CreateNotification("Ability is on cooldown.", Color3.new(1, 1, 0), 5)
         return
     end
 
     local football, hrp, hasBall = getPlayerComponents()
-
     if not (hasBall and hasBall.Value) or not football or not hrp then
-        CreateNotification("Missing ball, HumanoidRootPart or you don't have the ball.", Color3.new(255, 0, 0), 5)
+        CreateNotification("Missing ball, HumanoidRootPart or you don't have the ball.", Color3.new(1, 0, 0), 5)
         return
     end
 
@@ -398,7 +417,7 @@ local function Pasw()
         elseif passMode == "GK" then
             msg = "No valid goalie to pass to."
         end
-        CreateNotification(msg, Color3.new(255, 255, 0), 5)
+        CreateNotification(msg, Color3.new(1, 1, 0), 5)
         return
     end
 
@@ -421,7 +440,14 @@ local function Pasw()
     releaseBall()
     task.wait(0.5)
 
-    local dir = (targetHRP.Position + targetHRP.AssemblyLinearVelocity * Vector3.new(1, 0, 1) - hrp.Position).Unit + Vector3.new(0, 0.5, 0)
+    -- Predict target position with fallback
+    local velocity = targetHRP:FindFirstChild("AssemblyLinearVelocity") and targetHRP.AssemblyLinearVelocity or Vector3.zero
+    if velocity.Magnitude < 0.1 then
+        velocity = Vector3.zero
+    end
+
+    local predictedPos = targetHRP.Position + velocity * Vector3.new(1, 0, 1)
+    local dir = (predictedPos - hrp.Position).Unit + Vector3.new(0, 0.5, 0)
     local speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 1.5, 0, 150)
     football.AssemblyLinearVelocity = dir * speed
 
@@ -432,31 +458,11 @@ local function Pasw()
             ABC:Clean()
             return
         end
-        dir = dir:Lerp((targetHRP.Position - football.Position).Unit + Vector3.new(0, 0.35, 0), 6.5 * dt)
+        local lerpTarget = (targetHRP.Position - football.Position).Unit + Vector3.new(0, 0.35, 0)
+        dir = dir:Lerp(lerpTarget, 6.5 * dt)
         speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 2.75, 0, 150)
         football.AssemblyLinearVelocity = dir * speed
     end)
-end
-
-
--- This is your smart avoidance helper function
-local function GetAvoidanceOffset(footballPos, baseDir)
-    for _, player in pairs(Players:GetPlayers()) do
-        if player ~= Players.LocalPlayer and player.Character then
-            local otherHRP = player.Character:FindFirstChild("HumanoidRootPart")
-            if otherHRP then
-                local toOther = otherHRP.Position - footballPos
-                local dist = toOther.Magnitude
-                local angle = math.acos(baseDir:Dot(toOther.Unit))
-
-                if dist < 10 and angle < math.rad(35) then
-                    -- Offset direction to steer slightly away
-                    return (footballPos - otherHRP.Position).Unit * 0.75
-                end
-            end
-        end
-    end
-    return Vector3.zero
 end
 
 -- Main homing ball function

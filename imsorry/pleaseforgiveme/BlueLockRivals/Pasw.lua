@@ -1,3 +1,4 @@
+-- // Base Services
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UIS = game:GetService("UserInputService")
@@ -8,43 +9,38 @@ local player = Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local team = player.Team
 
--- Auto-update team when changed
+-- Auto-update team
 player:GetPropertyChangedSignal("Team"):Connect(function()
     team = player.Team
 end)
 
--- Auto-update character when it respawns
+-- Auto-update character
 player.CharacterAdded:Connect(function(char)
     character = char
 end)
 
-
 local function getPlayerComponents()
-	local hrp = character and character:FindFirstChild("HumanoidRootPart")
-	local hasBall = character and character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
+    local hrp = character and character:FindFirstChild("HumanoidRootPart")
+    local hasBall = character and character:FindFirstChild("Values") and character.Values:FindFirstChild("HasBall")
+    local football = nil
 
-	local football = nil
+    for _, player in ipairs(Players:GetPlayers()) do
+        local char = player.Character
+        if char and char:FindFirstChild("Football") then
+            football = char:FindFirstChild("Football")
+            break
+        end
+    end
 
-	-- Check if any player currently has the football
-	for _, player in ipairs(Players:GetPlayers()) do
-		local char = player.Character
-		if char and char:FindFirstChild("Football") then
-			football = char:FindFirstChild("Football")
-			break -- We found it, stop looking
-		end
-	end
+    if not football then
+        football = workspace:FindFirstChild("Football")
+    end
 
-	-- If not in a character, maybe it's in workspace (dropped or in the air)
-	if not football then
-		football = workspace:FindFirstChild("Football")
-	end
+    if not football then
+        football = character and character:FindFirstChild("Football")
+    end
 
-	-- Optional fallback: check player's own character again
-	if not football then
-		football = character and character:FindFirstChild("Football")
-	end
-
-	return football, hrp, hasBall
+    return football, hrp, hasBall
 end
 
 function randomString()
@@ -238,6 +234,15 @@ SublimationButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 SublimationButton.TextColor3 = Color3.new(1, 1, 1)
 SublimationButton.Name = randomString()
 
+local holdPositionButton = Instance.new("TextButton", scrollingFrame)
+holdPositionButton.Size = UDim2.new(1, -12, 0, 30)
+holdPositionButton.Text = "Hold Position: OFF"
+holdPositionButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+holdPositionButton.TextColor3 = Color3.new(1, 1, 1)
+holdPositionButton.Name = randomString()
+
+local holdActive = false
+
 local passModeButton = Instance.new("TextButton", scrollingFrame)
 passModeButton.Size = UDim2.new(1, -12, 0, 30)
 passModeButton.Text = "Pass Mode: Normal"
@@ -262,7 +267,8 @@ pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame
 
 local canUse = {
     ["Pasw"] = true,
-    ["Sublimation"] = true
+    ["Sublimation"] = true, 
+    ["Hold"] = true
 }
 
 local passMode = "Normal"
@@ -322,16 +328,23 @@ local function getBestTarget()
             end
         end
 
-        -- No goalie player found, fallback to AI goalie
         local aiTeamGK = workspace:FindFirstChild("AI")
         if aiTeamGK and aiTeamGK:FindFirstChild(team.Name) and aiTeamGK[team.Name]:FindFirstChild("GK") then
             return aiTeamGK[team.Name].GK
         end
         return nil
-
     else
         for _, p in ipairs(Players:GetPlayers()) do
             if p ~= player and p.Team == team and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                -- Skip goalie players
+                local values = p.Character:FindFirstChild("Values")
+                if values then
+                    local goalie = values:FindFirstChild("Goalie")
+                    if goalie and goalie.Value then
+                        continue
+                    end
+                end
+
                 local targetHRP = p.Character.HumanoidRootPart
                 local dirToTarget = (targetHRP.Position - hrp.Position).Unit
                 local cameraDir = camera.CFrame.LookVector
@@ -440,15 +453,17 @@ local function Pasw()
     releaseBall()
     task.wait(0.5)
 
-    -- Predict target position with fallback
     local velocity = targetHRP:FindFirstChild("AssemblyLinearVelocity") and targetHRP.AssemblyLinearVelocity or Vector3.zero
     if velocity.Magnitude < 0.1 then
         velocity = Vector3.zero
     end
 
     local predictedPos = targetHRP.Position + velocity * Vector3.new(1, 0, 1)
-    local dir = (predictedPos - hrp.Position).Unit + Vector3.new(0, 0.5, 0)
+    local baseDir = (predictedPos - hrp.Position).Unit + Vector3.new(0, 0.5, 0)
+    local avoidOffset = GetAvoidanceOffset(football.Position, baseDir)
+    local dir = (baseDir + avoidOffset).Unit
     local speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 1.5, 0, 150)
+
     football.AssemblyLinearVelocity = dir * speed
 
     local t0 = tick()
@@ -458,8 +473,10 @@ local function Pasw()
             ABC:Clean()
             return
         end
-        local lerpTarget = (targetHRP.Position - football.Position).Unit + Vector3.new(0, 0.35, 0)
-        dir = dir:Lerp(lerpTarget, 6.5 * dt)
+
+        local toTarget = (targetHRP.Position - football.Position).Unit + Vector3.new(0, 0.35, 0)
+        local avoidance = GetAvoidanceOffset(football.Position, toTarget)
+        dir = dir:Lerp((toTarget + avoidance).Unit, 6.5 * dt)
         speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 2.75, 0, 150)
         football.AssemblyLinearVelocity = dir * speed
     end)
@@ -518,10 +535,80 @@ local function Sublimation()
     end)
 end
 
+local function HoldPosition()
+    if not canUse["Hold"] then
+        CreateNotification("Hold is on cooldown.", Color3.new(1, 1, 0), 5)
+        return
+    end
+
+    local football, hrp = getPlayerComponents()
+    if not football or not hrp then
+        CreateNotification("Missing football or character.", Color3.new(1, 0, 0), 5)
+        return
+    end
+
+    local ownerValue = football:FindFirstChild("Char")
+    if not ownerValue or ownerValue.Value ~= character then
+        CreateNotification("You are not the ball owner!", Color3.new(1, 0, 0), 5)
+        return
+    end
+
+    -- Animation and Sound
+    local anim = Instance.new("Animation")
+    anim.AnimationId = "rbxassetid://83376040878208"
+    local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
+    track.Priority = Enum.AnimationPriority.Action4
+    track:Play()
+
+    task.spawn(function()
+        PlaySound("87838758006658")
+    end)
+
+    canUse["Hold"] = false
+    task.delay(1.5, function()
+        canUse["Hold"] = true
+    end)
+
+    -- Ball Movement in Circle
+    local center = football.Position + Vector3.new(0, 15, 0) -- center high above current ball
+    local radius = 7
+    local angle = 0
+    local speed = 1.5 -- rotations/sec
+
+    local t0 = tick()
+    ABC:Clean()
+
+    ABC:Connect(RunService.Heartbeat, function(dt)
+        if tick() - t0 > 10 or not football or not football.Parent or football:IsDescendantOf(character) then
+            ABC:Clean()
+            return
+        end
+
+        angle += math.pi * 2 * speed * dt
+        local x = math.cos(angle) * radius
+        local z = math.sin(angle) * radius
+        local targetPos = center + Vector3.new(x, 0, z)
+        local dir = (targetPos - football.Position).Unit
+
+        football.AssemblyLinearVelocity = dir * 45 + Vector3.new(0, 3, 0) -- keeps altitude while circling
+    end)
+end
 
 
 PaswButton.Activated:Connect(Pasw) 
 SublimationButton.Activated:Connect(Sublimation)
+
+holdPositionButton.Activated:Connect(function()
+    holdActive = not holdActive
+    holdPositionButton.Text = "Hold Position: " .. (holdActive and "ON" or "OFF")
+
+    if holdActive then
+        HoldPosition()
+    else
+        ABC:Clean() -- stop if turned off mid-air
+    end
+end)
+
 passModeButton.Activated:Connect(changePassMode)
 
 task.spawn(function()

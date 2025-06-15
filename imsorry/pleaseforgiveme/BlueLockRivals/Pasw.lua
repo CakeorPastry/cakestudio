@@ -569,6 +569,8 @@ local function HoldPosition()
         canUse["Hold"] = true
     end)
 
+    releaseBall()
+
     -- Ball Movement in Circle
     local center = football.Position + Vector3.new(0, 15, 0) -- center high above current ball
     local radius = 7

@@ -550,7 +550,6 @@ local function HoldPosition()
     local ownerValue = football:FindFirstChild("Char")
     local isOwner = ownerValue and ownerValue.Value == character
 
-    -- If not holding the ball AND not the owner, deny access
     if not (hasBall and hasBall.Value) and not isOwner then
         CreateNotification("You are not the ball owner!", Color3.new(1, 0, 0), 5)
         holdActive = false
@@ -558,44 +557,53 @@ local function HoldPosition()
         return
     end
 
-    -- At this point, you're either holding the ball or you're the owner
-    CreateNotification("Hold Position Activated!", Color3.fromRGB(0, 255, 0), 5)
+    -- We're allowed to proceed
+    holdActive = true
+    holdPositionButton.Text = "Hold Position: ON"
 
-    -- Animation + Sound (Play immediately)
-    task.spawn(function()
-        local anim = Instance.new("Animation")
-        anim.AnimationId = "rbxassetid://83376040878208"
-        local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
-        track.Priority = Enum.AnimationPriority.Action4
-        track:Play()
-
-        PlaySound("87838758006658")
-    end)
-
-    -- If holding the ball, release it first
     if hasBall and hasBall.Value then
+        -- Play animation + sound
+        task.spawn(function()
+            local anim = Instance.new("Animation")
+            anim.AnimationId = "rbxassetid://83376040878208"
+            local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
+            track.Priority = Enum.AnimationPriority.Action4
+            track:Play()
+
+            PlaySound("87838758006658")
+        end)
+
         releaseBall()
-        task.wait(0.15) -- small delay to let the ball fully detach
+        task.wait(0.15)
     end
 
-    -- Wait until the ball is no longer parented to your character (sometimes it lags)
+    -- Wait for the ball to detach if needed
     local timeout = 3
     local startTime = tick()
     while football:IsDescendantOf(character) and tick() - startTime < timeout do
         task.wait()
     end
 
-    -- Begin spinning behavior immediately
-    local center = football.Position + Vector3.new(0, 60, 0)
-    local radius = 30
-    local angle = 0
-    local speed = 0.9
+    -- Choose parameters based on whether ball was held or just owned
+    local useAltParams = not (hasBall and hasBall.Value)
+    local center = football.Position + Vector3.new(0, useAltParams and 90 or 60, 0)
+    local radius = useAltParams and 45 or 30
+    local speed = useAltParams and 1.5 or 0.9
 
+    if hasBall and hasBall.Value then
+        -- Initial launch upward when just released
+        football.AssemblyLinearVelocity = Vector3.new(0, 100, 0)
+    end
+
+    CreateNotification("Hold Position Activated!", Color3.fromRGB(0, 255, 0), 5)
+
+    local angle = 0
     ABC:Clean()
     ABC:Connect(RunService.Heartbeat, function(dt)
         if not holdActive or not football or not football.Parent then
             ABC:Clean()
             CreateNotification("Hold Position Deactivated!", Color3.fromRGB(255, 255, 0), 5)
+            holdPositionButton.Text = "Hold Position: OFF"
             return
         end
 

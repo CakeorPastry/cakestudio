@@ -538,7 +538,7 @@ end
 local function HoldPosition()
     local football, hrp, hasBall = getPlayerComponents()
 
-    -- Sanity check
+    -- Basic validation
     if not football or not hrp then
         CreateNotification("Missing football or character.", Color3.new(1, 0, 0), 5)
         holdActive = false
@@ -546,10 +546,11 @@ local function HoldPosition()
         return
     end
 
-    -- Check if we're the owner of the ball
+    -- Check ownership
     local ownerValue = football:FindFirstChild("Char")
     local isOwner = ownerValue and ownerValue.Value == character
 
+    -- If not holding the ball AND not the owner, deny access
     if not (hasBall and hasBall.Value) and not isOwner then
         CreateNotification("You are not the ball owner!", Color3.new(1, 0, 0), 5)
         holdActive = false
@@ -557,36 +558,44 @@ local function HoldPosition()
         return
     end
 
-    -- We're allowed to control the ball
-    CreateNotification("Hold Position Activated!", Color3.new(0, 1, 0), 5)
+    -- At this point, you're either holding the ball or you're the owner
+    CreateNotification("Hold Position Activated!", Color3.fromRGB(0, 255, 0), 5)
 
-    -- Animation and Sound
-    local anim = Instance.new("Animation")
-    anim.AnimationId = "rbxassetid://83376040878208"
-    local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
-    track.Priority = Enum.AnimationPriority.Action4
-    track:Play()
-
+    -- Animation + Sound (Play immediately)
     task.spawn(function()
+        local anim = Instance.new("Animation")
+        anim.AnimationId = "rbxassetid://83376040878208"
+        local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
+        track.Priority = Enum.AnimationPriority.Action4
+        track:Play()
+
         PlaySound("87838758006658")
     end)
 
-    -- If we have the ball, release it
+    -- If holding the ball, release it first
     if hasBall and hasBall.Value then
         releaseBall()
+        task.wait(0.15) -- small delay to let the ball fully detach
     end
 
-    -- Ball Movement: Go up high, then start circling forever
-    local center = football.Position + Vector3.new(0, 50, 0) -- Go HIGH up
-    local radius = 25 -- Large radius
-    local angle = 0
-    local speed = 0.8 -- rotations/sec
+    -- Wait until the ball is no longer parented to your character (sometimes it lags)
+    local timeout = 3
+    local startTime = tick()
+    while football:IsDescendantOf(character) and tick() - startTime < timeout do
+        task.wait()
+    end
 
-    ABC:Clean() -- clear any old movement
+    -- Begin spinning behavior immediately
+    local center = football.Position + Vector3.new(0, 60, 0)
+    local radius = 30
+    local angle = 0
+    local speed = 0.9
+
+    ABC:Clean()
     ABC:Connect(RunService.Heartbeat, function(dt)
-        if not holdActive or not football or not football.Parent or football:IsDescendantOf(character) then
+        if not holdActive or not football or not football.Parent then
             ABC:Clean()
-            CreateNotification("Hold Position Deactivated!", Color3.new(1, 1, 0), 5)
+            CreateNotification("Hold Position Deactivated!", Color3.fromRGB(255, 255, 0), 5)
             return
         end
 
@@ -596,10 +605,9 @@ local function HoldPosition()
         local targetPos = center + Vector3.new(x, 0, z)
         local dir = (targetPos - football.Position).Unit
 
-        football.AssemblyLinearVelocity = dir * 50 + Vector3.new(0, 5, 0) -- stay afloat
+        football.AssemblyLinearVelocity = dir * 50 + Vector3.new(0, 5, 0)
     end)
 end
-
 
 PaswButton.Activated:Connect(Pasw) 
 SublimationButton.Activated:Connect(Sublimation)
@@ -612,7 +620,7 @@ holdPositionButton.Activated:Connect(function()
         HoldPosition()
     else
         ABC:Clean()
-        CreateNotification("Hold Position Deactivated!", Color3.new(1, 1, 0), 5)
+        CreateNotification("Hold Position Deactivated!", Color3.fromRGB(255, 255, 0), 5)
     end
 end)
 

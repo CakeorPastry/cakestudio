@@ -536,22 +536,29 @@ local function Sublimation()
 end
 
 local function HoldPosition()
-    if not canUse["Hold"] then
-        CreateNotification("Hold is on cooldown.", Color3.new(1, 1, 0), 5)
-        return
-    end
+    local football, hrp, hasBall = getPlayerComponents()
 
-    local football, hrp = getPlayerComponents()
+    -- Sanity check
     if not football or not hrp then
         CreateNotification("Missing football or character.", Color3.new(1, 0, 0), 5)
+        holdActive = false
+        holdPositionButton.Text = "Hold Position: OFF"
         return
     end
 
+    -- Check if we're the owner of the ball
     local ownerValue = football:FindFirstChild("Char")
-    if not ownerValue or ownerValue.Value ~= character then
+    local isOwner = ownerValue and ownerValue.Value == character
+
+    if not (hasBall and hasBall.Value) and not isOwner then
         CreateNotification("You are not the ball owner!", Color3.new(1, 0, 0), 5)
+        holdActive = false
+        holdPositionButton.Text = "Hold Position: OFF"
         return
     end
+
+    -- We're allowed to control the ball
+    CreateNotification("Hold Position Activated!", Color3.new(0, 1, 0), 5)
 
     -- Animation and Sound
     local anim = Instance.new("Animation")
@@ -564,25 +571,22 @@ local function HoldPosition()
         PlaySound("87838758006658")
     end)
 
-    canUse["Hold"] = false
-    task.delay(1.5, function()
-        canUse["Hold"] = true
-    end)
+    -- If we have the ball, release it
+    if hasBall and hasBall.Value then
+        releaseBall()
+    end
 
-    releaseBall()
-
-    -- Ball Movement in Circle
-    local center = football.Position + Vector3.new(0, 15, 0) -- center high above current ball
-    local radius = 7
+    -- Ball Movement: Go up high, then start circling forever
+    local center = football.Position + Vector3.new(0, 50, 0) -- Go HIGH up
+    local radius = 25 -- Large radius
     local angle = 0
-    local speed = 1.5 -- rotations/sec
+    local speed = 0.8 -- rotations/sec
 
-    local t0 = tick()
-    ABC:Clean()
-
+    ABC:Clean() -- clear any old movement
     ABC:Connect(RunService.Heartbeat, function(dt)
-        if tick() - t0 > 10 or not football or not football.Parent or football:IsDescendantOf(character) then
+        if not holdActive or not football or not football.Parent or football:IsDescendantOf(character) then
             ABC:Clean()
+            CreateNotification("Hold Position Deactivated!", Color3.new(1, 1, 0), 5)
             return
         end
 
@@ -592,7 +596,7 @@ local function HoldPosition()
         local targetPos = center + Vector3.new(x, 0, z)
         local dir = (targetPos - football.Position).Unit
 
-        football.AssemblyLinearVelocity = dir * 45 + Vector3.new(0, 3, 0) -- keeps altitude while circling
+        football.AssemblyLinearVelocity = dir * 50 + Vector3.new(0, 5, 0) -- stay afloat
     end)
 end
 
@@ -607,7 +611,8 @@ holdPositionButton.Activated:Connect(function()
     if holdActive then
         HoldPosition()
     else
-        ABC:Clean() -- stop if turned off mid-air
+        ABC:Clean()
+        CreateNotification("Hold Position Deactivated!", Color3.new(1, 1, 0), 5)
     end
 end)
 

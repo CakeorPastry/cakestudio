@@ -538,11 +538,13 @@ end
 local function HoldPosition()
     local football, hrp, hasBall = getPlayerComponents()
 
+    -- Reset button early
+    holdActive = false
+    holdPositionButton.Text = "Hold Position: OFF"
+
     -- Basic validation
     if not football or not hrp then
         CreateNotification("Missing football or character.", Color3.new(1, 0, 0), 5)
-        holdActive = false
-        holdPositionButton.Text = "Hold Position: OFF"
         return
     end
 
@@ -552,17 +554,15 @@ local function HoldPosition()
 
     if not (hasBall and hasBall.Value) and not isOwner then
         CreateNotification("You are not the ball owner!", Color3.new(1, 0, 0), 5)
-        holdActive = false
-        holdPositionButton.Text = "Hold Position: OFF"
         return
     end
 
-    -- We're allowed to proceed
+    -- If we reach here, we’re allowed to activate
     holdActive = true
     holdPositionButton.Text = "Hold Position: ON"
 
+    -- Play animation + sound if holding ball
     if hasBall and hasBall.Value then
-        -- Play animation + sound
         task.spawn(function()
             local anim = Instance.new("Animation")
             anim.AnimationId = "rbxassetid://83376040878208"
@@ -577,27 +577,26 @@ local function HoldPosition()
         task.wait(0.15)
     end
 
-    -- Wait for the ball to detach if needed
+    -- Wait until detached from character
     local timeout = 3
     local startTime = tick()
     while football:IsDescendantOf(character) and tick() - startTime < timeout do
         task.wait()
     end
 
-    -- Choose parameters based on whether ball was held or just owned
+    -- Sublimation-style launch
+    local launchDir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.5, 0)
+    football.AssemblyLinearVelocity = launchDir.Unit * 150
+
+    -- Orbit parameters
     local useAltParams = not (hasBall and hasBall.Value)
-    local center = football.Position + Vector3.new(0, useAltParams and 90 or 60, 0)
+    local center = hrp.Position + Vector3.new(0, useAltParams and 90 or 60, 0)
     local radius = useAltParams and 45 or 30
     local speed = useAltParams and 1.5 or 0.9
-
-    if hasBall and hasBall.Value then
-        -- Initial launch upward when just released
-        football.AssemblyLinearVelocity = Vector3.new(0, 100, 0)
-    end
+    local angle = 0
 
     CreateNotification("Hold Position Activated!", Color3.fromRGB(0, 255, 0), 5)
 
-    local angle = 0
     ABC:Clean()
     ABC:Connect(RunService.Heartbeat, function(dt)
         if not holdActive or not football or not football.Parent then

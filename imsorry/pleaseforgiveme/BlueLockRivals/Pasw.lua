@@ -557,7 +557,7 @@ local function HoldPosition()
     holdActive = true
     holdPositionButton.Text = "Hold Position: ON"
 
-    -- Sound + animation only if you're holding
+    -- Animation + sound only if holding
     if hasBall and hasBall.Value then
         task.spawn(function()
             local anim = Instance.new("Animation")
@@ -565,7 +565,6 @@ local function HoldPosition()
             local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
             track.Priority = Enum.AnimationPriority.Action4
             track:Play()
-
             PlaySound("87838758006658")
         end)
 
@@ -573,41 +572,43 @@ local function HoldPosition()
         task.wait(0.15)
     end
 
-    -- Wait until football is no longer a child of your character
+    -- Wait until ball is not attached to character
     local timeout = 3
     local startTime = tick()
     while football:IsDescendantOf(character) and tick() - startTime < timeout do
         task.wait()
     end
 
-    -- 🚀 Upward Sublimation-style launch first
-    local launchDir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.5, 0)
-    football.AssemblyLinearVelocity = launchDir.Unit * 150
+    -- 🚀 Launch ball upwards with proper force (Pasw + Sublimation inspired)
+    local baseDir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.75, 0)
+    local avoidOffset = GetAvoidanceOffset(football.Position, baseDir)
+    local launchDir = (baseDir + avoidOffset).Unit
+    football.AssemblyLinearVelocity = launchDir * 175
 
-    -- Delay before orbit begins (let it reach the top)
+    -- Wait for it to rise before circling
     task.wait(0.6)
 
     local center = football.Position + Vector3.new(0, 0, 0)
-    local radius = isOwner and 45 or 30
-    local speed = isOwner and 1.5 or 0.9
-    local height = isOwner and 90 or 60
+    local radius = isOwner and 60 or 45
+    local speed = isOwner and 2.25 or 1.5
+    local height = isOwner and 95 or 75
     local angle = 0
 
     CreateNotification("Hold Position Activated!", Color3.fromRGB(0, 255, 0), 5)
 
     ABC:Clean()
     ABC:Connect(RunService.Heartbeat, function(dt)
-        -- ⛔️ Kill switch 1: manually turned off
+        -- Manual deactivation
         if not holdActive then
             ABC:Clean()
             CreateNotification("Hold Position Deactivated!", Color3.fromRGB(255, 255, 0), 5)
             holdPositionButton.Text = "Hold Position: OFF"
-            Sublimation() -- 🔁 Recall the ball
+            Sublimation()
             return
         end
 
-        -- ⛔️ Kill switch 2: ball left workspace
-        if not football or not football.Parent or football.Parent ~= workspace then
+        -- Ball is now inside a player or another object (i.e. not in workspace)
+        if not football or not football:IsDescendantOf(workspace) then
             ABC:Clean()
             CreateNotification("Terminated Hold Position", Color3.fromRGB(255, 255, 0), 5)
             holdPositionButton.Text = "Hold Position: OFF"
@@ -620,7 +621,7 @@ local function HoldPosition()
         local targetPos = center + Vector3.new(x, 0, z) + Vector3.new(0, height, 0)
         local dir = (targetPos - football.Position).Unit
 
-        football.AssemblyLinearVelocity = dir * 50 + Vector3.new(0, 5, 0)
+        football.AssemblyLinearVelocity = dir * 85 + Vector3.new(0, 6, 0)
     end)
 end
 

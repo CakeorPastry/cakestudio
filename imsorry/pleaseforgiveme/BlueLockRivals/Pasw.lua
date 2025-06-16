@@ -284,6 +284,18 @@ local function changePassMode()
     passModeButton.Text = "Pass Mode:"..passMode
 end
 
+local function GetHoldAnchor()
+    local anchor = Instance.new("Part")
+    anchor.Name = randomString()
+    anchor.Size = Vector3.new(1, 1, 1)
+    anchor.Anchored = true
+    anchor.CanCollide = false
+    anchor.Transparency = 0
+    anchor.CFrame = CFrame.new(38.3946228, 131.166382, -50.307148)
+    anchor.Parent = workspace
+    return anchor
+end
+
 local function getBestTarget()
     local camera = workspace.CurrentCamera
     local hrp = character and character:FindFirstChild("HumanoidRootPart")
@@ -537,12 +549,12 @@ end
 
 local function HoldPosition()
     local football, hrp, hasBall = getPlayerComponents()
-
-    holdActive = false
-    holdPositionButton.Text = "Hold Position: OFF"
+    local anchor = nil
 
     if not football or not hrp then
         CreateNotification("Missing football or character.", Color3.new(1, 0, 0), 5)
+        holdActive = false
+        holdPositionButton.Text = "Hold Position: OFF"
         return
     end
 
@@ -551,14 +563,23 @@ local function HoldPosition()
 
     if not (hasBall and hasBall.Value) and not isOwner then
         CreateNotification("You are not the ball owner!", Color3.new(1, 0, 0), 5)
+        holdActive = false
+        holdPositionButton.Text = "Hold Position: OFF"
         return
     end
 
+    -- Activate
+    CreateNotification("Hold Position Activated!", Color3.fromRGB(0, 255, 0), 5)
     holdActive = true
     holdPositionButton.Text = "Hold Position: ON"
 
-    -- Animation + sound only if holding
+    -- Spawn the anchor
+    anchor = GetHoldAnchor()
+    local targetPos = anchor.Position
+
+    -- If you hold ball
     if hasBall and hasBall.Value then
+        -- Animation + Sound
         task.spawn(function()
             local anim = Instance.new("Animation")
             anim.AnimationId = "rbxassetid://83376040878208"
@@ -569,59 +590,70 @@ local function HoldPosition()
         end)
 
         releaseBall()
-        task.wait(0.15)
+        task.wait(0.5)
     end
 
-    -- Wait until ball is not attached to character
-    local timeout = 3
-    local startTime = tick()
-    while football:IsDescendantOf(character) and tick() - startTime < timeout do
-        task.wait()
-    end
+    -- Fly ball to anchor using Pasw-style logic
+    local dir = (targetPos - football.Position).Unit + Vector3.new(0, 0.55, 0)
+    local avoidOffset = GetAvoidanceOffset(football.Position, dir)
+    dir = (dir + avoidOffset).Unit
+    football.AssemblyLinearVelocity = dir * 130
 
-    -- 🚀 Launch ball upwards with proper force (Pasw + Sublimation inspired)
-    local baseDir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.75, 0)
-    local avoidOffset = GetAvoidanceOffset(football.Position, baseDir)
-    local launchDir = (baseDir + avoidOffset).Unit
-    football.AssemblyLinearVelocity = launchDir * 175
-
-    -- Wait for it to rise before circling
-    task.wait(0.6)
-
-    local center = football.Position + Vector3.new(0, 0, 0)
-    local radius = isOwner and 60 or 45
-    local speed = isOwner and 2.25 or 1.5
-    local height = isOwner and 95 or 75
-    local angle = 0
-
-    CreateNotification("Hold Position Activated!", Color3.fromRGB(0, 255, 0), 5)
-
+    local t0 = tick()
     ABC:Clean()
     ABC:Connect(RunService.Heartbeat, function(dt)
-        -- Manual deactivation
         if not holdActive then
             ABC:Clean()
-            CreateNotification("Hold Position Deactivated!", Color3.fromRGB(255, 255, 0), 5)
+            if anchor and anchor.Parent then anchor:Destroy() end
             holdPositionButton.Text = "Hold Position: OFF"
+            CreateNotification("Hold Position Deactivated!", Color3.fromRGB(255, 255, 0), 5)
             Sublimation()
             return
         end
 
-        -- Ball is now inside a player or another object (i.e. not in workspace)
-        if not football or not football:IsDescendantOf(workspace) then
+        if not football:IsDescendantOf(workspace) then
             ABC:Clean()
-            CreateNotification("Terminated Hold Position", Color3.fromRGB(255, 255, 0), 5)
+            if anchor and anchor.Parent then anchor:Destroy() end
             holdPositionButton.Text = "Hold Position: OFF"
+            CreateNotification("Terminated Hold Position", Color3.fromRGB(255, 255, 0), 5)
             return
         end
 
-        angle += math.pi * 2 * speed * dt
-        local x = math.cos(angle) * radius
-        local z = math.sin(angle) * radius
-        local targetPos = center + Vector3.new(x, 0, z) + Vector3.new(0, height, 0)
-        local dir = (targetPos - football.Position).Unit
+        -- If close enough to anchor, start spinning
+        if (football.Position - targetPos).Magnitude < 5 then
+            local center = targetPos
+            local angle = 0
+            local radius = isOwner and 40 or 30
+            local spinSpeed = isOwner and 1.2 or 0.9
+            local spinStart = tick()
 
-        football.AssemblyLinearVelocity = dir * 85 + Vector3.new(0, 6, 0)
+            ABC:Clean()
+            ABC:Connect(RunService.Heartbeat, function(dt2)
+                if not holdActive then
+                    ABC:Clean()
+                    if anchor and anchor.Parent then anchor:Destroy() end
+                    holdPositionButton.Text = "Hold Position: OFF"
+                    CreateNotification("Hold Position Deactivated!", Color3.fromRGB(255, 255, 0), 5)
+                    Sublimation()
+                    return
+                end
+
+                if not football:IsDescendantOf(workspace) then
+                    ABC:Clean()
+                    if anchor and anchor.Parent then anchor:Destroy() end
+                    holdPositionButton.Text = "Hold Position: OFF"
+                    CreateNotification("Terminated Hold Position", Color3.fromRGB(255, 255, 0), 5)
+                    return
+                end
+
+                angle += math.pi * 2 * spinSpeed * dt2
+                local x = math.cos(angle) * radius
+                local z = math.sin(angle) * radius
+                local target = center + Vector3.new(x, 0, z)
+                local moveDir = (target - football.Position).Unit
+                football.AssemblyLinearVelocity = moveDir * 80 + Vector3.new(0, 6, 0)
+            end)
+        end
     end)
 end
 

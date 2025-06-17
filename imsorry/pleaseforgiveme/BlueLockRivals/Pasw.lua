@@ -520,197 +520,228 @@ local function Pasw()
 end
 
 local function Sublimation()
-    if not canUse["Sublimation"] then
-        CreateNotification("Ability is on cooldown.", Color3.new(1, 1, 0), 5)
-        return
-    end
-
-    local football, hrp, hasBall = getPlayerComponents()
-
-    if hasBall and hasBall.Value and football then
-        CreateNotification("You must not have the ball to use Sublimation!", Color3.new(1, 0, 0), 5)
-        return
-    end
-
-    if not football then
-        CreateNotification("Football object not found!", Color3.new(1, 0, 0), 5)
-        return
-    end
-
-    local ownerValue = football:FindFirstChild("Char")
-    if not ownerValue then
-        CreateNotification("Ownership tag missing from football!", Color3.new(1, 0, 0), 5)
-        return
-    elseif ownerValue.Value ~= character then
-        CreateNotification("You are not the owner of this ball!", Color3.new(1, 0, 0), 5)
-        return
-    end
-
-    canUse["Sublimation"] = false
-    task.delay(1, function()
-        canUse["Sublimation"] = true
+  if not canUse["Sublimation"] then
+    task.spawn(function()
+      CreateNotification("Ability is on cooldown.", Color3.new(1,1,0),5)
     end)
+    return
+  end
 
-    local speed = 150
-    local dir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0)
+  local football, hrp, hasBall = getPlayerComponents()
 
-    local t0 = tick()
-    ABC:Clean()
+  if hasBall and hasBall.Value and football then
+    task.spawn(function()
+      CreateNotification("You must not have the ball to use Sublimation!", Color3.new(1,0,0),5)
+    end)
+    return
+  end
 
-    task.delay(1, function() -- delay before connection starts
-        ABC:Connect(RunService.Heartbeat, function(dt)
-            if not football or not football.Parent then
-                ABC:Clean()
-                CreateNotification("Sublimation stopped: football missing or destroyed.", Color3.new(1, 0, 0), 5)
-                return
-            end
+  if not football then
+    task.spawn(function()
+      CreateNotification("Football object not found!", Color3.new(1,0,0),5)
+    end)
+    return
+  end
 
-            if football.Parent == character then
-                ABC:Clean()
-                CreateNotification("Sublimation stopped: ball was reattached to character.", Color3.new(1, 0, 0), 5)
-                return
-            elseif football.Parent:IsA("Model") and football.Parent ~= character then
-                ABC:Clean()
-                local who = football.Parent.Name or "someone else"
-                CreateNotification("Sublimation failed: ball touched or taken by " .. who, Color3.new(1, 0, 0), 5)
-                return
-            end
+  local ownerValue = football:FindFirstChild("Char")
+  if not ownerValue then
+    task.spawn(function()
+      CreateNotification("Ownership tag missing from football!", Color3.new(1,0,0),5)
+    end)
+    return
+  elseif ownerValue.Value ~= character then
+    task.spawn(function()
+      CreateNotification("You are not the owner of this ball!", Color3.new(1,0,0),5)
+    end)
+    return
+  end
 
-            if tick() - t0 > 5 then
-                ABC:Clean()
-                CreateNotification("Sublimation timed out: took too long.", Color3.new(1, 0, 0), 5)
-                return
-            end
+  canUse["Sublimation"] = false
+  task.delay(1,function()
+    canUse["Sublimation"] = true
+  end)
 
-            -- Apply directed movement
-            local baseDir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0)
-            local avoidOffset = GetAvoidanceOffset(football.Position, baseDir)
-            local finalDir = (baseDir + avoidOffset).Unit
-            dir = dir:Lerp(finalDir, 8.5 * dt)
-            football.AssemblyLinearVelocity = dir * speed
+  local speed = 150
+  local dir = (hrp.Position - football.Position).Unit + Vector3.new(0,0.45,0)
+  local t0 = tick()
+  ABC:Clean()
+
+  task.delay(1,function()
+    ABC:Connect(RunService.Heartbeat,function(dt)
+      if not football or not football.Parent then
+        ABC:Clean()
+        task.spawn(function()
+          CreateNotification("Sublimation stopped: football missing or destroyed.", Color3.new(1,0,0),5)
         end)
+        return
+      end
+
+      if football.Parent == character then
+        ABC:Clean()
+        task.spawn(function()
+          CreateNotification("Sublimation stopped: ball was reattached to character.", Color3.new(1,0,0),5)
+        end)
+        return
+      elseif football.Parent:IsA("Model") and football.Parent ~= character then
+        ABC:Clean()
+        local who = football.Parent.Name or "someone else"
+        task.spawn(function()
+          CreateNotification("Sublimation failed: ball touched or taken by "..who, Color3.new(1,0,0),5)
+        end)
+        return
+      end
+
+      if tick() - t0 > 5 then
+        ABC:Clean()
+        task.spawn(function()
+          CreateNotification("Sublimation timed out: took too long.", Color3.new(1,0,0),5)
+        end)
+        return
+      end
+
+      local baseDir = (hrp.Position - football.Position).Unit + Vector3.new(0,0.45,0)
+      local avoidOffset = GetAvoidanceOffset(football.Position,baseDir)
+      local finalDir = (baseDir + avoidOffset).Unit
+      dir = dir:Lerp(finalDir,8.5*dt)
+      football.AssemblyLinearVelocity = dir * speed
     end)
+  end)
 end
 
 local function HoldPosition()
-    local football, hrp, hasBall = getPlayerComponents()
-    local anchor = nil
+  local football, hrp, hasBall = getPlayerComponents()
+  local anchor = nil
 
-    if not football or not hrp then
-        CreateNotification("Missing football or character part.", Color3.new(1, 0, 0), 5)
-        holdActive = false
-        holdPositionButton.Text = "Hold Position: OFF"
-        return
-    end
-
-    local ownerValue = football:FindFirstChild("Char")
-    local isOwner = ownerValue and ownerValue.Value == character
-
-    if not (hasBall and hasBall.Value) and not isOwner then
-        CreateNotification("You are not the ball owner!", Color3.new(1, 0, 0), 5)
-        holdActive = false
-        holdPositionButton.Text = "Hold Position: OFF"
-        return
-    end
-
-    holdActive = true
-    holdPositionButton.Text = "Hold Position: ON"
-    CreateNotification("Hold Position Activated!", Color3.fromRGB(0, 255, 0), 5)
-
-    anchor = GetHoldAnchor()
-    local targetPos = anchor.Position
-
-    if hasBall and hasBall.Value then
-        task.spawn(function()
-            local anim = Instance.new("Animation")
-            anim.AnimationId = "rbxassetid://83376040878208"
-            local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
-            track.Priority = Enum.AnimationPriority.Action4
-            track:Play()
-            PlaySound("87838758006658")
-        end)
-        releaseBall()
-        task.wait(0.5)
-    end
-
-    local dir = (targetPos - football.Position).Unit + Vector3.new(0, 0.55, 0)
-    local avoidOffset = GetAvoidanceOffset(football.Position, dir)
-    dir = (dir + avoidOffset).Unit
-    local speed = math.clamp((targetPos - football.Position).Magnitude * 1.5, 0, 150)
-    football.AssemblyLinearVelocity = dir * speed
-
-    ABC:Clean()
-    task.delay(1, function()
-        ABC:Connect(RunService.Heartbeat, function(dt)
-            if football.Parent == character then
-                ABC:Clean()
-                holdActive = false
-                holdPositionButton.Text = "Hold Position: OFF"
-                if anchor and anchor.Parent then anchor:Destroy() end
-                CreateNotification("Hold ended: ball was picked up.", Color3.new(1, 0, 0), 5)
-                Sublimation()
-                return
-            elseif football.Parent:IsA("Model") and football.Parent ~= character then
-                ABC:Clean()
-                holdActive = false
-                holdPositionButton.Text = "Hold Position: OFF"
-                if anchor and anchor.Parent then anchor:Destroy() end
-                CreateNotification("Hold failed: ball was intercepted by another player.", Color3.new(1, 0, 0), 5)
-                return
-            end
-
-            if not holdActive or not football:IsDescendantOf(workspace) then
-                ABC:Clean()
-                if anchor and anchor.Parent then anchor:Destroy() end
-                holdPositionButton.Text = "Hold Position: OFF"
-                CreateNotification("Hold manually terminated or ball removed.", Color3.fromRGB(255, 255, 0), 5)
-                Sublimation()
-                return
-            end
-
-            local dist = (football.Position - targetPos).Magnitude
-            if dist > 5 then
-                local baseDir = (targetPos - football.Position).Unit + Vector3.new(0, 0.55, 0)
-                local avoid = GetAvoidanceOffset(football.Position, baseDir)
-                dir = dir:Lerp((baseDir + avoid).Unit, 6.5 * dt)
-                speed = math.clamp(dist * 1.8, 0, 150)
-                football.AssemblyLinearVelocity = dir * speed
-            else
-                -- Ball has reached anchor, now start orbiting
-                local angle = 0
-                local radius = isOwner and 60 or 50
-                local spinSpeed = isOwner and 1.2 or 0.9
-                local center = targetPos
-
-                ABC:Clean()
-                ABC:Connect(RunService.Heartbeat, function(dt2)
-                    if football.Parent == character then
-                        ABC:Clean()
-                        holdActive = false
-                        holdPositionButton.Text = "Hold Position: OFF"
-                        if anchor and anchor.Parent then anchor:Destroy() end
-                        CreateNotification("Hold ended: you picked up the ball.", Color3.new(1, 0, 0), 5)
-                        Sublimation()
-                        return
-                    elseif football.Parent:IsA("Model") and football.Parent ~= character then
-                        ABC:Clean()
-                        holdActive = false
-                        holdPositionButton.Text = "Hold Position: OFF"
-                        if anchor and anchor.Parent then anchor:Destroy() end
-                        CreateNotification("Hold failed: another player interfered during orbit.", Color3.new(1, 0, 0), 5)
-                        return
-                    end
-
-                    angle += math.pi * 2 * spinSpeed * dt2
-                    local x = math.cos(angle) * radius
-                    local z = math.sin(angle) * radius
-                    local target = center + Vector3.new(x, 0, z)
-                    local moveDir = (target - football.Position).Unit
-                    football.AssemblyLinearVelocity = moveDir * 80 + Vector3.new(0, 6, 0)
-                end)
-            end
-        end)
+  if not football or not hrp then
+    task.spawn(function()
+      CreateNotification("Missing football or character part.", Color3.new(1,0,0),5)
     end)
+    holdActive = false
+    holdPositionButton.Text = "Hold Position: OFF"
+    return
+  end
+
+  local ownerValue = football:FindFirstChild("Char")
+  local isOwner = ownerValue and ownerValue.Value == character
+
+  if not (hasBall and hasBall.Value) and not isOwner then
+    task.spawn(function()
+      CreateNotification("You are not the ball owner!", Color3.new(1,0,0),5)
+    end)
+    holdActive = false
+    holdPositionButton.Text = "Hold Position: OFF"
+    return
+  end
+
+  holdActive = true
+  holdPositionButton.Text = "Hold Position: ON"
+  task.spawn(function()
+    CreateNotification("Hold Position Activated!", Color3.fromRGB(0,255,0),5)
+  end)
+
+  anchor = GetHoldAnchor()
+  local targetPos = anchor.Position
+
+  if hasBall and hasBall.Value then
+    task.spawn(function()
+      local anim = Instance.new("Animation")
+      anim.AnimationId = "rbxassetid://83376040878208"
+      local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
+      track.Priority = Enum.AnimationPriority.Action4
+      track:Play()
+      PlaySound("87838758006658")
+    end)
+    releaseBall()
+    task.wait(0.5)
+  end
+
+  local dir = (targetPos - football.Position).Unit + Vector3.new(0,0.55,0)
+  local avoidOffset = GetAvoidanceOffset(football.Position,dir)
+  dir = (dir + avoidOffset).Unit
+  local speed = math.clamp((targetPos - football.Position).Magnitude*1.5,0,150)
+  football.AssemblyLinearVelocity = dir * speed
+
+  ABC:Clean()
+  task.delay(1,function()
+    ABC:Connect(RunService.Heartbeat,function(dt)
+      if football.Parent == character then
+        ABC:Clean()
+        holdActive = false
+        holdPositionButton.Text = "Hold Position: OFF"
+        if anchor and anchor.Parent then anchor:Destroy() end
+        task.spawn(function()
+          CreateNotification("Hold ended: ball was picked up.", Color3.new(1,0,0),5)
+        end)
+        Sublimation()
+        return
+      elseif football.Parent:IsA("Model") and football.Parent ~= character then
+        ABC:Clean()
+        holdActive = false
+        holdPositionButton.Text = "Hold Position: OFF"
+        if anchor and anchor.Parent then anchor:Destroy() end
+        task.spawn(function()
+          CreateNotification("Hold failed: ball was intercepted by another player.", Color3.new(1,0,0),5)
+        end)
+        return
+      end
+
+      if not holdActive or not football:IsDescendantOf(workspace) then
+        ABC:Clean()
+        if anchor and anchor.Parent then anchor:Destroy() end
+        holdPositionButton.Text = "Hold Position: OFF"
+        task.spawn(function()
+          CreateNotification("Hold manually terminated or ball removed.", Color3.fromRGB(255,255,0),5)
+        end)
+        Sublimation()
+        return
+      end
+
+      local dist = (football.Position - targetPos).Magnitude
+      if dist > 5 then
+        local baseDir = (targetPos - football.Position).Unit + Vector3.new(0,0.55,0)
+        local avoid = GetAvoidanceOffset(football.Position,baseDir)
+        dir = dir:Lerp((baseDir + avoid).Unit,6.5*dt)
+        speed = math.clamp(dist*1.8,0,150)
+        football.AssemblyLinearVelocity = dir * speed
+      else
+        local angle = 0
+        local radius = isOwner and 60 or 50
+        local spinSpeed = isOwner and 1.2 or 0.9
+        local center = targetPos
+
+        ABC:Clean()
+        ABC:Connect(RunService.Heartbeat,function(dt2)
+          if football.Parent == character then
+            ABC:Clean()
+            holdActive = false
+            holdPositionButton.Text = "Hold Position: OFF"
+            if anchor and anchor.Parent then anchor:Destroy() end
+            task.spawn(function()
+              CreateNotification("Hold ended: you picked up the ball.", Color3.new(1,0,0),5)
+            end)
+            Sublimation()
+            return
+          elseif football.Parent:IsA("Model") and football.Parent ~= character then
+            ABC:Clean()
+            holdActive = false
+            holdPositionButton.Text = "Hold Position: OFF"
+            if anchor and anchor.Parent then anchor:Destroy() end
+            task.spawn(function()
+              CreateNotification("Hold failed: another player interfered during orbit.", Color3.new(1,0,0),5)
+            end)
+            return
+          end
+
+          angle += math.pi*2*spinSpeed*dt2
+          local x = math.cos(angle)*radius
+          local z = math.sin(angle)*radius
+          local target = center + Vector3.new(x,0,z)
+          local moveDir = (target - football.Position).Unit
+          football.AssemblyLinearVelocity = moveDir * 80 + Vector3.new(0,6,0)
+        end)
+      end
+    end)
+  end)
 end
 
 PaswButton.Activated:Connect(Pasw) 

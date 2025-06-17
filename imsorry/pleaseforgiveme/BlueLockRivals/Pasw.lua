@@ -582,7 +582,7 @@ local function Sublimation()
           CreateNotification("Sublimation stopped: ball was reattached to character.", Color3.new(1,0,0),5)
         end)
         return
-      elseif football.Parent:IsA("Model") and football.Parent ~= character then
+      elseif football.Parent ~= character and football.Parent ~= workspace then
         ABC:Clean()
         local who = football.Parent.Name or "someone else"
         task.spawn(function()
@@ -674,7 +674,7 @@ local function HoldPosition()
         end)
         Sublimation()
         return
-      elseif football.Parent:IsA("Model") and football.Parent ~= character then
+      elseif football.Parent ~= character and football.Parent ~= workspace then
         ABC:Clean()
         holdActive = false
         holdPositionButton.Text = "Hold Position: OFF"
@@ -721,7 +721,7 @@ local function HoldPosition()
             end)
             Sublimation()
             return
-          elseif football.Parent:IsA("Model") and football.Parent ~= character then
+          elseif football.Parent ~= character and football.Parent ~= workspace then
             ABC:Clean()
             holdActive = false
             holdPositionButton.Text = "Hold Position: OFF"

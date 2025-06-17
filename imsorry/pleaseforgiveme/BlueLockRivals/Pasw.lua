@@ -521,26 +521,28 @@ end
 
 local function Sublimation()
     if not canUse["Sublimation"] then
-        task.spawn(function()
-            CreateNotification("Ability is on cooldown.", Color3.new(1, 1, 0), 5)
-        end)
+        CreateNotification("Ability is on cooldown.", Color3.new(1, 1, 0), 5)
         return
     end
 
     local football, hrp, hasBall = getPlayerComponents()
 
     if hasBall and hasBall.Value and football then
-        task.spawn(function()
-            CreateNotification("Must not have the ball!", Color3.new(1, 0, 0), 5)
-        end)
+        CreateNotification("You must not have the ball to use Sublimation!", Color3.new(1, 0, 0), 5)
+        return
+    end
+
+    if not football then
+        CreateNotification("Football object not found!", Color3.new(1, 0, 0), 5)
         return
     end
 
     local ownerValue = football:FindFirstChild("Char")
-    if not ownerValue or ownerValue.Value ~= character then
-        task.spawn(function()
-            CreateNotification("You are not the owner of this ball!", Color3.new(1, 0, 0), 5)
-        end)
+    if not ownerValue then
+        CreateNotification("Ownership tag missing from football!", Color3.new(1, 0, 0), 5)
+        return
+    elseif ownerValue.Value ~= character then
+        CreateNotification("You are not the owner of this ball!", Color3.new(1, 0, 0), 5)
         return
     end
 
@@ -554,36 +556,36 @@ local function Sublimation()
 
     local t0 = tick()
     ABC:Clean()
-    task.delay(1, function()  -- Delay before activating tracking
+
+    task.delay(1, function() -- delay before connection starts
         ABC:Connect(RunService.Heartbeat, function(dt)
             if not football or not football.Parent then
                 ABC:Clean()
+                CreateNotification("Sublimation stopped: football missing or destroyed.", Color3.new(1, 0, 0), 5)
                 return
             end
 
             if football.Parent == character then
                 ABC:Clean()
+                CreateNotification("Sublimation stopped: ball was reattached to character.", Color3.new(1, 0, 0), 5)
                 return
             elseif football.Parent:IsA("Model") and football.Parent ~= character then
                 ABC:Clean()
-                task.spawn(function()
-                    CreateNotification("Sublimation failed.", Color3.new(1, 0, 0), 5)
-                end)
+                local who = football.Parent.Name or "someone else"
+                CreateNotification("Sublimation failed: ball touched or taken by " .. who, Color3.new(1, 0, 0), 5)
                 return
             end
 
             if tick() - t0 > 5 then
                 ABC:Clean()
-                task.spawn(function()
-                    CreateNotification("Sublimation timed out.", Color3.new(1, 0, 0), 5)
-                end)
+                CreateNotification("Sublimation timed out: took too long.", Color3.new(1, 0, 0), 5)
                 return
             end
 
+            -- Apply directed movement
             local baseDir = (hrp.Position - football.Position).Unit + Vector3.new(0, 0.45, 0)
             local avoidOffset = GetAvoidanceOffset(football.Position, baseDir)
             local finalDir = (baseDir + avoidOffset).Unit
-
             dir = dir:Lerp(finalDir, 8.5 * dt)
             football.AssemblyLinearVelocity = dir * speed
         end)
@@ -595,9 +597,7 @@ local function HoldPosition()
     local anchor = nil
 
     if not football or not hrp then
-        task.spawn(function()
-            CreateNotification("Missing football or character.", Color3.new(1, 0, 0), 5)
-        end)
+        CreateNotification("Missing football or character part.", Color3.new(1, 0, 0), 5)
         holdActive = false
         holdPositionButton.Text = "Hold Position: OFF"
         return
@@ -607,9 +607,7 @@ local function HoldPosition()
     local isOwner = ownerValue and ownerValue.Value == character
 
     if not (hasBall and hasBall.Value) and not isOwner then
-        task.spawn(function()
-            CreateNotification("You are not the ball owner!", Color3.new(1, 0, 0), 5)
-        end)
+        CreateNotification("You are not the ball owner!", Color3.new(1, 0, 0), 5)
         holdActive = false
         holdPositionButton.Text = "Hold Position: OFF"
         return
@@ -617,9 +615,7 @@ local function HoldPosition()
 
     holdActive = true
     holdPositionButton.Text = "Hold Position: ON"
-    task.spawn(function()
-        CreateNotification("Hold Position Activated!", Color3.fromRGB(0, 255, 0), 5)
-    end)
+    CreateNotification("Hold Position Activated!", Color3.fromRGB(0, 255, 0), 5)
 
     anchor = GetHoldAnchor()
     local targetPos = anchor.Position
@@ -644,16 +640,14 @@ local function HoldPosition()
     football.AssemblyLinearVelocity = dir * speed
 
     ABC:Clean()
-    task.delay(1, function()  -- Delay to prevent premature termination
+    task.delay(1, function()
         ABC:Connect(RunService.Heartbeat, function(dt)
             if football.Parent == character then
                 ABC:Clean()
                 holdActive = false
                 holdPositionButton.Text = "Hold Position: OFF"
                 if anchor and anchor.Parent then anchor:Destroy() end
-                task.spawn(function()
-                    CreateNotification("Terminated Holding", Color3.new(1, 0, 0), 5)
-                end)
+                CreateNotification("Hold ended: ball was picked up.", Color3.new(1, 0, 0), 5)
                 Sublimation()
                 return
             elseif football.Parent:IsA("Model") and football.Parent ~= character then
@@ -661,9 +655,7 @@ local function HoldPosition()
                 holdActive = false
                 holdPositionButton.Text = "Hold Position: OFF"
                 if anchor and anchor.Parent then anchor:Destroy() end
-                task.spawn(function()
-                    CreateNotification("Hold Position failed.", Color3.new(1, 0, 0), 5)
-                end)
+                CreateNotification("Hold failed: ball was intercepted by another player.", Color3.new(1, 0, 0), 5)
                 return
             end
 
@@ -671,9 +663,7 @@ local function HoldPosition()
                 ABC:Clean()
                 if anchor and anchor.Parent then anchor:Destroy() end
                 holdPositionButton.Text = "Hold Position: OFF"
-                task.spawn(function()
-                    CreateNotification("Terminated Hold Position", Color3.fromRGB(255, 255, 0), 5)
-                end)
+                CreateNotification("Hold manually terminated or ball removed.", Color3.fromRGB(255, 255, 0), 5)
                 Sublimation()
                 return
             end
@@ -686,6 +676,7 @@ local function HoldPosition()
                 speed = math.clamp(dist * 1.8, 0, 150)
                 football.AssemblyLinearVelocity = dir * speed
             else
+                -- Ball has reached anchor, now start orbiting
                 local angle = 0
                 local radius = isOwner and 60 or 50
                 local spinSpeed = isOwner and 1.2 or 0.9
@@ -693,6 +684,23 @@ local function HoldPosition()
 
                 ABC:Clean()
                 ABC:Connect(RunService.Heartbeat, function(dt2)
+                    if football.Parent == character then
+                        ABC:Clean()
+                        holdActive = false
+                        holdPositionButton.Text = "Hold Position: OFF"
+                        if anchor and anchor.Parent then anchor:Destroy() end
+                        CreateNotification("Hold ended: you picked up the ball.", Color3.new(1, 0, 0), 5)
+                        Sublimation()
+                        return
+                    elseif football.Parent:IsA("Model") and football.Parent ~= character then
+                        ABC:Clean()
+                        holdActive = false
+                        holdPositionButton.Text = "Hold Position: OFF"
+                        if anchor and anchor.Parent then anchor:Destroy() end
+                        CreateNotification("Hold failed: another player interfered during orbit.", Color3.new(1, 0, 0), 5)
+                        return
+                    end
+
                     angle += math.pi * 2 * spinSpeed * dt2
                     local x = math.cos(angle) * radius
                     local z = math.sin(angle) * radius

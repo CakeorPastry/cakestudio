@@ -281,7 +281,7 @@ local function changePassMode()
     else 
         passMode = "Normal"
     end
-    passModeButton.Text = "Pass Mode:"..passMode
+    passModeButton.Text = "Pass Mode: "..passMode
 end
 
 local function GetHoldAnchor()
@@ -509,7 +509,7 @@ local function Pasw()
                 CreateNotification("Pasw terminated: ball reattached to character.", Color3.new(1, 0, 0), 5)
             end)
             return
-        elseif football.Parent == target then
+        elseif football.Parent ~= workspace then
             ABC:Clean()
             return
         elseif football.Parent ~= workspace and not football.Parent:IsA("Model") then

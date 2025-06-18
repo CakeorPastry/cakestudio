@@ -324,10 +324,18 @@ local function getBestTarget()
                 end
             end
         end
-
         return bestInView or furthest
 
     elseif passMode == "GK" then
+        local values = character and character:FindFirstChild("Values")
+        local isGoalie = values and values:FindFirstChild("Goalie") and values.Goalie.Value
+        if isGoalie then
+            task.spawn(function()
+                CreateNotification("You are the goalie!", Color3.new(1, 0, 0), 5)
+            end)
+            return nil
+        end
+
         for _, p in ipairs(Players:GetPlayers()) do
             if p.Team == team and p.Character then
                 local valuesFolder = p.Character:FindFirstChild("Values")
@@ -348,7 +356,6 @@ local function getBestTarget()
     else
         for _, p in ipairs(Players:GetPlayers()) do
             if p ~= player and p.Team == team and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                -- Skip goalie players
                 local values = p.Character:FindFirstChild("Values")
                 if values then
                     local goalie = values:FindFirstChild("Goalie")
@@ -374,10 +381,10 @@ local function getBestTarget()
                 end
             end
         end
-
         return bestInView or furthest
     end
 end
+
 
 local ABC = {}
 ABC.Connections = {}
@@ -415,135 +422,114 @@ local function GetAvoidanceOffset(footballPos, baseDir)
 end
 
 local function Pasw()
-    if not canUse["Pasw"] then
-        task.spawn(function()
-            CreateNotification("Ability is on cooldown.", Color3.new(1, 1, 0), 5)
-        end)
-        return
-    end
+    if not canUse["Pasw"] then
+        task.spawn(function()
+            CreateNotification("Ability is on cooldown.", Color3.new(1, 1, 0), 5)
+        end)
+        return
+    end
 
-    local football, hrp, hasBall = getPlayerComponents()
-    if not (hasBall and hasBall.Value) or not football or not hrp then
-        task.spawn(function()
-            CreateNotification("Missing ball, HumanoidRootPart or you don't have the ball.", Color3.new(1, 0, 0), 5)
-        end)
-        return
-    end
+    local football, hrp, hasBall = getPlayerComponents()
+    if not (hasBall and hasBall.Value) or not football or not hrp then
+        task.spawn(function()
+            CreateNotification("Missing ball, HumanoidRootPart or you don't have the ball.", Color3.new(1, 0, 0), 5)
+        end)
+        return
+    end
 
-    local target = getBestTarget()
-    local targetHRP
-    if typeof(target) == "Instance" and target:IsA("Model") then
-        targetHRP = target:FindFirstChild("HumanoidRootPart")
-    elseif target and target.Character then
-        targetHRP = target.Character:FindFirstChild("HumanoidRootPart")
-    end
+    local target = getBestTarget()
+    local targetHRP
+    if typeof(target) == "Instance" and target:IsA("Model") then
+        targetHRP = target:FindFirstChild("HumanoidRootPart")
+    elseif target and target.Character then
+        targetHRP = target.Character:FindFirstChild("HumanoidRootPart")
+    end
 
-    if not targetHRP then
-        local msg = "No valid teammate to pass to."
-        if passMode == "Enemy" then
-            msg = "No valid enemy/player to pass to."
-        elseif passMode == "GK" then
-            msg = "No valid goalie to pass to."
-        end
-        task.spawn(function()
-            CreateNotification(msg, Color3.new(1, 1, 0), 5)
-        end)
-        return
-    end
+    if not targetHRP then
+        local msg = "No valid teammate to pass to."
+        if passMode == "Enemy" then
+            msg = "No valid enemy/player to pass to."
+        elseif passMode == "GK" then
+            msg = "No valid goalie to pass to."
+        end
+        task.spawn(function()
+            CreateNotification(msg, Color3.new(1, 1, 0), 5)
+        end)
+        return
+    end
 
-    -- Animation and sound
-    task.spawn(function()
-        local anim = Instance.new("Animation")
-        anim.AnimationId = "rbxassetid://83376040878208"
-        local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
-        track.Priority = Enum.AnimationPriority.Action4
-        track:Play()
-        PlaySound("87838758006658")
-    end)
+    task.spawn(function()
+        local anim = Instance.new("Animation")
+        anim.AnimationId = "rbxassetid://83376040878208"
+        local track = character:FindFirstChildOfClass("Humanoid"):LoadAnimation(anim)
+        track.Priority = Enum.AnimationPriority.Action4
+        track:Play()
+        PlaySound("87838758006658")
+    end)
 
-    -- Cooldown
-    canUse["Pasw"] = false
-    task.delay(1, function()
-        canUse["Pasw"] = true
-    end)
+    canUse["Pasw"] = false
+    task.delay(1, function()
+        canUse["Pasw"] = true
+    end)
 
-    releaseBall()
-    task.wait(0.5)
+    releaseBall()
+    task.wait(0.5)
 
-    -- Prediction and pass logic
-    local velocity = targetHRP:FindFirstChild("AssemblyLinearVelocity") and targetHRP.AssemblyLinearVelocity or Vector3.zero
-    if velocity.Magnitude < 0.1 then
-        velocity = Vector3.zero
-    end
+    local velocity = targetHRP:FindFirstChild("AssemblyLinearVelocity") and targetHRP.AssemblyLinearVelocity or Vector3.zero
+    if velocity.Magnitude < 0.1 then
+        velocity = Vector3.zero
+    end
 
-    local predictedPos = targetHRP.Position + velocity * Vector3.new(1, 0, 1)
-    local baseDir = (predictedPos - hrp.Position).Unit + Vector3.new(0, 0.5, 0)
-    local avoidOffset = GetAvoidanceOffset(football.Position, baseDir)
-    local dir = (baseDir + avoidOffset).Unit
-    local speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 1.5, 0, 150)
-    football.AssemblyLinearVelocity = dir * speed
+    local predictedPos = targetHRP.Position + velocity * Vector3.new(1, 0, 1)
+    local baseDir = (predictedPos - hrp.Position).Unit + Vector3.new(0, 0.5, 0)
+    local avoidOffset = GetAvoidanceOffset(football.Position, baseDir)
+    local dir = (baseDir + avoidOffset).Unit
+    local speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 1.5, 0, 150)
+    football.AssemblyLinearVelocity = dir * speed
 
-    local t0 = tick()
-    ABC:Clean()
+    local t0 = tick()
+    ABC:Clean()
 
-    -- Monitor pass status
-    ABC:Connect(RunService.Heartbeat, function(dt)
-        if not football or not football:IsDescendantOf(workspace) then
-            ABC:Clean()
-            task.spawn(function()
-                CreateNotification("Pasw ended: football missing or removed from workspace.", Color3.new(1, 0, 0), 5)
-            end)
-            return
-        end
+    ABC:Connect(RunService.Heartbeat, function(dt)
+        if not football or not football:IsDescendantOf(workspace) then
+            ABC:Clean()
+            task.spawn(function()
+                CreateNotification("Pasw ended: football missing or removed from workspace.", Color3.new(1, 0, 0), 5)
+            end)
+            return
+        end
 
-        if football.Parent == character then
-            ABC:Clean()
-            task.spawn(function()
-                CreateNotification("Pasw terminated: ball reattached to character.", Color3.new(1, 0, 0), 5)
-            end)
-            return
-        elseif football.Parent ~= workspace then
-            -- Check for interception
-            if football.Parent:IsA("Model") and football.Parent ~= target and football.Parent:FindFirstChild("HumanoidRootPart") then
-                ABC:Clean()
-                task.spawn(function()
-                    CreateNotification("Pasw intercepted by another player!", Color3.new(1, 0.5, 0), 5)
-                end)
-                return
-            end
+        if football.Parent == character then
+            ABC:Clean()
+            task.spawn(function()
+                CreateNotification("Pasw terminated: ball reattached to character.", Color3.new(1, 0, 0), 5)
+            end)
+            return
+        elseif football.Parent == target then
+            ABC:Clean()
+            return
+        elseif football.Parent ~= workspace and not football.Parent:IsA("Model") then
+            ABC:Clean()
+            task.spawn(function()
+                CreateNotification("Pasw failed: unexpected ball state.", Color3.new(1, 0, 0), 5)
+            end)
+            return
+        end
 
-            -- Check for successful pass
-            if football.Parent == target then
-                ABC:Clean()
-                -- No notification for successful pass (silent success)
-                return
-            end
+        if tick() - t0 > 10 then
+            ABC:Clean()
+            task.spawn(function()
+                CreateNotification("Pasw timed out after 10 seconds.", Color3.new(1, 0, 0), 5)
+            end)
+            return
+        end
 
-            -- Unexpected state
-            if not football.Parent:IsA("Model") then
-                ABC:Clean()
-                task.spawn(function()
-                    CreateNotification("Pasw failed: unexpected ball state.", Color3.new(1, 0, 0), 5)
-                end)
-                return
-            end
-        end
-
-        if tick() - t0 > 10 then
-            ABC:Clean()
-            task.spawn(function()
-                CreateNotification("Pasw timed out after 10 seconds.", Color3.new(1, 0, 0), 5)
-            end)
-            return
-        end
-
-        -- Continuously adjust trajectory
-        local toTarget = (targetHRP.Position - football.Position).Unit + Vector3.new(0, 0.35, 0)
-        local avoidance = GetAvoidanceOffset(football.Position, toTarget)
-        dir = dir:Lerp((toTarget + avoidance).Unit, 6.5 * dt)
-        speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 2.75, 0, 150)
-        football.AssemblyLinearVelocity = dir * speed
-    end)
+        local toTarget = (targetHRP.Position - football.Position).Unit + Vector3.new(0, 0.35, 0)
+        local avoidance = GetAvoidanceOffset(football.Position, toTarget)
+        dir = dir:Lerp((toTarget + avoidance).Unit, 6.5 * dt)
+        speed = math.clamp((targetHRP.Position - hrp.Position).Magnitude * 2.75, 0, 150)
+        football.AssemblyLinearVelocity = dir * speed
+    end)
 end
 
 local function Sublimation()

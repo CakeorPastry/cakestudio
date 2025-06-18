@@ -327,14 +327,18 @@ local function getBestTarget()
         return bestInView or furthest
 
     elseif passMode == "GK" then
+        
         local values = character and character:FindFirstChild("Values")
         local isGoalie = values and values:FindFirstChild("Goalie") and values.Goalie.Value
         if isGoalie then
+            --[[
             task.spawn(function()
                 CreateNotification("You are the goalie!", Color3.new(1, 0, 0), 5)
             end)
+            ]]
             return nil
         end
+        
 
         for _, p in ipairs(Players:GetPlayers()) do
             if p.Team == team and p.Character then
@@ -450,7 +454,7 @@ local function Pasw()
         if passMode == "Enemy" then
             msg = "No valid enemy/player to pass to."
         elseif passMode == "GK" then
-            msg = "No valid goalie to pass to."
+            msg = "No valid goalie to pass to or you are the goalie."
         end
         task.spawn(function()
             CreateNotification(msg, Color3.new(1, 1, 0), 5)

@@ -245,7 +245,7 @@ local holdActive = false
 
 local FetchButton = Instance.new("TextButton", scrollingFrame)
 FetchButton.Size = UDim2.new(1, -12, 0, 30)
-FetchButton.Text = "Pass Mode: Normal"
+FetchButton.Text = "Fetch"
 FetchButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
 FetchButton.TextColor3 = Color3.new(1, 1, 1)
 FetchButton.Name = randomString()
@@ -600,9 +600,11 @@ local function Sublimation()
 
     if football.Parent == character then
       ABC:Clean()
+      --[[
       task.spawn(function()
         CreateNotification("Sublimation stopped: ball was reattached to character.", Color3.new(1,0,0),5)
       end)
+      ]]
       return
     elseif football.Parent ~= character and football.Parent ~= workspace then
       ABC:Clean()
@@ -629,12 +631,9 @@ local function Sublimation()
   end)
 
     task.delay(1,function()
-
-        task.spawn(function() 
-        CreateNotification("Test") end)
-
         canUse["Sublimation"] = true
     end)
+
 end
 
 local function HoldPosition()

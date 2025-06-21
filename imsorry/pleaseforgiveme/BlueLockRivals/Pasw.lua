@@ -243,6 +243,13 @@ holdPositionButton.Name = randomString()
 
 local holdActive = false
 
+local FetchButton = Instance.new("TextButton", scrollingFrame)
+FetchButton.Size = UDim2.new(1, -12, 0, 30)
+FetchButton.Text = "Pass Mode: Normal"
+FetchButton.BackgroundColor3 = Color3.new(0.2, 0.2, 0.2)
+FetchButton.TextColor3 = Color3.new(1, 1, 1)
+FetchButton.Name = randomString()
+
 local passModeButton = Instance.new("TextButton", scrollingFrame)
 passModeButton.Size = UDim2.new(1, -12, 0, 30)
 passModeButton.Text = "Pass Mode: Normal"
@@ -268,7 +275,8 @@ pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame
 local canUse = {
     ["Pasw"] = true,
     ["Sublimation"] = true, 
-    ["Hold"] = true
+    ["Hold"] = true, -- Unused
+    ["Fetch"] = true
 }
 
 local passMode = "Normal"
@@ -574,10 +582,7 @@ local function Sublimation()
   end
 
   canUse["Sublimation"] = false
-  task.delay(1,function()
-    canUse["Sublimation"] = true
-  end)
-
+  
   local speed = 150
   local dir = (hrp.Position - football.Position).Unit + Vector3.new(0,0.45,0)
   local t0 = tick()
@@ -622,6 +627,14 @@ local function Sublimation()
     dir = dir:Lerp(finalDir,8.5*dt)
     football.AssemblyLinearVelocity = dir * speed
   end)
+
+    task.delay(1,function()
+
+        task.spawn(function() 
+        CreateNotification("Test") end)
+
+        canUse["Sublimation"] = true
+    end)
 end
 
 local function HoldPosition()
@@ -761,8 +774,34 @@ local function HoldPosition()
   end)
 end
 
+local function Fetch() 
+    if not canUse["Fetch"] then
+        task.spawn(function()
+            CreateNotification("Ability is on cooldown.", Color3.new(1, 1, 0), 5)
+        end)
+        return
+    end
+    
+    canUse["Fetch"] = false
+    
+    local football, hrp = getPlayerComponents()
+    local amount = 5
+     
+    if not football or not hrp then
+        task.spawn(function()
+            CreateNotification("Missing football or HumanoidRootPart.", Color3.new(1, 0, 0), 5)
+        end)
+    end
+    
+    for index = 1, amount do
+        pcall(function()
+            hrp.CFrame = football.CFrame
+            task.wait(0.1)
+        end)
+    end
 
-
+    canUse["Fetch"] = true    
+end
 
 PaswButton.Activated:Connect(Pasw) 
 SublimationButton.Activated:Connect(Sublimation)
@@ -778,6 +817,8 @@ holdPositionButton.Activated:Connect(function()
         CreateNotification("Hold Position Deactivated!", Color3.fromRGB(255, 255, 0), 5)
     end
 end)
+
+FetchButton.Activated:Connect(Fetch)
 
 passModeButton.Activated:Connect(changePassMode)
 

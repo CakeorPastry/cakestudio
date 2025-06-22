@@ -159,35 +159,19 @@ local headerHeight = 36
 local isMinimized = false
 local animating = false
 
---[[
-local screenGui = Instance.new("ScreenGui", game.Players.LocalPlayer:WaitForChild("PlayerGui"))
-screenGui.Name = "StyledMenu"
-]]
-
--- Main Frame (Unified with header and content)
+-- Main Frame
 local frame = Instance.new("Frame", screenGui)
 frame.Size = UDim2.new(0, 240, 0, frameHeight)
 frame.Position = UDim2.new(0, 10, 0.5, -frameHeight / 2)
 frame.BackgroundColor3 = Color3.new(0, 0, 0)
 frame.Active = true
 frame.Draggable = true
-frame.BorderSizePixel = 0
-frame.Name = "UnifiedFrame"
-frame.ClipsDescendants = true
-frame.BackgroundTransparency = 0
-frame.ZIndex = 2
-frame.AnchorPoint = Vector2.new(0, 0.5)
-frame.AutomaticSize = Enum.AutomaticSize.None
-frame.SizeConstraint = Enum.SizeConstraint.RelativeXY
-frame.BorderColor3 = Color3.new(1, 1, 1)
-frame.BorderMode = Enum.BorderMode.Outline
 frame.BorderSizePixel = 1
-frame.AutomaticSize = Enum.AutomaticSize.None
+frame.BorderColor3 = Color3.new(1, 1, 1)
+frame.Name = "UnifiedFrame"
+frame.AnchorPoint = Vector2.new(0, 0.5)
 frame.ClipsDescendants = true
-frame.BackgroundTransparency = 0
 frame.ZIndex = 2
--- frame:ClearAllChildren()
-frame:SetAttribute("ExpandedSize", frameHeight)
 
 local uicorner = Instance.new("UICorner", frame)
 uicorner.CornerRadius = UDim.new(0, 12)
@@ -197,6 +181,7 @@ local header = Instance.new("Frame", frame)
 header.Size = UDim2.new(1, 0, 0, headerHeight)
 header.BackgroundTransparency = 1
 header.Name = "Header"
+header.ZIndex = 3
 
 local title = Instance.new("TextLabel", header)
 title.Size = UDim2.new(1, -40, 1, 0)
@@ -207,6 +192,7 @@ title.TextColor3 = Color3.new(1, 1, 1)
 title.Font = Enum.Font.GothamBold
 title.TextSize = 20
 title.TextXAlignment = Enum.TextXAlignment.Left
+title.ZIndex = 4
 
 local toggleBtn = Instance.new("TextButton", header)
 toggleBtn.Size = UDim2.new(0, 30, 0, 30)
@@ -217,26 +203,28 @@ toggleBtn.TextColor3 = Color3.new(0, 0, 0)
 toggleBtn.Font = Enum.Font.GothamBold
 toggleBtn.TextSize = 20
 toggleBtn.BorderSizePixel = 0
+toggleBtn.ZIndex = 4
 
 local uibtnCorner = Instance.new("UICorner", toggleBtn)
 uibtnCorner.CornerRadius = UDim.new(0, 6)
 
--- Content (Scroll list)
+-- Content
 local content = Instance.new("Frame", frame)
 content.Name = "Content"
 content.Position = UDim2.new(0, 0, 0, headerHeight)
 content.Size = UDim2.new(1, 0, 1, -headerHeight)
 content.BackgroundTransparency = 1
-content.ClipsDescendants = true
+content.ZIndex = 2
 
 local scrollingFrame = Instance.new("ScrollingFrame", content)
-scrollingFrame.Size = UDim2.new(1, -20, 1, -20)
-scrollingFrame.Position = UDim2.new(0, 10, 0, 10)
-scrollingFrame.CanvasSize = UDim2.new(0, 0, 1, 0)
-scrollingFrame.ScrollBarThickness = 4
+scrollingFrame.Size = UDim2.new(1, 0, 1, 0)
+scrollingFrame.Position = UDim2.new(0, 0, 0, 0)
 scrollingFrame.BackgroundTransparency = 1
+scrollingFrame.ScrollBarThickness = 4
 scrollingFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
 scrollingFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+scrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+scrollingFrame.ZIndex = 2
 
 local gridLayout = Instance.new("UIGridLayout", scrollingFrame)
 gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
@@ -245,24 +233,25 @@ gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 gridLayout.CellPadding = UDim2.new(0, 6, 0, 6)
 gridLayout.CellSize = UDim2.new(1, -12, 0, 40)
 
--- Function to create a styled button
+-- Styled Button Factory
 local function createStyledButton(text)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -12, 0, 30)
-    btn.Text = text
-    btn.BackgroundColor3 = Color3.new(0, 0, 0)
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 16
-    btn.BorderSizePixel = 1
-    btn.BorderColor3 = Color3.new(1, 1, 1)
-    btn.AutoButtonColor = true
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, -12, 0, 30)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.new(0, 0, 0)
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 16
+	btn.BorderSizePixel = 1
+	btn.BorderColor3 = Color3.new(1, 1, 1)
+	btn.AutoButtonColor = true
+	btn.ZIndex = 2
 
-    local corner = Instance.new("UICorner", btn)
-    corner.CornerRadius = UDim.new(0, 6)
+	local corner = Instance.new("UICorner", btn)
+	corner.CornerRadius = UDim.new(0, 6)
 
-    btn.Parent = scrollingFrame
-    return btn
+	btn.Parent = scrollingFrame
+	return btn
 end
 
 -- Buttons
@@ -274,27 +263,23 @@ local PassModeButton = createStyledButton("Pass Mode: Normal")
 
 -- Minimize/Maximize Logic
 local function toggleMinimize()
-    if animating then return end
-    animating = true
-    isMinimized = not isMinimized
-    toggleBtn.Text = isMinimized and "+" or "-"
+	if animating then return end
+	animating = true
+	isMinimized = not isMinimized
+	toggleBtn.Text = isMinimized and "+" or "-"
 
-    local targetSize = isMinimized and UDim2.new(0, 240, 0, headerHeight) or UDim2.new(0, 240, 0, frameHeight)
-    local tween = TweenService:Create(frame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize})
-    tween:Play()
-    tween.Completed:Connect(function()
-        animating = false
-    end)
+	local targetSize = isMinimized
+		and UDim2.new(0, 240, 0, headerHeight)
+		or UDim2.new(0, 240, 0, frameHeight)
+
+	local tween = TweenService:Create(frame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize})
+	tween:Play()
+	tween.Completed:Connect(function()
+		animating = false
+	end)
 end
 
 toggleBtn.MouseButton1Click:Connect(toggleMinimize)
-
----
-print("ScreenGui parent:", screenGui.Parent)
-print("Frame size:", frame.Size)
-print("Header Text:", title.Text)
-print("Scroll Children:", #scrollingFrame:GetChildren())
----
 
 local holdActive = false 
 

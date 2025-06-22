@@ -289,6 +289,13 @@ end
 
 toggleBtn.MouseButton1Click:Connect(toggleMinimize)
 
+---
+print("ScreenGui parent:", screenGui.Parent)
+print("Frame size:", frame.Size)
+print("Header Text:", title.Text)
+print("Scroll Children:", #scrollingFrame:GetChildren())
+---
+
 local holdActive = false 
 
 pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame = frame end)

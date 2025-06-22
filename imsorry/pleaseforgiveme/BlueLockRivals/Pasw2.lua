@@ -266,11 +266,11 @@ local function createStyledButton(text)
 end
 
 -- Buttons
-createStyledButton("Pasw")
-createStyledButton("Sublimation")
-createStyledButton("Hold Position: OFF")
-createStyledButton("Fetch")
-createStyledButton("Pass Mode: Normal")
+local PaswButton = createStyledButton("Pasw")
+local SublimationButton = createStyledButton("Sublimation")
+local HoldPositionButton = createStyledButton("Hold Position: OFF")
+local FetchButton = createStyledButton("Fetch")
+local PassModeButton = createStyledButton("Pass Mode: Normal")
 
 -- Minimize/Maximize Logic
 local function toggleMinimize()
@@ -310,7 +310,7 @@ local function changePassMode()
     else 
         passMode = "Normal"
     end
-    passModeButton.Text = "Pass Mode: "..passMode
+    PassModeButton.Text = "Pass Mode: "..passMode
 end
 
 local function GetHoldAnchor()
@@ -666,7 +666,7 @@ local function HoldPosition()
       CreateNotification("Missing football or character part.", Color3.new(1,0,0),5)
     end)
     holdActive = false
-    holdPositionButton.Text = "Hold Position: OFF"
+    HoldPositionButton.Text = "Hold Position: OFF"
     return
   end
 
@@ -678,12 +678,12 @@ local function HoldPosition()
       CreateNotification("You are not the ball owner!", Color3.new(1,0,0),5)
     end)
     holdActive = false
-    holdPositionButton.Text = "Hold Position: OFF"
+    HoldPositionButton.Text = "Hold Position: OFF"
     return
   end
 
   holdActive = true
-  holdPositionButton.Text = "Hold Position: ON"
+  HoldPositionButton.Text = "Hold Position: ON"
   task.spawn(function()
     CreateNotification("Hold Position Activated!", Color3.fromRGB(0,255,0),5)
   end)
@@ -717,7 +717,7 @@ local function HoldPosition()
     if football.Parent == character then
       ABC:Clean()
       holdActive = false
-      holdPositionButton.Text = "Hold Position: OFF"
+      HoldPositionButton.Text = "Hold Position: OFF"
       if anchor and anchor.Parent then anchor:Destroy() end
       task.spawn(function()
         CreateNotification("Hold ended: ball was picked up.", Color3.new(1,0,0),5)
@@ -727,7 +727,7 @@ local function HoldPosition()
     elseif football.Parent ~= character and football.Parent ~= workspace then
       ABC:Clean()
       holdActive = false
-      holdPositionButton.Text = "Hold Position: OFF"
+      HoldPositionButton.Text = "Hold Position: OFF"
       if anchor and anchor.Parent then anchor:Destroy() end
       task.spawn(function()
         CreateNotification("Hold failed: ball was intercepted by another player.", Color3.new(1,0,0),5)
@@ -738,7 +738,7 @@ local function HoldPosition()
     if not holdActive or not football:IsDescendantOf(workspace) then
       ABC:Clean()
       if anchor and anchor.Parent then anchor:Destroy() end
-      holdPositionButton.Text = "Hold Position: OFF"
+      HoldPositionButton.Text = "Hold Position: OFF"
       task.spawn(function()
         CreateNotification("Hold manually terminated or ball removed.", Color3.fromRGB(255,255,0),5)
       end)
@@ -765,7 +765,7 @@ local function HoldPosition()
         if football.Parent == character then
           ABC:Clean()
           holdActive = false
-          holdPositionButton.Text = "Hold Position: OFF"
+          HoldPositionButton.Text = "Hold Position: OFF"
           if anchor and anchor.Parent then anchor:Destroy() end
           task.spawn(function()
             CreateNotification("Hold ended: you picked up the ball.", Color3.new(1,0,0),5)
@@ -775,7 +775,7 @@ local function HoldPosition()
         elseif football.Parent ~= character and football.Parent ~= workspace then
           ABC:Clean()
           holdActive = false
-          holdPositionButton.Text = "Hold Position: OFF"
+          HoldPositionButton.Text = "Hold Position: OFF"
           if anchor and anchor.Parent then anchor:Destroy() end
           task.spawn(function()
             CreateNotification("Hold failed: another player interfered during orbit.", Color3.new(1,0,0),5)
@@ -826,9 +826,9 @@ end
 PaswButton.Activated:Connect(Pasw) 
 SublimationButton.Activated:Connect(Sublimation)
 
-holdPositionButton.Activated:Connect(function()
+HoldPositionButton.Activated:Connect(function()
     holdActive = not holdActive
-    holdPositionButton.Text = "Hold Position: " .. (holdActive and "ON" or "OFF")
+    HoldPositionButton.Text = "Hold Position: " .. (holdActive and "ON" or "OFF")
 
     if holdActive then
         HoldPosition()
@@ -840,7 +840,7 @@ end)
 
 FetchButton.Activated:Connect(Fetch)
 
-passModeButton.Activated:Connect(changePassMode)
+PassModeButton.Activated:Connect(changePassMode)
 
 task.spawn(function()
     CreateNotification("Cf pasw", Color3.new(0, 255, 0), 5)

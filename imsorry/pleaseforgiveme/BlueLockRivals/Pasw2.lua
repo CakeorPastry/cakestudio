@@ -186,7 +186,7 @@ frame.AutomaticSize = Enum.AutomaticSize.None
 frame.ClipsDescendants = true
 frame.BackgroundTransparency = 0
 frame.ZIndex = 2
-frame:ClearAllChildren()
+-- frame:ClearAllChildren()
 frame:SetAttribute("ExpandedSize", frameHeight)
 
 local uicorner = Instance.new("UICorner", frame)

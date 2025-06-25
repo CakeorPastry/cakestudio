@@ -235,50 +235,49 @@ gridLayout.CellSize = UDim2.new(1, -12, 0, 40)
 
 -- Styled Button Factory
 local function createStyledButton(text)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, -12, 0, 30)
-    btn.Text = text
-    btn.BackgroundColor3 = Color3.new(0, 0, 0)
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 16
-    btn.BorderSizePixel = 1
-    btn.BorderColor3 = Color3.new(1, 1, 1)
-    btn.AutoButtonColor = false -- 🔄 Disable Roblox's built-in effect
-    btn.ZIndex = 2
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, -12, 0, 30)
+    btn.Text = text
+    btn.BackgroundColor3 = Color3.new(0, 0, 0)
+    btn.TextColor3 = Color3.new(1, 1, 1)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 16
+    btn.BorderSizePixel = 1
+    btn.BorderColor3 = Color3.new(1, 1, 1)
+    btn.AutoButtonColor = false -- 🔄 Disable Roblox's built-in effect
+    btn.ZIndex = 2
 
-    local corner = Instance.new("UICorner", btn)
-    corner.CornerRadius = UDim.new(0, 6)
+    local corner = Instance.new("UICorner", btn)
+    corner.CornerRadius = UDim.new(0, 6)
 
-    -- ✨ Hover Tween
-    local hoverColor = Color3.fromRGB(30, 30, 30) -- Dark gray
-    local defaultColor = Color3.new(0, 0, 0)
+    -- ✨ Hover Tween
+    local hoverColor = Color3.fromRGB(30, 30, 30) -- Dark gray
+    local defaultColor = Color3.new(0, 0, 0)
 
-    local tweenIn = TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = hoverColor})
-    local tweenOut = TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = defaultColor})
+    local tweenIn = TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = hoverColor})
+    local tweenOut = TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = defaultColor})
 
-    btn.MouseEnter:Connect(function()
-        tweenOut:Cancel()
-        tweenIn:Play()
-    end)
-
-    btn.MouseLeave:Connect(function()
-        tweenIn:Cancel()
-        tweenOut:Play()
-    end)
-    
-    btn.Activated:Connect(function()
-    -- Flash lighter or darker briefly to show it's been tapped
-        local pressTween = TweenService:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)})
-        pressTween:Play()
-        pressTween.Completed:Connect(function()
-            TweenService:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = hoverColor}):Play()
-        end)
+    btn.MouseEnter:Connect(function()
+        tweenOut:Cancel()
+        tweenIn:Play()
     end)
 
+    btn.MouseLeave:Connect(function()
+        tweenIn:Cancel()
+        tweenOut:Play()
+    end)
 
-    btn.Parent = scrollingFrame
-    return btn
+    btn.Activated:Connect(function()
+        -- Flash lighter or darker briefly to show it's been tapped
+        local pressTween = TweenService:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(50, 50, 50)})
+        pressTween:Play()
+        pressTween.Completed:Connect(function()
+            TweenService:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = hoverColor}):Play()
+        end)
+    end)
+
+    btn.Parent = scrollingFrame
+    return btn
 end
 
 -- Buttons

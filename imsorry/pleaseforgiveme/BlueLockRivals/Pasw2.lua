@@ -208,11 +208,20 @@ toggleBtn.ZIndex = 4
 local uibtnCorner = Instance.new("UICorner", toggleBtn)
 uibtnCorner.CornerRadius = UDim.new(0, 6)
 
+-- Container
+local container = Instance.new("Frame", frame)
+container.Name = "Container"
+container.Position = UDim2.new(0, 0, 0, headerHeight)
+container.Size = UDim2.new(1, 0, 1, -headerHeight)
+container.BackgroundTransparency = 1
+container.ZIndex = 2
+container.ClipsDescendants = true
+
 -- Content
-local content = Instance.new("Frame", frame)
+local content = Instance.new("Frame", container)
 content.Name = "Content"
-content.Position = UDim2.new(0, 0, 0, headerHeight)
-content.Size = UDim2.new(1, 0, 1, -headerHeight)
+content.Position = UDim2.new(0, 0, 0, 0)
+content.Size = UDim2.new(1, 0, 1, 0)
 content.BackgroundTransparency = 1
 content.ZIndex = 2
 
@@ -268,21 +277,15 @@ local function toggleMinimize()
 	isMinimized = not isMinimized
 	toggleBtn.Text = isMinimized and "+" or "-"
 
-	local targetFrameSize = isMinimized and UDim2.new(0, 240, 0, headerHeight) or UDim2.new(0, 240, 0, frameHeight)
-	local targetContentSize = isMinimized and UDim2.new(1, 0, 0, 0) or UDim2.new(1, 0, 1, -headerHeight)
+	local targetSize = isMinimized
+		and UDim2.new(1, 0, 0, 0)
+		or UDim2.new(1, 0, 1, -headerHeight)
 
-	local tween1 = TweenService:Create(frame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-		Size = targetFrameSize
+	local tween = TweenService:Create(container, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Size = targetSize
 	})
-
-	local tween2 = TweenService:Create(content, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-		Size = targetContentSize
-	})
-
-	tween1:Play()
-	tween2:Play()
-
-	tween2.Completed:Connect(function()
+	tween:Play()
+	tween.Completed:Connect(function()
 		animating = false
 	end)
 end

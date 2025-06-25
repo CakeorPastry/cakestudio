@@ -244,46 +244,11 @@ local function createStyledButton(text)
     btn.TextSize = 16
     btn.BorderSizePixel = 1
     btn.BorderColor3 = Color3.new(1, 1, 1)
-    btn.AutoButtonColor = false
+    -- btn.AutoButtonColor = false
     btn.ZIndex = 2
 
     local corner = Instance.new("UICorner", btn)
     corner.CornerRadius = UDim.new(0, 6)
-
-    -- Colors
-    local hoverColor = Color3.fromRGB(30, 30, 30)
-    local defaultColor = Color3.new(0, 0, 0)
-    local pressColor = Color3.fromRGB(50, 50, 50)
-
-    -- State tracking
-    local isHovering = false
-
-    -- Tweens
-    local tweenIn = TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = hoverColor})
-    local tweenOut = TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = defaultColor})
-
-    btn.MouseEnter:Connect(function()
-        isHovering = true
-        tweenOut:Cancel()
-        tweenIn:Play()
-    end)
-
-    btn.MouseLeave:Connect(function()
-        isHovering = false
-        tweenIn:Cancel()
-        tweenOut:Play()
-    end)
-
-    btn.Activated:Connect(function()
-        -- Flash to pressColor briefly
-        local pressTween = TweenService:Create(btn, TweenInfo.new(0.1), {BackgroundColor3 = pressColor})
-        pressTween:Play()
-
-        pressTween.Completed:Connect(function()
-            local targetColor = isHovering and hoverColor or defaultColor
-            TweenService:Create(btn, TweenInfo.new(0.15), {BackgroundColor3 = targetColor}):Play()
-        end)
-    end)
 
     btn.Parent = scrollingFrame
     return btn

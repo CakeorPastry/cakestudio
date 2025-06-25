@@ -312,9 +312,6 @@ local HoldPositionButton = createStyledButton("Hold Position: OFF")
 local FetchButton = createStyledButton("Fetch")
 local PassModeButton = createStyledButton("Pass Mode: Normal")
 
--- TOGGLE MINIMIZE LOGIC
-local TweenService = game:GetService("TweenService")
-
 local function toggleMinimize()
     if animating then return end
     animating = true

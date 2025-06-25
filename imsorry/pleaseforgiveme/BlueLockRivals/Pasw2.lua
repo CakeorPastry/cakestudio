@@ -268,18 +268,19 @@ local function toggleMinimize()
 	isMinimized = not isMinimized
 	toggleBtn.Text = isMinimized and "+" or "-"
 
-	local targetSize = isMinimized
-		and UDim2.new(0, 240, 0, headerHeight)
-		or UDim2.new(0, 240, 0, frameHeight)
+	local targetSize = isMinimized and UDim2.new(1, 0, 0, 0) or UDim2.new(1, 0, 1, -headerHeight)
 
-	local tween = TweenService:Create(frame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize})
+	local tween = TweenService:Create(content, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+		Size = targetSize
+	})
 	tween:Play()
+
 	tween.Completed:Connect(function()
 		animating = false
 	end)
 end
 
-toggleBtn.MouseButton1Click:Connect(toggleMinimize)
+toggleBtn.Activated:Connect(toggleMinimize)
 
 local holdActive = false 
 

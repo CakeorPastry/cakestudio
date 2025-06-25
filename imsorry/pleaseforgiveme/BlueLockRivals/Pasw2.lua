@@ -162,14 +162,14 @@ local animating = false
 -- Main Frame
 local frame = Instance.new("Frame", screenGui)
 frame.Size = UDim2.new(0, 240, 0, frameHeight)
-frame.Position = UDim2.new(0, 10, 0.5, -frameHeight / 2)
+frame.Position = UDim2.new(0, 10, 0, 100) -- Anchored to top-left
 frame.BackgroundColor3 = Color3.new(0, 0, 0)
 frame.Active = true
 frame.Draggable = true
 frame.BorderSizePixel = 1
 frame.BorderColor3 = Color3.new(1, 1, 1)
 frame.Name = "UnifiedFrame"
-frame.AnchorPoint = Vector2.new(0, 0.5)
+frame.AnchorPoint = Vector2.new(0, 0) -- FIXED HERE
 frame.ClipsDescendants = true
 frame.ZIndex = 2
 
@@ -235,23 +235,23 @@ gridLayout.CellSize = UDim2.new(1, -12, 0, 40)
 
 -- Styled Button Factory
 local function createStyledButton(text)
-        local btn = Instance.new("TextButton")
-        btn.Size = UDim2.new(1, -12, 0, 30)
-        btn.Text = text
-        btn.BackgroundColor3 = Color3.new(0, 0, 0)
-        btn.TextColor3 = Color3.new(1, 1, 1)
-        btn.Font = Enum.Font.Gotham
-        btn.TextSize = 16
-        btn.BorderSizePixel = 1
-        btn.BorderColor3 = Color3.new(1, 1, 1)
-        btn.AutoButtonColor = true
-        btn.ZIndex = 2
+	local btn = Instance.new("TextButton")
+	btn.Size = UDim2.new(1, -12, 0, 30)
+	btn.Text = text
+	btn.BackgroundColor3 = Color3.new(0, 0, 0)
+	btn.TextColor3 = Color3.new(1, 1, 1)
+	btn.Font = Enum.Font.Gotham
+	btn.TextSize = 16
+	btn.BorderSizePixel = 1
+	btn.BorderColor3 = Color3.new(1, 1, 1)
+	btn.AutoButtonColor = true
+	btn.ZIndex = 2
 
-        local corner = Instance.new("UICorner", btn)
-        corner.CornerRadius = UDim.new(0, 6)
+	local corner = Instance.new("UICorner", btn)
+	corner.CornerRadius = UDim.new(0, 6)
 
-        btn.Parent = scrollingFrame
-        return btn
+	btn.Parent = scrollingFrame
+	return btn
 end
 
 -- Buttons
@@ -263,20 +263,20 @@ local PassModeButton = createStyledButton("Pass Mode: Normal")
 
 -- Minimize/Maximize Logic
 local function toggleMinimize()
-        if animating then return end
-        animating = true
-        isMinimized = not isMinimized
-        toggleBtn.Text = isMinimized and "+" or "-"
+	if animating then return end
+	animating = true
+	isMinimized = not isMinimized
+	toggleBtn.Text = isMinimized and "+" or "-"
 
-        local targetSize = isMinimized
-                and UDim2.new(0, 240, 0, headerHeight)
-                or UDim2.new(0, 240, 0, frameHeight)
+	local targetSize = isMinimized
+		and UDim2.new(0, 240, 0, headerHeight)
+		or UDim2.new(0, 240, 0, frameHeight)
 
-        local tween = TweenService:Create(frame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize})
-        tween:Play()
-        tween.Completed:Connect(function()
-                animating = false
-        end)
+	local tween = TweenService:Create(frame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize})
+	tween:Play()
+	tween.Completed:Connect(function()
+		animating = false
+	end)
 end
 
 toggleBtn.Activated:Connect(toggleMinimize)

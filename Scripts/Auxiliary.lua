@@ -1,6 +1,6 @@
 local AuxiliaryModule = {}
 
-AuxiliaryModule.randomString() 
+function AuxiliaryModule.randomString() 
     local length = math.random(10, 20)
     local array = {}
     for i = 1, length do

@@ -159,25 +159,25 @@ local headerHeight = 36
 local isMinimized = false
 local animating = false
 
--- Main Wrapper (this is what will resize)
-local mainWrapper = Instance.new("Frame", screenGui)
-mainWrapper.Size = UDim2.new(0, 240, 0, frameHeight)
-mainWrapper.Position = UDim2.new(0, 10, 0.5, -frameHeight / 2)
-mainWrapper.BackgroundColor3 = Color3.new(0, 0, 0)
-mainWrapper.Active = true
-mainWrapper.Draggable = true
-mainWrapper.BorderSizePixel = 1
-mainWrapper.BorderColor3 = Color3.new(1, 1, 1)
-mainWrapper.Name = "UnifiedFrame"
-mainWrapper.AnchorPoint = Vector2.new(0, 0.5)
-mainWrapper.ClipsDescendants = true
-mainWrapper.ZIndex = 2
+-- Main Frame
+local frame = Instance.new("Frame", screenGui)
+frame.Size = UDim2.new(0, 240, 0, frameHeight)
+frame.Position = UDim2.new(0, 10, 0.5, -frameHeight / 2)
+frame.BackgroundColor3 = Color3.new(0, 0, 0)
+frame.Active = true
+frame.Draggable = true
+frame.BorderSizePixel = 1
+frame.BorderColor3 = Color3.new(1, 1, 1)
+frame.Name = "UnifiedFrame"
+frame.AnchorPoint = Vector2.new(0, 0.5)
+frame.ClipsDescendants = true
+frame.ZIndex = 2
 
-local uicorner = Instance.new("UICorner", mainWrapper)
+local uicorner = Instance.new("UICorner", frame)
 uicorner.CornerRadius = UDim.new(0, 12)
 
--- Header (STATIC - stays at top)
-local header = Instance.new("Frame", mainWrapper)
+-- Header
+local header = Instance.new("Frame", frame)
 header.Size = UDim2.new(1, 0, 0, headerHeight)
 header.BackgroundTransparency = 1
 header.Name = "Header"
@@ -208,8 +208,8 @@ toggleBtn.ZIndex = 4
 local uibtnCorner = Instance.new("UICorner", toggleBtn)
 uibtnCorner.CornerRadius = UDim.new(0, 6)
 
--- Content (goes under header)
-local content = Instance.new("Frame", mainWrapper)
+-- Content
+local content = Instance.new("Frame", frame)
 content.Name = "Content"
 content.Position = UDim2.new(0, 0, 0, headerHeight)
 content.Size = UDim2.new(1, 0, 1, -headerHeight)
@@ -235,50 +235,48 @@ gridLayout.CellSize = UDim2.new(1, -12, 0, 40)
 
 -- Styled Button Factory
 local function createStyledButton(text)
-	local btn = Instance.new("TextButton")
-	btn.Size = UDim2.new(1, -12, 0, 30)
-	btn.Text = text
-	btn.BackgroundColor3 = Color3.new(0, 0, 0)
-	btn.TextColor3 = Color3.new(1, 1, 1)
-	btn.Font = Enum.Font.Gotham
-	btn.TextSize = 16
-	btn.BorderSizePixel = 1
-	btn.BorderColor3 = Color3.new(1, 1, 1)
-	btn.AutoButtonColor = true
-	btn.ZIndex = 2
+        local btn = Instance.new("TextButton")
+        btn.Size = UDim2.new(1, -12, 0, 30)
+        btn.Text = text
+        btn.BackgroundColor3 = Color3.new(0, 0, 0)
+        btn.TextColor3 = Color3.new(1, 1, 1)
+        btn.Font = Enum.Font.Gotham
+        btn.TextSize = 16
+        btn.BorderSizePixel = 1
+        btn.BorderColor3 = Color3.new(1, 1, 1)
+        btn.AutoButtonColor = true
+        btn.ZIndex = 2
 
-	local corner = Instance.new("UICorner", btn)
-	corner.CornerRadius = UDim.new(0, 6)
+        local corner = Instance.new("UICorner", btn)
+        corner.CornerRadius = UDim.new(0, 6)
 
-	btn.Parent = scrollingFrame
-	return btn
+        btn.Parent = scrollingFrame
+        return btn
 end
 
 -- Buttons
-createStyledButton("Pasw")
-createStyledButton("Sublimation")
-createStyledButton("Hold Position: OFF")
-createStyledButton("Fetch")
-createStyledButton("Pass Mode: Normal")
+local PaswButton = createStyledButton("Pasw")
+local SublimationButton = createStyledButton("Sublimation")
+local HoldPositionButton = createStyledButton("Hold Position: OFF")
+local FetchButton = createStyledButton("Fetch")
+local PassModeButton = createStyledButton("Pass Mode: Normal")
 
--- Toggle Logic
+-- Minimize/Maximize Logic
 local function toggleMinimize()
-	if animating then return end
-	animating = true
-	isMinimized = not isMinimized
-	toggleBtn.Text = isMinimized and "+" or "-"
+        if animating then return end
+        animating = true
+        isMinimized = not isMinimized
+        toggleBtn.Text = isMinimized and "+" or "-"
 
-	local targetSize = isMinimized
-		and UDim2.new(0, 240, 0, headerHeight)
-		or UDim2.new(0, 240, 0, frameHeight)
+        local targetSize = isMinimized
+                and UDim2.new(0, 240, 0, headerHeight)
+                or UDim2.new(0, 240, 0, frameHeight)
 
-	local tween = TweenService:Create(mainWrapper, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-		Size = targetSize
-	})
-	tween:Play()
-	tween.Completed:Connect(function()
-		animating = false
-	end)
+        local tween = TweenService:Create(frame, TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = targetSize})
+        tween:Play()
+        tween.Completed:Connect(function()
+                animating = false
+        end)
 end
 
 toggleBtn.Activated:Connect(toggleMinimize)

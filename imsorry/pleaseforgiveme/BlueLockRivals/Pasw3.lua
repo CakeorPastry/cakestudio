@@ -166,7 +166,7 @@ mainFrame.Name = "UnifiedFrame"
 mainFrame.Size = UDim2.new(0, frameWidth, 0, frameHeight)
 mainFrame.Position = UDim2.new(0, 10, 0, 100)
 mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-mainFrame.BorderSizePixel = 0 -- No border now
+mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Draggable = true
 mainFrame.ClipsDescendants = true
@@ -201,13 +201,21 @@ toggleButton.TextColor3 = Color3.new(0, 0, 0)
 toggleButton.Font = Enum.Font.GothamBold
 toggleButton.TextSize = 20
 toggleButton.BorderSizePixel = 0
-toggleButton.ZIndex = 4
 toggleButton.AutoButtonColor = false
+toggleButton.ZIndex = 4
 
 Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(0, 6)
 
+-- WRAPPER (Below header)
+local wrapper = Instance.new("Frame", mainFrame)
+wrapper.Name = "Wrapper"
+wrapper.Position = UDim2.new(0, 0, 0, headerHeight)
+wrapper.Size = UDim2.new(1, 0, 1, -headerHeight)
+wrapper.BackgroundTransparency = 1
+wrapper.ZIndex = 2
+
 -- SIDEBAR
-local sidebar = Instance.new("Frame", mainFrame)
+local sidebar = Instance.new("Frame", wrapper)
 sidebar.Name = "Sidebar"
 sidebar.Size = UDim2.new(0, 80, 1, 0)
 sidebar.Position = UDim2.new(0, 0, 0, 0)
@@ -222,11 +230,11 @@ sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
 sidebarLayout.Padding = UDim.new(0, 6)
 sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
--- SCROLLABLE CONTENT
-local content = Instance.new("ScrollingFrame", mainFrame)
+-- CONTENT (scrollable)
+local content = Instance.new("ScrollingFrame", wrapper)
 content.Name = "Content"
-content.Position = UDim2.new(0, 80, 0, headerHeight)
-content.Size = UDim2.new(1, -80, 1, -headerHeight)
+content.Position = UDim2.new(0, 80, 0, 0)
+content.Size = UDim2.new(1, -80, 1, 0)
 content.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
 content.ScrollBarThickness = 6
 content.BorderSizePixel = 0
@@ -290,7 +298,7 @@ for _, name in ipairs(sectionNames) do
 	createSidebarButton(name)
 end
 
--- MAIN SECTION (with buttons)
+-- MAIN SECTION
 local mainSection = sections["Main"]
 
 local gridLayout = Instance.new("UIGridLayout", mainSection)
@@ -300,7 +308,7 @@ gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 gridLayout.CellPadding = UDim2.new(0, 6, 0, 6)
 gridLayout.CellSize = UDim2.new(1, -12, 0, 40)
 
--- BUTTON FACTORY WITH VARIABLE RETURNS
+-- BUTTON FACTORY (with variable assignment)
 local function createStyledButton(text)
 	local btn = Instance.new("TextButton")
 	btn.Text = text
@@ -313,12 +321,11 @@ local function createStyledButton(text)
 	btn.ZIndex = 2
 
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-
 	btn.Parent = mainSection
 	return btn
 end
 
--- KEEPING VARIABLES FOR LATER USE
+-- Named Buttons
 local PaswButton = createStyledButton("Pasw")
 local SublimationButton = createStyledButton("Sublimation")
 local HoldPositionButton = createStyledButton("Hold Position: OFF")

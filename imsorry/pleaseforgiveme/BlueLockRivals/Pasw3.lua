@@ -305,7 +305,7 @@ local gridLayout = Instance.new("UIGridLayout", mainSection)
 gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 gridLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-gridLayout.CellPadding = UDim.new(0, 6, 0, 6)
+gridLayout.CellPadding = UDim2.new(0, 6, 0, 6)
 gridLayout.CellSize = UDim2.new(1, -12, 0, 40)
 
 local function createStyledButton(text)

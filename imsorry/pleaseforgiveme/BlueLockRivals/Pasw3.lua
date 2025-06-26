@@ -155,7 +155,7 @@ end
 pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_LOADED = true end)
 
 local frameWidth = 320
-local frameHeight = 220
+local frameHeight = 260 -- gives space for dragging
 local headerHeight = 36
 local isMinimized = false
 local animating = false
@@ -166,8 +166,7 @@ mainFrame.Name = "UnifiedFrame"
 mainFrame.Size = UDim2.new(0, frameWidth, 0, frameHeight)
 mainFrame.Position = UDim2.new(0, 10, 0, 100)
 mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-mainFrame.BorderSizePixel = 1
-mainFrame.BorderColor3 = Color3.new(1, 1, 1)
+mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Draggable = true
 mainFrame.ClipsDescendants = true
@@ -202,40 +201,58 @@ toggleButton.TextColor3 = Color3.new(0, 0, 0)
 toggleButton.Font = Enum.Font.GothamBold
 toggleButton.TextSize = 20
 toggleButton.BorderSizePixel = 0
+toggleButton.AutoButtonColor = false
 toggleButton.ZIndex = 4
 
 Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(0, 6)
 
--- SIDEBAR
-local sidebar = Instance.new("Frame", mainFrame)
+-- WRAPPER (holds sidebar + content below header)
+local wrapper = Instance.new("Frame", mainFrame)
+wrapper.Name = "Wrapper"
+wrapper.Position = UDim2.new(0, 0, 0, headerHeight)
+wrapper.Size = UDim2.new(1, 0, 1, -headerHeight)
+wrapper.BackgroundTransparency = 1
+wrapper.ZIndex = 2
+
+-- SIDEBAR (static)
+local sidebar = Instance.new("Frame", wrapper)
 sidebar.Name = "Sidebar"
 sidebar.Size = UDim2.new(0, 80, 1, 0)
 sidebar.Position = UDim2.new(0, 0, 0, 0)
 sidebar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+sidebar.BorderSizePixel = 0
 sidebar.ZIndex = 2
+
+Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 6)
 
 local sidebarLayout = Instance.new("UIListLayout", sidebar)
 sidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
 sidebarLayout.Padding = UDim.new(0, 6)
 sidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 
--- CONTENT FRAME
-local content = Instance.new("Frame", mainFrame)
+-- CONTENT (scrollable)
+local content = Instance.new("ScrollingFrame", wrapper)
 content.Name = "Content"
-content.Position = UDim2.new(0, 80, 0, headerHeight)
-content.Size = UDim2.new(1, -80, 1, -headerHeight)
+content.Position = UDim2.new(0, 80, 0, 0)
+content.Size = UDim2.new(1, -80, 1, 0)
 content.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+content.ScrollBarThickness = 6
+content.BorderSizePixel = 0
+content.AutomaticCanvasSize = Enum.AutomaticSize.Y
+content.ScrollingDirection = Enum.ScrollingDirection.Y
 content.ZIndex = 2
+
+Instance.new("UICorner", content).CornerRadius = UDim.new(0, 6)
 
 -- SECTIONS
 local sections = {}
 local sectionNames = { "Main", "Auxiliary", "Others", "Help", "About" }
 
--- SECTION FACTORY
 local function createSection(name)
 	local section = Instance.new("Frame")
 	section.Name = name
-	section.Size = UDim2.new(1, 0, 1, 0)
+	section.Size = UDim2.new(1, 0, 0, 0)
+	section.AutomaticSize = Enum.AutomaticSize.Y
 	section.BackgroundTransparency = 1
 	section.Visible = (name == "Main")
 	section.ZIndex = 2
@@ -244,7 +261,6 @@ local function createSection(name)
 	return section
 end
 
--- SIDEBAR BUTTON FACTORY
 local function createSidebarButton(name)
 	local button = Instance.new("TextButton")
 	button.Size = UDim2.new(1, -12, 0, 30)
@@ -253,13 +269,12 @@ local function createSidebarButton(name)
 	button.TextColor3 = Color3.new(1, 1, 1)
 	button.Font = Enum.Font.Gotham
 	button.TextSize = 14
-	button.BorderSizePixel = 1
-	button.BorderColor3 = Color3.new(1, 1, 1)
+	button.BorderSizePixel = 0
 	button.AutoButtonColor = false
 	button.ZIndex = 2
 	button.Parent = sidebar
 
-	Instance.new("UICorner", button).CornerRadius = UDim.new(0, 4)
+	Instance.new("UICorner", button).CornerRadius = UDim.new(0, 6)
 
 	button.Activated:Connect(function()
 		for secName, frame in pairs(sections) do
@@ -278,23 +293,21 @@ local function createSidebarButton(name)
 	return button
 end
 
--- CREATE SECTIONS & SIDEBAR BUTTONS
 for _, name in ipairs(sectionNames) do
 	createSection(name)
 	createSidebarButton(name)
 end
 
--- MAIN SECTION (with buttons)
+-- MAIN SECTION & Buttons
 local mainSection = sections["Main"]
 
 local gridLayout = Instance.new("UIGridLayout", mainSection)
 gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
 gridLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 gridLayout.SortOrder = Enum.SortOrder.LayoutOrder
-gridLayout.CellPadding = UDim2.new(0, 6, 0, 6)
+gridLayout.CellPadding = UDim.new(0, 6, 0, 6)
 gridLayout.CellSize = UDim2.new(1, -12, 0, 40)
 
--- STYLED BUTTON FACTORY
 local function createStyledButton(text)
 	local btn = Instance.new("TextButton")
 	btn.Text = text
@@ -302,26 +315,23 @@ local function createStyledButton(text)
 	btn.TextColor3 = Color3.new(1, 1, 1)
 	btn.Font = Enum.Font.Gotham
 	btn.TextSize = 16
-	btn.BorderSizePixel = 1
-	btn.BorderColor3 = Color3.new(1, 1, 1)
-	btn.ZIndex = 2
+	btn.BorderSizePixel = 0
 	btn.AutoButtonColor = false
+	btn.ZIndex = 2
 
 	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-
 	btn.Parent = mainSection
 	return btn
 end
 
--- MAIN BUTTONS
-local PaswButton = createStyledButton("Pasw")
-local SublimationButton = createStyledButton("Sublimation")
-local HoldPositionButton = createStyledButton("Hold Position: OFF")
-local FetchButton = createStyledButton("Fetch")
-local PassModeButton = createStyledButton("Pass Mode: Normal")
+createStyledButton("Pasw")
+createStyledButton("Sublimation")
+createStyledButton("Hold Position: OFF")
+createStyledButton("Fetch")
+createStyledButton("Pass Mode: Normal")
 
 -- MINIMIZE FUNCTION
-local function toggleMinimize()
+toggleButton.Activated:Connect(function()
 	if animating then return end
 	animating = true
 	isMinimized = not isMinimized
@@ -339,9 +349,7 @@ local function toggleMinimize()
 	tween.Completed:Connect(function()
 		animating = false
 	end)
-end
-
-toggleButton.Activated:Connect(toggleMinimize)
+end)
 
 local holdActive = false 
 

@@ -1,7 +1,7 @@
 -- // Base Services
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local UIS = game:GetService("UserInputService")
+local UserInputService = game:GetService("UserInputService")
 local TweenService = game:GetService("TweenService")
 local TweenInfoSetting = TweenInfo.new(1, Enum.EasingStyle.Linear)
 
@@ -355,7 +355,7 @@ end)
 
 local holdActive = false 
 
-pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame = frame end)
+pcall(function() getgenv().imsorry_pleaseforgiveme_BlueLockRivals_Pasw_lua_frame = mainFrame end)
 
 local canUse = {
     ["Pasw"] = true,

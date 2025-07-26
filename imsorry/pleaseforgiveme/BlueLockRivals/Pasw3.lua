@@ -215,7 +215,7 @@ wrapper.BackgroundTransparency = 1
 wrapper.ZIndex = 2
 
 -- SIDEBAR
-local sidebar = Instance.new("Frame", wrapper)
+local sidebar = Instance.new("ScrollableFrame", wrapper)
 sidebar.Name = "Sidebar"
 sidebar.Size = UDim2.new(0, 80, 1, 0)
 sidebar.Position = UDim2.new(0, 0, 0, 0)

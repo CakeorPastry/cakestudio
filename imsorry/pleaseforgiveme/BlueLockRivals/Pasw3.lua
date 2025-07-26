@@ -220,7 +220,10 @@ sidebar.Name = "Sidebar"
 sidebar.Size = UDim2.new(0, 80, 1, 0)
 sidebar.Position = UDim2.new(0, 0, 0, 0)
 sidebar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
+sidebar.ScrollBarThickness = 6
 sidebar.BorderSizePixel = 0
+sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
+sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
 sidebar.ZIndex = 2
 
 Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 6)

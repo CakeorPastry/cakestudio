@@ -245,7 +245,7 @@ local titleLabel = Instance.new("TextLabel", header)
 titleLabel.Size = UDim2.new(1, -40, 1, 0)
 titleLabel.Position = UDim2.new(0, 10, 0, 0)
 titleLabel.BackgroundTransparency = 1
-titleLabel.Text = settings[title] or "JOHNSTONHIGHSCHOOL"
+titleLabel.Text = settings["title"] or "JOHNSTONHIGHSCHOOL"
 titleLabel.TextColor3 = Color3.new(1, 1, 1)
 titleLabel.Font = Enum.Font.GothamBold
 titleLabel.TextSize = 20
@@ -280,17 +280,19 @@ wrapper.ZIndex = 2
 
 returnData[wrapper] = wrapper
 
--- SIDEBAR (Before Unscrollable, Now Scrollable)
-local sidebar = Instance.new("ScrollingFrame", wrapper)
+-- SIDEBAR (FIXME: Shall we make it scrollable or not?) 
+-- local sidebar = Instance.new("ScrollingFrame", wrapper)
+
+local sidebar = Instance.new("Frame", wrapper)
 sidebar.Name = "Sidebar"
 sidebar.Size = UDim2.new(0, 80, 1, 0)
 sidebar.Position = UDim2.new(0, 0, 0, 0)
 sidebar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-sidebar.ScrollBarThickness = 6
-sidebar.BorderSizePixel = 0
-sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
-sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
 sidebar.ZIndex = 2
+sidebar.BorderSizePixel = 0
+-- sidebar.ScrollBarThickness = 6
+-- sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
+-- sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
 
 Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 6)
 

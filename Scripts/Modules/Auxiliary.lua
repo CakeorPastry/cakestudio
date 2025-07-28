@@ -2,9 +2,9 @@ local AuxiliaryModule = {}
 
 -- Kernel
 AuxiliaryModule.Kernel = {}
-AuxilaryModule.Kernel.Cache = {}
-AuxilaryModule.Kernel.RecycleBin = {}
-AuxilaryModule.Kernel.SystemClock = {}
+AuxiliaryModule.Kernel.Cache = {}
+AuxiliaryModule.Kernel.RecycleBin = {}
+AuxiliaryModule.Kernel.SystemClock = {}
 
 -- Gui Stuff
 local sections = {}
@@ -76,9 +76,9 @@ AuxiliaryModule.Player.CharacterAdded:Connect(function(Character)
     AuxiliaryModule.Character = Character; 
 end);
 
--- Auxilary Functions (Shared)
+-- Auxiliary Functions (Shared)
 --[[
-function AuxilaryModule.toClipboard(txt)
+function AuxiliaryModule.toClipboard(txt)
     if everyClipboard then
         everyClipboard(tostring(txt))
         notify("Clipboard", "Copied to clipboard")
@@ -187,7 +187,7 @@ function createScreenGui(...)
     
     local returnData = {}
     
-    local sectionNames = settings[sectionNames]
+    local sectionNames = settings["sectionNames"]
     
     -- screenGui
     local screenGui = Instance.new("ScreenGui", CoreGui)
@@ -324,4 +324,4 @@ return returnData
 end
 
 
-return AuxilaryModule
+return AuxiliaryModule

@@ -191,7 +191,7 @@ function createScreenGui(...)
     
     -- screenGui
     local screenGui = Instance.new("ScreenGui", CoreGui)
-    local screenGui.Name = AuxiliaryModule.Kernel.randomString()
+    screenGui.Name = AuxiliaryModule.Kernel.randomString()
     screenGui.ResetOnSpawn = false
     
     returnData[screenGui] = screenGui

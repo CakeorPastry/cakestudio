@@ -219,7 +219,7 @@ returnData[notificationFrame] = notificationFrame
     -- MAIN FRAME
 local mainFrame = Instance.new("Frame", screenGui)
 mainFrame.Name = "UnifiedFrame"
-mainFrame.Size = UDim2.new(0, AuxiliaryModule.frameWidth, 0, AuxiliaryModule.Config.frameHeight)
+mainFrame.Size = UDim2.new(0, AuxiliaryModule.Config.frameWidth, 0, AuxiliaryModule.Config.frameHeight)
 mainFrame.Position = UDim2.new(0, 10, 0, 100)
 mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
 mainFrame.BorderSizePixel = 0

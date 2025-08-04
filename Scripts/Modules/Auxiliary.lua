@@ -1,14 +1,16 @@
-local AuxiliaryModule = {}
+local Auxiliary = {}
+
+-- local gVars = FIXME
 
 -- Kernel
-AuxiliaryModule.Kernel = {}
-AuxiliaryModule.Kernel.Cache = {}
-AuxiliaryModule.Kernel.RecycleBin = {}
-AuxiliaryModule.Kernel.SystemClock = {}
+Auxiliary.Kernel = {}
+Auxiliary.Kernel.Cache = {}
+Auxiliary.Kernel.RecycleBin = {}
+Auxiliary.Kernel.TaskManager = {}
+-- Auxiliary.Kernel.SystemClock = {}
 
 -- Gui Stuff
 local sections = {}
-local sectionNames = {} -- Example: "Main", "Auxiliary", "Others", "Help", "About"
 
 -- Missing
 function missing(t, f, fallback)
@@ -84,17 +86,17 @@ local TextChatService = cloneref(game:GetService("TextChatService"))
 local Debris = cloneref(game:GetService("Debris"))
 
 -- Player Elements
-AuxiliaryModule.Player = Players.LocalPlayer
+Auxiliary.Player = Players.LocalPlayer
 
-AuxiliaryModule.Character = AuxiliaryModule.Player.Character or AuxiliaryModule.Player.CharacterAdded:Wait()
+Auxiliary.Character = Auxiliary.Player.Character or Auxiliary.Player.CharacterAdded:Wait()
 
-AuxiliaryModule.Player.CharacterAdded:Connect(function(Character)
-        AuxiliaryModule.Character = Character
+Auxiliary.Player.CharacterAdded:Connect(function(Character)
+        Auxiliary.Character = Character
 end)
 
 -- Auxiliary Functions (Shared)
 --[[
-function AuxiliaryModule.toClipboard(txt)
+function Auxiliary.toClipboard(txt)
     if everyClipboard then
         everyClipboard(tostring(txt))
         notify("Clipboard", "Copied to clipboard")
@@ -107,7 +109,7 @@ FIXME FIXME FIXME
 
 ]]
 
-function AuxiliaryModule.Kernel.randomString()
+function Auxiliary.Kernel.randomString()
         local length = math.random(10, 20)
         local array = {}
         for i = 1, length do
@@ -119,6 +121,11 @@ end
 
 -- Gui Functions
 local function createSection(name, parent)
+if not parent then
+ Auxiliary.Kernel.Throw("Create section", "Parent instance not defined.", -1) 
+ return   
+end
+
         local section = Instance.new("Frame")
         section.Name = name
         section.Size = UDim2.new(1, 0, 0, 0)
@@ -132,6 +139,10 @@ local function createSection(name, parent)
 end
 
 local function createSidebarButton(name, parent)
+if not parent then
+ Auxiliary.Kernel.Throw("Create sidebar button", "Parent instance not defined.", -1) 
+ return   
+end
         local button = Instance.new("TextButton")
         button.Size = UDim2.new(1, -12, 0, 30)
         button.Text = name
@@ -163,10 +174,33 @@ local function createSidebarButton(name, parent)
         return button
 end
 
+local function createMainFrame(parent)
+
+if not parent then
+ Auxiliary.Kernel.Throw("Create main frame", "Parent instance not defined.", -1) 
+ return   
+end
+
+    local mainFrame = Instance.new("Frame", parent)
+        mainFrame.Name = "UnifiedFrame"
+        mainFrame.Size = UDim2.new(0, Auxiliary.Config.frameWidth, 0, Auxiliary.Config.frameHeight)
+        mainFrame.Position = UDim2.new(0, 10, 0, 100)
+        mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
+        mainFrame.BorderSizePixel = 0
+        mainFrame.Active = true
+        mainFrame.Draggable = true
+        mainFrame.ClipsDescendants = true
+        mainFrame.ZIndex = 2
+
+        Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
+        
+        return createMainFrame
+end
+
 local function createOutput(parent, temporary, removeTime)
 
 if not parent then
- AuxiliaryModule.Kernel.Throw("Create Output", "Parent instance not defined.", -1) 
+ Auxiliary.Kernel.Throw("Create output", "Parent instance not defined.", -1) 
  return   
 end
 
@@ -188,9 +222,10 @@ end
         gridLayout.Parent = notificationFrame
 
        if temporary then
-       Debris:AddItem(notificationFrame, removeTime or 30)
+       notificationFrame.Position = UDim2.new(0.5, 0, 0.45, 0)
+       Debris:AddItem(notificationFrame, removeTime or 15)
        end
-       
+
        return notificationFrame
 
 end
@@ -198,10 +233,10 @@ end
 
 
 -- Setup
-AuxiliaryModule.Config = {}
+Auxiliary.Config = {}
 local hasSetup = false
 
-function AuxiliaryModule.Setup(...)
+function Auxiliary.Setup(...)
         local args = { ... }
         local lastArg = select("#", ...) -- Returns total number of arguments
 
@@ -210,7 +245,7 @@ function AuxiliaryModule.Setup(...)
 
         -- Prevent re-setup if not forced
         if hasSetup and not forceReSetup then
-                AuxiliaryModule.Kernel.Throw("Setup Error", "Setup was already completed.", -1)
+                Auxiliary.Kernel.Throw("Setup", "Setup was already completed.", -1)
                 return
         end
 
@@ -220,14 +255,24 @@ function AuxiliaryModule.Setup(...)
         end
 
         --[[
-    AuxiliaryModule.Config.frameWidth = setupData.frameWidth or 320
-    AuxiliaryModule.Config.frameHeight = setupData.frameHeight or 220
-    AuxiliaryModule.Config.headerHeight = setupData.headerHeight or 36
+    Auxiliary.Config.frameWidth = setupData.frameWidth or 320
+    Auxiliary.Config.frameHeight = setupData.frameHeight or 220
+    Auxiliary.Config.headerHeight = setupData.headerHeight or 36
     ]]
 
-        AuxiliaryModule.Config.frameWidth = 320
-        AuxiliaryModule.Config.frameHeight = 220
-        AuxiliaryModule.Config.headerHeight = 36
+        Auxiliary.Config.frameWidth = 320
+        Auxiliary.Config.frameHeight = 220
+        Auxiliary.Config.headerHeight = 36
+        
+        local createScreenGuiParams = {
+            sectionNames = setupData["sectionNames"], 
+            title = setupData["title"]
+            
+        }
+        
+        local createScreenGuiData = createScreenGui(createScreenGuiParams)
+        
+        
 end
 
 function createScreenGui(...)
@@ -236,51 +281,40 @@ function createScreenGui(...)
 
         local returnData = {}
 
-        local sectionNames = settings["sectionNames"]
+        local sectionNames = settings["sectionNames"] or gVars["defaultSectionNames"]
 
         -- screenGui
         local screenGui = Instance.new("ScreenGui", CoreGui)
-        screenGui.Name = AuxiliaryModule.Kernel.randomString()
+        screenGui.Name = Auxiliary.Kernel.randomString()
         screenGui.ResetOnSpawn = false
 
         returnData[screenGui] = screenGui
 
        -- Output
-        
-       local notificationFrame = createOutput(screenGui, false, nil)
-       
+       local notificationFrame = createOutput(screenGui)
+
         returnData[notificationFrame] = notificationFrame
 
         -- MAIN FRAME
-        local mainFrame = Instance.new("Frame", screenGui)
-        mainFrame.Name = "UnifiedFrame"
-        mainFrame.Size = UDim2.new(0, AuxiliaryModule.Config.frameWidth, 0, AuxiliaryModule.Config.frameHeight)
-        mainFrame.Position = UDim2.new(0, 10, 0, 100)
-        mainFrame.BackgroundColor3 = Color3.new(0, 0, 0)
-        mainFrame.BorderSizePixel = 0
-        mainFrame.Active = true
-        mainFrame.Draggable = true
-        mainFrame.ClipsDescendants = true
-        mainFrame.ZIndex = 2
-
-        Instance.new("UICorner", mainFrame).CornerRadius = UDim.new(0, 12)
+        local mainFrame = createMainFrame(screenGui)
 
         returnData[mainFrame] = mainFrame
 
         -- HEADER
         local header = Instance.new("Frame", mainFrame)
         header.Name = "Header"
-        header.Size = UDim2.new(1, 0, 0, AuxiliaryModule.headerHeight)
+        header.Size = UDim2.new(1, 0, 0, Auxiliary.headerHeight)
         header.BackgroundTransparency = 1
         header.ZIndex = 3
 
         returnData[header] = header
-
+        
+        -- HEADER (Title)
         local titleLabel = Instance.new("TextLabel", header)
         titleLabel.Size = UDim2.new(1, -40, 1, 0)
         titleLabel.Position = UDim2.new(0, 10, 0, 0)
         titleLabel.BackgroundTransparency = 1
-        titleLabel.Text = settings["title"] or "JOHNSTONHIGHSCHOOL"
+        titleLabel.Text = settings["title"] or gVars["defaultTitle"]
         titleLabel.TextColor3 = Color3.new(1, 1, 1)
         titleLabel.Font = Enum.Font.GothamBold
         titleLabel.TextSize = 20
@@ -288,28 +322,29 @@ function createScreenGui(...)
         titleLabel.ZIndex = 4
 
         returnData[titleLabel] = titleLabel
+        
+        -- HEADER (MinimizeButton)
+        local minimizeButton = Instance.new("TextButton", header)
+        minimizeButton.Size = UDim2.new(0, 30, 0, 30)
+        minimizeButton.Position = UDim2.new(1, -36, 0, 3)
+        minimizeButton.Text = "-"
+        minimizeButton.BackgroundColor3 = Color3.new(1, 1, 1)
+        minimizeButton.TextColor3 = Color3.new(0, 0, 0)
+        minimizeButton.Font = Enum.Font.GothamBold
+        minimizeButton.TextSize = 20
+        minimizeButton.BorderSizePixel = 0
+        minimizeButton.AutoButtonColor = false
+        minimizeButton.ZIndex = 4
 
-        local toggleButton = Instance.new("TextButton", header)
-        toggleButton.Size = UDim2.new(0, 30, 0, 30)
-        toggleButton.Position = UDim2.new(1, -36, 0, 3)
-        toggleButton.Text = "-"
-        toggleButton.BackgroundColor3 = Color3.new(1, 1, 1)
-        toggleButton.TextColor3 = Color3.new(0, 0, 0)
-        toggleButton.Font = Enum.Font.GothamBold
-        toggleButton.TextSize = 20
-        toggleButton.BorderSizePixel = 0
-        toggleButton.AutoButtonColor = false
-        toggleButton.ZIndex = 4
+        Instance.new("UICorner", minimizeButton).CornerRadius = UDim.new(0, 6)
 
-        Instance.new("UICorner", toggleButton).CornerRadius = UDim.new(0, 6)
-
-        returnData[toggleButton] = toggleButton
+        returnData[minimizeButton] = minimizeButton
 
         -- WRAPPER (Below header)
         local wrapper = Instance.new("Frame", mainFrame)
         wrapper.Name = "Wrapper"
-        wrapper.Position = UDim2.new(0, 0, 0, AuxiliaryModule.headerHeight)
-        wrapper.Size = UDim2.new(1, 0, 1, -AuxiliaryModule.headerHeight)
+        wrapper.Position = UDim2.new(0, 0, 0, Auxiliary.headerHeight)
+        wrapper.Size = UDim2.new(1, 0, 1, -Auxiliary.headerHeight)
         wrapper.BackgroundTransparency = 1
         wrapper.ZIndex = 2
 
@@ -325,9 +360,11 @@ function createScreenGui(...)
         sidebar.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
         sidebar.ZIndex = 2
         sidebar.BorderSizePixel = 0
-        -- sidebar.ScrollBarThickness = 6
-        -- sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
-        -- sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        --[[
+        sidebar.ScrollBarThickness = 6
+        sidebar.ScrollingDirection = Enum.ScrollingDirection.Y
+        sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
+        ]]
 
         Instance.new("UICorner", sidebar).CornerRadius = UDim.new(0, 6)
 
@@ -353,8 +390,16 @@ function createScreenGui(...)
         Instance.new("UICorner", content).CornerRadius = UDim.new(0, 6)
 
         returnData[content] = content
+        
+        Auxiliary.Kernel.TaskManager.AddTask(true, function()
+        for _, name in sectionNames do
+            createSection(name)
+            createSidebarButton(name)
+        end
+      end) -- FIXME
+
 
         return returnData
 end
 
-return AuxiliaryModule
+return Auxiliary

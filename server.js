@@ -328,7 +328,7 @@ app.get('/test', (req, res) => {
       if (stat && stat.isDirectory()) {
         results = results.concat(walk(fullPath));
       } else {
-        results.push(path.relative(__dirname, fullPath));
+        results.push(path.relative(`./${__dirname}`, fullPath));
       }
     });
     return results;

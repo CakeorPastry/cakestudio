@@ -334,7 +334,7 @@ app.get('/test', (req, res) => {
     return results;
   };
 
-  res.json(walk(__dirname));
+  res.json(walk(`./${__dirname}`));
 });
 
 

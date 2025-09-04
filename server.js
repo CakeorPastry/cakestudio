@@ -314,6 +314,31 @@ app.use((err, req, res, next) => {
     });
 });
 
+
+const fs = require('fs');
+// const path = require('path');
+
+app.get('/test', (req, res) => {
+  const walk = (dir) => {
+    let results = [];
+    const list = fs.readdirSync(dir);
+    list.forEach((file) => {
+      const fullPath = path.join(dir, file);
+      const stat = fs.statSync(fullPath);
+      if (stat && stat.isDirectory()) {
+        results = results.concat(walk(fullPath));
+      } else {
+        results.push(path.relative(__dirname, fullPath));
+      }
+    });
+    return results;
+  };
+
+  res.json(walk(__dirname));
+});
+
+
+
 app.get('*', cors(), (req, res) => {
   console.log(`Wildcard route triggered for URL: ${req.originalUrl}`);
   res.status(404).render('error', {

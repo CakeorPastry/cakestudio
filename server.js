@@ -316,7 +316,7 @@ app.use((err, req, res, next) => {
 
 
 const fs = require('fs');
-// const path = require('path');
+// const path = require('path'); // you need this for path.join, path.relative
 
 app.get('/test', (req, res) => {
   const walk = (dir) => {
@@ -328,15 +328,14 @@ app.get('/test', (req, res) => {
       if (stat && stat.isDirectory()) {
         results = results.concat(walk(fullPath));
       } else {
-        results.push(path.relative(`./${__dirname}`, fullPath));
+        results.push(path.relative(process.cwd(), fullPath)); // 👈 get relative to where script was launched
       }
     });
     return results;
   };
 
-  res.json(walk(`./${__dirname}`));
+  res.json(walk(process.cwd())); // 👈 walk from CWD, not __dirname
 });
-
 
 
 app.get('*', cors(), (req, res) => {

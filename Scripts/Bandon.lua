@@ -1,5 +1,5 @@
 --[[ =========================================================
-  🔥 MEGA SCRIPT: Base Alerts + Animal Scanner + Float Platform + Anti-Ragdoll
+  _ MEGA SCRIPT: Base Alerts + Animal Scanner + Float Platform + Anti-Ragdoll
   Place in: StarterPlayerScripts
 ========================================================= ]]
 
@@ -12,7 +12,7 @@ local LocalPlayer = Players.LocalPlayer
 local player = LocalPlayer
 
 -- =========================================================
--- ========== 📢 NOTIFICATION SYSTEM =======================
+-- ========== _ NOTIFICATION SYSTEM =======================
 -- =========================================================
 local function createNotificationUI()
     local gui = Instance.new("ScreenGui")
@@ -73,7 +73,7 @@ local function notify(message, type)
 end
 
 -- =========================================================
--- ========== 🏠 BASE DETECTION + COUNTDOWN =================
+-- ========== _ BASE DETECTION + COUNTDOWN =================
 -- =========================================================
 local function findBaseModel()
     local plotsFolder = Workspace:WaitForChild("Plots")
@@ -87,7 +87,7 @@ local function findBaseModel()
             end
             local baseModel = current
             if baseModel and baseModel:IsA("Model") and baseModel.Parent == plotsFolder then
-                notify("✅ Found your base!", "success")
+                notify("_ Found your base!", "success")
                 local purchases = baseModel:FindFirstChild("Purchases")
                 local plotBlock = purchases and purchases:FindFirstChild("PlotBlock")
                 local countdownLabel = nil
@@ -107,7 +107,7 @@ local function findBaseModel()
         end
     end
 
-    notify("❌ Could not find your base!", "danger")
+    notify("_ Could not find your base!", "danger")
     return nil, nil, nil
 end
 
@@ -201,7 +201,7 @@ local function removeBillboard(player, name)
 end
 
 -- =========================================================
--- ========== 🐾 ANIMAL PODIUM SCANNER =====================
+-- ========== _ ANIMAL PODIUM SCANNER =====================
 -- =========================================================
 local function parsePrice(text)
     text = string.lower(text)
@@ -315,7 +315,7 @@ task.spawn(function()
 end)
 
 -- =========================================================
--- ========== 🪂 FLOAT PLATFORM + UI =======================
+-- ========== _ FLOAT PLATFORM + UI =======================
 -- =========================================================
 local FLOAT_NAME = "PlayerFloatPlatform" .. tostring(math.random(1000, 9999))
 local PLATFORM_SIZE = Vector3.new(2, 0.2, 1.5)
@@ -385,7 +385,7 @@ local function increaseOffset(amount) floatOffset += amount end
 local function decreaseOffset(amount) floatOffset -= amount end
 
 -- =========================================================
--- ========== 🚫 ANTI-RAGDOLL ==============================
+-- ========== _ ANTI-RAGDOLL ==============================
 -- =========================================================
 local PlayerModule = require(player:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule"))
 local Controls = PlayerModule:GetControls()
@@ -406,7 +406,7 @@ if player.Character then setupAntiRagdoll() end
 player.CharacterAdded:Connect(function() setupAntiRagdoll() stopFloating() end)
 
 -- =========================================================
--- ========== 🧰 FLOAT UI + ANTI-RAGDOLL TOGGLE ============
+-- ========== _ FLOAT UI + ANTI-RAGDOLL TOGGLE ============
 -- =========================================================
 local function createUI()
  local playerGui = player:WaitForChild("PlayerGui")
@@ -458,7 +458,7 @@ end
 createUI()
 
 -- =========================================================
--- ========== 🔁 MAIN HEARTBEAT LOOP =======================
+-- ========== _ MAIN HEARTBEAT LOOP =======================
 -- =========================================================
 RunService.Heartbeat:Connect(function()
     -- === Base countdown refresh ===
@@ -471,7 +471,7 @@ RunService.Heartbeat:Connect(function()
     if currentText ~= "" then
         CountdownDisplayLabel.Text = "Base Timer: " .. currentText
         if currentText == "1s" and lastCountdownText ~= "1s" then
-            notify("🔓 Your base is unlocked! Go lock it!", "danger")
+            notify("_ Your base is unlocked! Go lock it!", "danger")
         end
         lastCountdownText = currentText
     else
@@ -494,7 +494,7 @@ RunService.Heartbeat:Connect(function()
 
         if distToBase < 50 then
             if canNotify(plr.Name .. "_near", 5) then
-                notify("⚠️ " .. plr.Name .. " is near your base!", "warning")
+                notify("__ " .. plr.Name .. " is near your base!", "warning")
             end
             addBillboard(plr, "NEAR BASE", Color3.fromRGB(255, 255, 0), "NearBase")
             addHighlight(char, "NearBaseHighlight", Color3.fromRGB(255, 255, 0))
@@ -505,7 +505,7 @@ RunService.Heartbeat:Connect(function()
 
         if distToBase < 25 then
             if canNotify(plr.Name .. "_danger", 5) then
-                notify("🚨 " .. plr.Name .. " is at your base core!", "danger")
+                notify("_ " .. plr.Name .. " is at your base core!", "danger")
             end
             addBillboard(plr, "DANGER", Color3.fromRGB(255, 0, 0), "Danger")
             addHighlight(char, "DangerHighlight", Color3.fromRGB(255, 0, 0))

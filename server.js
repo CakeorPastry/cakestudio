@@ -341,7 +341,7 @@ app.use((err, req, res, next) => {
         errorCode: statusCode,
         message: message,
         minimessage: minimessage, 
-image: "/assetspprivateSussyBotError.jpg"
+image: "/assets/privateSussyBotError.jpg"
     });
 });
 

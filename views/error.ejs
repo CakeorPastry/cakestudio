@@ -17,11 +17,6 @@ BODY {
     background: black;
     color: white;
     text-align: center;
-
-
-
-    border: 5px solid red;
-
 }
 
 .container {
@@ -85,6 +80,23 @@ BODY {
 <P CLASS="minimessage">
 <%= minimessage %>
 </P>
+<% if (debugMessage) { %>
+<P CLASS="minimessage" STYLE="margin-top: 25px; margin-bottom: 20px; color: #999; cursor: pointer;" onclick="
+    const errorHolder = document.getElementById('errorHolder');
+    if (errorHolder.style.display === 'none') {
+        errorHolder.style.display = 'flex';
+        this.innerText = 'Hide Error';
+    } else {
+        errorHolder.style.display = 'none';
+        this.innerText = 'Show Error';
+    }
+">
+Show Error
+</P>
+<P CLASS="minimessage" ID="errorHolder" STYLE="display: none; color: #ff4444;">
+<%= debugMessage %>
+</P>
+<% } %>
 <A HREF="https://cakeorpastry.netlify.app" CLASS="goHome">
 GO HOME
 </A>

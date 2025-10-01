@@ -35,7 +35,7 @@ function requestError({ req, res, errorCode = 500, message, miniMessage, image, 
     message: resolvedMessage,
     minimessage: resolvedMini,
     image: resolvedImage,
-    debugMessage
+    debugMessage: debugMessage
   });
 }
 

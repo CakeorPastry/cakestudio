@@ -324,8 +324,6 @@ app.use((err, req, res, next) => {
     });
 });
 
-
-
 const fs = require('fs');
 // const path = require('path'); // you need this for path.join, path.relative
 
@@ -347,8 +345,6 @@ app.get('/test', (req, res) => {
 
   res.json(walk(process.cwd())); // 👈 walk from CWD, not __dirname
 });
-*/
-
 
 app.get('*', cors(), (req, res) => {
   console.log(`Wildcard route triggered for URL: ${req.originalUrl}`);

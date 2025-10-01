@@ -1,7 +1,7 @@
--- =========================================================
---  MEGA SCRIPT: Base Alerts + Animal Scanner + Float Platform + Anti-Ragdoll
---  Place in: StarterPlayerScripts
--- =========================================================
+--[[ =========================================================
+  🔥 MEGA SCRIPT: Base Alerts + Animal Scanner + Float Platform + Anti-Ragdoll
+  Place in: StarterPlayerScripts
+========================================================= ]]
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -12,7 +12,7 @@ local LocalPlayer = Players.LocalPlayer
 local player = LocalPlayer
 
 -- =========================================================
--- ========== Notification System ==========================
+-- ========== 📢 NOTIFICATION SYSTEM =======================
 -- =========================================================
 local function createNotificationUI()
     local gui = Instance.new("ScreenGui")
@@ -73,7 +73,7 @@ local function notify(message, type)
 end
 
 -- =========================================================
--- ========== Base Detection + Countdown ===================
+-- ========== 🏠 BASE DETECTION + COUNTDOWN =================
 -- =========================================================
 local function findBaseModel()
     local plotsFolder = Workspace:WaitForChild("Plots")
@@ -201,14 +201,14 @@ local function removeBillboard(player, name)
 end
 
 -- =========================================================
--- ========== Animal Podium Scanner ========================
+-- ========== 🐾 ANIMAL PODIUM SCANNER =====================
 -- =========================================================
 local function parsePrice(text)
     text = string.lower(text)
     local number = tonumber(text:match("[%d%.]+")) or 0
-    if text:find("k") then return number * 1000
-    elseif text:find("m") then return number * 1000000
-    elseif text:find("b") then return number * 1000000000
+    if text:find("k") then return number * 1_000
+    elseif text:find("m") then return number * 1_000_000
+    elseif text:find("b") then return number * 1_000_000_000
     end
     return number
 end
@@ -315,7 +315,7 @@ task.spawn(function()
 end)
 
 -- =========================================================
--- ========== Float Platform + UI ==========================
+-- ========== 🪂 FLOAT PLATFORM + UI =======================
 -- =========================================================
 local FLOAT_NAME = "PlayerFloatPlatform" .. tostring(math.random(1000, 9999))
 local PLATFORM_SIZE = Vector3.new(2, 0.2, 1.5)
@@ -385,7 +385,7 @@ local function increaseOffset(amount) floatOffset += amount end
 local function decreaseOffset(amount) floatOffset -= amount end
 
 -- =========================================================
--- ========== Anti-Ragdoll ================================
+-- ========== 🚫 ANTI-RAGDOLL ==============================
 -- =========================================================
 local PlayerModule = require(player:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule"))
 local Controls = PlayerModule:GetControls()
@@ -406,7 +406,7 @@ if player.Character then setupAntiRagdoll() end
 player.CharacterAdded:Connect(function() setupAntiRagdoll() stopFloating() end)
 
 -- =========================================================
--- ========== Float UI + Anti-Ragdoll Toggle ===============
+-- ========== 🧰 FLOAT UI + ANTI-RAGDOLL TOGGLE ============
 -- =========================================================
 local function createUI()
  local playerGui = player:WaitForChild("PlayerGui")
@@ -458,7 +458,7 @@ end
 createUI()
 
 -- =========================================================
--- ========== Main Heartbeat Loop ==========================
+-- ========== 🔁 MAIN HEARTBEAT LOOP =======================
 -- =========================================================
 RunService.Heartbeat:Connect(function()
     -- === Base countdown refresh ===

@@ -421,6 +421,7 @@ local function createUI()
  frame.BackgroundTransparency = 0.3
  frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
  frame.Active = true
+ frame.Draggable = true
  frame.Parent = screenGui
 
  local function makeButton(name, text, order)

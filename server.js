@@ -29,7 +29,7 @@ app.use(session({
 }));
 
 
-const { notFoundHandler, errorHandler } = require('./errorHandler');
+const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 //HELPME ⬆️⬆️(later) 
 
 

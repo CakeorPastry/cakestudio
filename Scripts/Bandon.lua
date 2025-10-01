@@ -1,4 +1,5 @@
 --[[ =========================================================
+TRIED
   🔥 MEGA SCRIPT: Base Alerts + Animal Scanner + Float Platform + Anti-Ragdoll
   Place in: StarterPlayerScripts
 ========================================================= ]]

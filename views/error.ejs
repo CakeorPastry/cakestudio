@@ -80,12 +80,6 @@ BODY {
 <P CLASS="minimessage">
 <%= minimessage %>
 </P>
-
-<% if (debugMessage) { %>
-  <P CLASS="minimessage" STYLE="margin-top: 25px; margin-bottom: 10px; color: #999; cursor: pointer;" ID="showError" ONCLICK="document.getElementById('debugBox').style.display = 'block'">SHOW ERROR</P>
-  <P CLASS="minimessage" ID="debugBox" STYLE="display: none; color: #ff4444;"><%= debugMessage %></P>
-<% } %>
-
 <A HREF="https://cakeorpastry.netlify.app" CLASS="goHome">
 GO HOME
 </A>

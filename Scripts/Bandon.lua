@@ -226,7 +226,7 @@ end
 
 -- ========== 🧍 Proximity Detection ==========
 local ProximityRange = 50
-local DangerRange = 50 -- doubled the original 25
+local DangerRange = 25 
 
 RunService.Heartbeat:Connect(function()
     if not CountdownLabel or not CountdownLabel:IsDescendantOf(game) then
@@ -250,7 +250,7 @@ RunService.Heartbeat:Connect(function()
         if not hrp then continue end
 
         local distToBase = (hrp.Position - basePos).Magnitude
-        local distToCountdown = (hrp.Position - countdownPos).Magnitude
+   
 
         if distToBase < ProximityRange then
             if canNotify(player.Name .. "_near", 5) then
@@ -263,7 +263,7 @@ RunService.Heartbeat:Connect(function()
             removeHighlight(char, "NearBaseHighlight")
         end
 
-        if distToCountdown < DangerRange then
+        if distToBase < DangerRange then
             if canNotify(player.Name .. "_danger", 5) then
                 notify("🚨 " .. player.Name .. " is at your base core!", "danger")
             end

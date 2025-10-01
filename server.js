@@ -346,7 +346,13 @@ app.get('*', cors(), (req, res) => {
     title: '404 - Cake\'s Studio',
     errorCode: '404',
     message: 'Page Not Found',
-    minimessage: 'The page you are looking for does not exist.'
+    minimessage: 'The page you are looking for does not exist.',
+    
+
+    image: "/assets/privateSussyBotError.jpg"
+
+
+
   });
 });
 

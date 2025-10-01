@@ -1,7 +1,7 @@
---[[ =========================================================
-  _ MEGA SCRIPT: Base Alerts + Animal Scanner + Float Platform + Anti-Ragdoll
-  Place in: StarterPlayerScripts
-========================================================= ]]
+-- =========================================================
+--  MEGA SCRIPT: Base Alerts + Animal Scanner + Float Platform + Anti-Ragdoll
+--  Place in: StarterPlayerScripts
+-- =========================================================
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -12,7 +12,7 @@ local LocalPlayer = Players.LocalPlayer
 local player = LocalPlayer
 
 -- =========================================================
--- ========== _ NOTIFICATION SYSTEM =======================
+-- ========== Notification System ==========================
 -- =========================================================
 local function createNotificationUI()
     local gui = Instance.new("ScreenGui")
@@ -73,7 +73,7 @@ local function notify(message, type)
 end
 
 -- =========================================================
--- ========== _ BASE DETECTION + COUNTDOWN =================
+-- ========== Base Detection + Countdown ===================
 -- =========================================================
 local function findBaseModel()
     local plotsFolder = Workspace:WaitForChild("Plots")
@@ -87,7 +87,7 @@ local function findBaseModel()
             end
             local baseModel = current
             if baseModel and baseModel:IsA("Model") and baseModel.Parent == plotsFolder then
-                notify("_ Found your base!", "success")
+                notify("✅ Found your base!", "success")
                 local purchases = baseModel:FindFirstChild("Purchases")
                 local plotBlock = purchases and purchases:FindFirstChild("PlotBlock")
                 local countdownLabel = nil
@@ -107,7 +107,7 @@ local function findBaseModel()
         end
     end
 
-    notify("_ Could not find your base!", "danger")
+    notify("❌ Could not find your base!", "danger")
     return nil, nil, nil
 end
 
@@ -201,14 +201,14 @@ local function removeBillboard(player, name)
 end
 
 -- =========================================================
--- ========== _ ANIMAL PODIUM SCANNER =====================
+-- ========== Animal Podium Scanner ========================
 -- =========================================================
 local function parsePrice(text)
     text = string.lower(text)
     local number = tonumber(text:match("[%d%.]+")) or 0
-    if text:find("k") then return number * 1_000
-    elseif text:find("m") then return number * 1_000_000
-    elseif text:find("b") then return number * 1_000_000_000
+    if text:find("k") then return number * 1000
+    elseif text:find("m") then return number * 1000000
+    elseif text:find("b") then return number * 1000000000
     end
     return number
 end
@@ -315,7 +315,7 @@ task.spawn(function()
 end)
 
 -- =========================================================
--- ========== _ FLOAT PLATFORM + UI =======================
+-- ========== Float Platform + UI ==========================
 -- =========================================================
 local FLOAT_NAME = "PlayerFloatPlatform" .. tostring(math.random(1000, 9999))
 local PLATFORM_SIZE = Vector3.new(2, 0.2, 1.5)
@@ -385,7 +385,7 @@ local function increaseOffset(amount) floatOffset += amount end
 local function decreaseOffset(amount) floatOffset -= amount end
 
 -- =========================================================
--- ========== _ ANTI-RAGDOLL ==============================
+-- ========== Anti-Ragdoll ================================
 -- =========================================================
 local PlayerModule = require(player:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule"))
 local Controls = PlayerModule:GetControls()
@@ -406,7 +406,7 @@ if player.Character then setupAntiRagdoll() end
 player.CharacterAdded:Connect(function() setupAntiRagdoll() stopFloating() end)
 
 -- =========================================================
--- ========== _ FLOAT UI + ANTI-RAGDOLL TOGGLE ============
+-- ========== Float UI + Anti-Ragdoll Toggle ===============
 -- =========================================================
 local function createUI()
  local playerGui = player:WaitForChild("PlayerGui")
@@ -458,7 +458,7 @@ end
 createUI()
 
 -- =========================================================
--- ========== _ MAIN HEARTBEAT LOOP =======================
+-- ========== Main Heartbeat Loop ==========================
 -- =========================================================
 RunService.Heartbeat:Connect(function()
     -- === Base countdown refresh ===
@@ -471,7 +471,7 @@ RunService.Heartbeat:Connect(function()
     if currentText ~= "" then
         CountdownDisplayLabel.Text = "Base Timer: " .. currentText
         if currentText == "1s" and lastCountdownText ~= "1s" then
-            notify("_ Your base is unlocked! Go lock it!", "danger")
+            notify("🔓 Your base is unlocked! Go lock it!", "danger")
         end
         lastCountdownText = currentText
     else
@@ -494,7 +494,7 @@ RunService.Heartbeat:Connect(function()
 
         if distToBase < 50 then
             if canNotify(plr.Name .. "_near", 5) then
-                notify("__ " .. plr.Name .. " is near your base!", "warning")
+                notify("⚠️ " .. plr.Name .. " is near your base!", "warning")
             end
             addBillboard(plr, "NEAR BASE", Color3.fromRGB(255, 255, 0), "NearBase")
             addHighlight(char, "NearBaseHighlight", Color3.fromRGB(255, 255, 0))
@@ -505,7 +505,7 @@ RunService.Heartbeat:Connect(function()
 
         if distToBase < 25 then
             if canNotify(plr.Name .. "_danger", 5) then
-                notify("_ " .. plr.Name .. " is at your base core!", "danger")
+                notify("🚨 " .. plr.Name .. " is at your base core!", "danger")
             end
             addBillboard(plr, "DANGER", Color3.fromRGB(255, 0, 0), "Danger")
             addHighlight(char, "DangerHighlight", Color3.fromRGB(255, 0, 0))

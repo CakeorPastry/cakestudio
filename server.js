@@ -32,6 +32,19 @@ app.use(session({
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 //HELPME ⬆️⬆️(later) 
 
+app.get("/NIKHIL", cors(), (req, res) => {
+
+
+  res.status(numericErrorCode).render('error', {
+    title: `NIKHIL - Cake's Studio`,
+    errorCode: "NIKHIL", 
+    message: "big", 
+    minimessage: "mini", 
+    image: "/assets/privateSussyBotError.jpg",
+   
+  });
+});
+
 
 
 process.env.YTDL_NO_UPDATE = "1";

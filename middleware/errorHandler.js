@@ -1,4 +1,4 @@
-const requestError = require('./auxiliary/requestError');
+const requestError = require('../auxiliary/requestError');
 
 // 404 Handler
 function notFoundHandler(req, res, next) {

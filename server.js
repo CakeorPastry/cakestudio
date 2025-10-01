@@ -294,6 +294,8 @@ app.get('/assets', cors(), (req, res) => {
      res.status(400).json({ error: 'Please provide a valid asset name.' });
 });
 
+/*
+
 app.get('/test-error', cors(), (req, res) => {
   res.render('error', {
     title: 'Test - Cake\'s Studio',
@@ -302,6 +304,9 @@ app.get('/test-error', cors(), (req, res) => {
     minimessage: 'Testing error.ejs rendering'
   });
 });
+
+FIXME
+*/
 
 app.get('/err', cors(), (req, res) => {
     console.log(LOL);

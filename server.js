@@ -325,10 +325,12 @@ app.get('/err', cors(), (req, res) => {
     console.log(LOL);
 });
 
+/*
 app.use(notFoundHandler); // Handles 404
 app.use(errorHandler); // Handles thrown errors
+*/
 
-/*
+
 app.use((err, req, res, next) => {
     console.error(err.stack); // Log the error details for debugging
     const message = 'Internal Server Error';
@@ -338,10 +340,12 @@ app.use((err, req, res, next) => {
         title: `${statusCode} - Cake\'s Studio`, 
         errorCode: statusCode,
         message: message,
-        minimessage: minimessage
+        minimessage: minimessage, 
+image: "/assetspprivateSussyBotError.jpg"
     });
 });
 
+/*
 const fs = require('fs');
 // const path = require('path'); // you need this for path.join, path.relative
 
@@ -363,6 +367,7 @@ app.get('/test', (req, res) => {
 
   res.json(walk(process.cwd())); // 👈 walk from CWD, not __dirname
 });
+*/
 
 app.get('*', cors(), (req, res) => {
   console.log(`Wildcard route triggered for URL: ${req.originalUrl}`);
@@ -380,6 +385,7 @@ app.get('*', cors(), (req, res) => {
   });
 });
 
+/*
  Old API_URL = "https://hercai.onrender.com/v3/hercai?question="
 */
 

@@ -1,93 +1,82 @@
-<HTML>
-<HEAD>
-<!-- META TAGS -->
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- FAVICON -->
-<LINK REL="icon" HREF="favicon.png" TYPE="image/png">
-<!-- STYLESHEETS -->
-<STYLE>
-BODY {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: black;
-    color: white;
-    text-align: center;
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- META TAGS -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- FAVICON -->
+    <link rel="icon" href="favicon.png" type="image/png">
 
+    <!-- STYLES -->
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: black;
+            color: white;
+            text-align: center;
+        }
 
-    border: 5px solid red;
+        .container {
+            max-width: 400px;
+            padding: 20px;
+        }
 
-}
+        .container img {
+            width: 250px;
+            position: relative;
+            top: 0; /* was -10px */
+        }
 
-.container {
-    max-width: 400px;
-    padding: 20px;
-}
+        .error-code {
+            font-size: 100px;
+            color: #ff0033;
+            margin: 0;
+        }
 
-.container img {
-    width: 250px;
-    position: relative;
-    top: -10px;
-}
+        .message {
+            font-size: 30px;
+            font-weight: bold;
+        }
 
-.error-code {
-    position: relative;
-    top: -50px;
-    font-size: 100px;
-    color: #ff0033;
-    margin: 0;
-}
+        .minimessage {
+            font-weight: bold;
+        }
 
-.message {
-    font-size: 30px;
-    font-weight: bold;
-}
+        .goHome {
+            background-color: rgb(0, 219, 95);
+            color: rgb(0, 46, 20);
+            padding: 15px 40px;
+            border: none;
+            border-radius: 5px;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+            margin: 10px 0;
+            text-decoration: none;
+        }
 
-.minimessage {
-    font-weight: bold;
-}
+        .goHome:hover {
+            background-color: #329a4a;
+        }
+    </style>
 
-.goHome {
-    background-color: rgb(0, 219, 95);
-    color: rgb(0, 46, 20);
-    padding: 15px 40px;
-    border: none;
-    border-radius: 5px;
-    font-size: 20px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
-    position: relative;
-    top: 10px;
-    margin: 10px 0;
-    text-decoration: none;
-}
-
-.goHome:hover {
-    background-color: #329a4a;
-}
-</STYLE>
-<!-- TITLE -->
-<TITLE><%= title %></TITLE>
-</HEAD>
-<BODY BGCOLOR="BLACK" TEXT="WHITE">
-<DIV CLASS="container">
-<H1 CLASS="error-code" ALIGN="CENTER"><%= errorCode %></H1>
-<IMG SRC="https://cakestudio.onrender.com/assets/privateSussyBot.jpg" ALT="<%= errorCode %>">
-<P CLASS="message">
-<%= message %>
-</P>
-<P CLASS="minimessage">
-<%= minimessage %>
-</P>
-<A HREF="https://cakeorpastry.netlify.app" CLASS="goHome">
-GO HOME
-</A>
-</DIV>
-</BODY>
-</HTML>
+    <title><%= title %></title>
+</head>
+<body>
+    <div class="container">
+        <h1 class="error-code"><%= errorCode %></h1>
+        <img src="https://cakestudio.onrender.com/assets/privateSussyBot.jpg" alt="<%= errorCode %>">
+        <p class="message"><%= message %></p>
+        <p class="minimessage"><%= minimessage %></p>
+        <a href="https://cakeorpastry.netlify.app" class="goHome">GO HOME</a>
+    </div>
+</body>
+</html>

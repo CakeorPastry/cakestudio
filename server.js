@@ -28,6 +28,12 @@ app.use(session({
     cookie: { secure: false }
 }));
 
+
+const { notFoundHandler, errorHandler } = require('./errorHandler');
+//HELPME ⬆️⬆️(later) 
+
+
+
 process.env.YTDL_NO_UPDATE = "1";
 
 // cookie: { secure: process.env.NODE_ENV === 'production' }
@@ -301,6 +307,10 @@ app.get('/err', cors(), (req, res) => {
     console.log(LOL);
 });
 
+app.use(notFoundHandler); // Handles 404
+app.use(errorHandler); // Handles thrown errors
+
+/*
 app.use((err, req, res, next) => {
     console.error(err.stack); // Log the error details for debugging
     const message = 'Internal Server Error';
@@ -315,7 +325,7 @@ app.use((err, req, res, next) => {
 });
 
 
-/*
+
 const fs = require('fs');
 // const path = require('path'); // you need this for path.join, path.relative
 
@@ -356,7 +366,8 @@ app.get('*', cors(), (req, res) => {
   });
 });
 
-// Old API_URL = "https://hercai.onrender.com/v3/hercai?question="
+ Old API_URL = "https://hercai.onrender.com/v3/hercai?question="
+*/
 
 
 app.listen(PORT, () => {

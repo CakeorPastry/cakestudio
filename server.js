@@ -35,7 +35,7 @@ const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 app.get("/NIKHIL", cors(), (req, res) => {
 
 
-  res.status(numericErrorCode).render('error', {
+  res.status(200).render('error', {
     title: `NIKHIL - Cake's Studio`,
     errorCode: "NIKHIL", 
     message: "big", 

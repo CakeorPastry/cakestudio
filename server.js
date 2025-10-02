@@ -47,7 +47,6 @@ app.get("/NIKHIL", cors(), (req, res) => {
     debugMessage: "Unexpected Manipur Nibba",
     image: "https://cakeorpastry.netlify.app/JenkyOhCLL/HT1.jpg"
   });
-}
 });
 
 

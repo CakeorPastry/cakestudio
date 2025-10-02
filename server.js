@@ -32,17 +32,20 @@ app.use(session({
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 //HELPME ⬆️⬆️(later) 
 
+
+const requestError = require('../auxiliary/requestError');
 app.get("/NIKHIL", cors(), (req, res) => {
 
 
-  res.status(200).render('error', {
-    title: `NIKHIL - Cake's Studio`,
-    errorCode: "NIKHIL", 
-    message: "big", 
-    minimessage: "mini", 
-    image: "/assets/privateSussyBotError.jpg",
-   
+  
+  requestError({
+    req,
+    res,
+    errorCode: 406,
+    debugMessage: "Unexpected Manipur Nibba",
+    image: "https://cakeorpastry.netlify.app/JenkyOhCLL/HT1.jpg"
   });
+}
 });
 
 

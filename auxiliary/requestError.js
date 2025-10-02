@@ -19,9 +19,11 @@ const errorDictionary = {
   }
 };
 
-function requestError({ req, res, errorCode = 500, message, miniMessage, image, debugMessage }) {
+function requestError({ req, res, errorCode = 500, title, message, miniMessage, image, debugMessage }) {
   const numericErrorCode = Number(errorCode) || 500;
   const errorDefaults = errorDictionary[numericErrorCode] || errorDictionary[500];
+
+  const resolvedTitle = title || `${numericErrorCode} - Cake's Studio`;
 
   const resolvedMessage = message || errorDefaults.message || errorDictionary[500].message;
   const resolvedMini = miniMessage || errorDefaults.miniMessage || errorDictionary[500].miniMessage;
@@ -30,7 +32,7 @@ function requestError({ req, res, errorCode = 500, message, miniMessage, image, 
   const resolvedImage = isValidImage ? image : errorDefaults.image || DEFAULT_IMAGE;
 
   res.status(numericErrorCode).render('error', {
-    title: `${numericErrorCode} - Cake's Studio`,
+    title: resolvedTitle,
     errorCode: numericErrorCode,
     message: resolvedMessage,
     minimessage: resolvedMini,

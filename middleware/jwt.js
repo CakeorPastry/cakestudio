@@ -35,3 +35,26 @@ module.exports = {
     signJWT,
     validateJWT
 };
+
+
+/* USAGE ON SERVER
+// server.js or app.js
+
+const express = require('express');
+const app = express();
+const { signToken, validateJWT } = require('./middleware/jwt');
+const restrictedCors = require('./middleware/restrictedCors'); // if you have this
+
+// Example endpoint using validateJWT middleware
+app.get('/api/auth/validatetoken', restrictedCors, validateJWT, (req, res) => {
+    res.json({ message: 'Token is valid', user: req.user });
+});
+
+// Example usage of signToken
+app.post('/api/auth/login', (req, res) => {
+    const user = { id: 123, name: 'John Doe' }; // Normally you'd get this from a DB after auth
+    const token = signToken(user, { expiresIn: '2h' });
+
+    res.json({ token });
+});
+*/

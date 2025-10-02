@@ -28,8 +28,8 @@ function requestError({ req, res, errorCode = 500, title, message, miniMessage, 
   const resolvedMessage = message || errorDefaults.message || errorDictionary[500].message;
   const resolvedMini = miniMessage || errorDefaults.miniMessage || errorDictionary[500].miniMessage;
 
-  const isValidImage = typeof image === 'string' && image.trim().length > 5 && image.includes('/');
-  const resolvedImage = isValidImage ? image : errorDefaults.image || DEFAULT_IMAGE;
+  const isValidImage = typeof image === 'string' && /\.(png|jpe?g|gif|webp|svg)$/.test(image.trim());
+  const resolvedImage = isValidImage ? image : DEFAULT_IMAGE;
 
   res.status(numericErrorCode).render('error', {
     title: resolvedTitle,

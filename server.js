@@ -45,7 +45,7 @@ app.get("/NIKHIL", cors(), (req, res) => {
     minimessage: "Sorry, you're not a mastermind. This is for testing purposes.", 
     errorCode: 406,
     debugMessage: "Unexpected Manipur Nibba",
-    image: "https://cakeorpastry.netlify.app/JenkyOhCLL/HT1.jpg"
+    image: ""
   });
 });
 

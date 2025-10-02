@@ -33,7 +33,7 @@ const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 //HELPME ⬆️⬆️(later) 
 
 
-const requestError = require('../auxiliary/requestError');
+const requestError = require('./auxiliary/requestError');
 app.get("/NIKHIL", cors(), (req, res) => {
 
 

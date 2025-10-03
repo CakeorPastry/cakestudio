@@ -5,6 +5,7 @@ function sanitize(text, defaultText, limit) {
     if (typeof text !== 'string') text = '';
 
     const originalText = text;
+    const defaultLimit = 29;
 
     // Step 1: Normalize Unicode string to 'NFKC' form
     // This converts characters like 'é' to a standard composed form
@@ -41,7 +42,7 @@ function sanitize(text, defaultText, limit) {
 
     // Step 8: Limit the length of the string
     // Ensure limit is a positive number, else default to 29
-    const maxLimit = typeof limit === 'number' && limit > 0 ? limit : 29;
+    const maxLimit = typeof limit === 'number' && limit > 0 ? limit : defaultLimit;
 
     // Truncate and add ellipsis if over limit
     if (text.length > maxLimit) {

@@ -158,3 +158,203 @@ Me to the above : He looked from behind to da front when I opened the door and a
 
 
 (TODO : PLS FIX) 
+
+
+DUMPED FROM NOTES (ON 1ST NOV, 2025) 
+Cache memory since acc got terminated. 
+
+
+9th May 2025 :
+gng so
+i) I kinda already forgot... I arrived late so didn't see much. So dad came to pick up early... 
+ii) So dad asked me if I should ask sir if I could join class 10 literature (ruzz class 10 btw js a reminder) and when we entered class back NAMAIMATH ruzz was coming out🥀 I looked at her but mf didn't look at me she was prolly talking with friends. 
+iii) Purple, Black Pants, Yes the kinda thick and lil bit square but mostly rectangle glasses yes finally saw it clearly cuz we walk past each other
+iv) Yes sir said I can join class 10 literature (starts before 20th May 2025) idk if ruzz will join tho  u gotta pay ₹1000 🥀
+V) So gng I came out , outside tuition campus looked to my left, saw ruzz about to go. 
+10th May 2025 :
+i) Ts sad kekma, I came late, didn't know if she already arrived or came late... Js stood in front of squid game gate after tuition, looked behind... And ruzz came out from squid game gate and not normal path... 
+ii) Wow we were forced to go outside tuition campus cuz some JCB construction work thingy
+iii) Ok she js left fast like this some sad checkmate gng 💔
+Ok purple shirt, with the very dark blue jacket 🥀
+ggs I think time to REALLY RESIGN.
+
+
+
+For 13th May 2025
+
+i) Tuition ends BEFORE 20th May, sir says he wanna end on 18th May. Funny thing sir called out some names who would join class 10 literature (I was in it) but he didn't call out ruzz... (She was absent) (on 12th May, 2025)
+ii) Namaimath went early for NOTHING yesterday. Ruzz arrived 4:38pm (her usual time) 
+Maroon hoodie... No glasses... 
+iii) After tuition I js stand in front of squid game gate and she walked past me with her friend and BRO ISTG I'M TALLER? NO WAY I'M TALLER IDK IF I WAS TWEAKING BUT I WAS TALLER BRO
+iv) Mg was like playing/moving around her ponytail while goin' towards her vehicle (guess what fucking Oscar said to this) 
+v) And she left boom.
+
+
+
+*Friday = Tuition
+Saturday = Tuition (last of the week) 
+Sunday-Monday = Holiday
+
+Comes on Friday and absent Saturday for +1 holiday*
+
+
+BRO KARI
+so gng
+i) It was 4:25pm, I saw ruzz going to the back today. Ok :
+𝗣𝗶𝗻𝗸 𝘀𝗵𝗶𝗿𝘁, 𝗯𝗹𝗮𝗰𝗸 𝗽𝗮𝗻𝘁𝘀
+ii) Ok namaimath there was a person entering the next house (that house is like, js outside where ruzz was sitting) and I looked at that person entering the house and I saw ruzz idk I think she saw me idk idk idk
+iii) Namaimath I was js standing outside tuition and one of the guy, (he is from night shift, changed into my shift, has same name as me 💔) he was asking me if that guy who yas yapping about giving him his notebook blah blah gave it to me and I said "No I didn't even understand what that mf said."
+iv) And while saying that shi ruzz came out and yk when smth "new" js comes in ur "vision" You "automatically" Do that right? Mf me and ruzz did that shi at the same time AND BRO ISTG RUZZ WAS WEARING SQUARE GLASSES (not rectangle nor circle) TODAY LIKE I DON'T THINK I WAS TWEAKING
+
+14th May, 2025
+i) So like I didn't see her today when I came she was prolly late. After tuition, I saw some guy sitting in the waiting shed, I already knew it's ruzz dad 😈 outside a maroon activa was there I already knew it was ruzz's 😈
+ii) Stood in front of squid game gate, ruzz didn't come out after long so I js got bored and decided to enter squid game gate cuz bored blah blah the moment I enter ruzz and ruzz dad comes out the squid game gate holy shit I did the "suddenly stop when ppl abt to hit each other while walking opposite direction" Mf looked and I also looked damn cooked (+1 Blunder) 
+iii) Ok BRO
+𝗬𝗘𝗟𝗟𝗢𝗪 𝗦𝗛𝗜𝗥𝗧 𝗜𝗡𝗦𝗜𝗗𝗘 𝗔𝗡𝗗 𝗧𝗛𝗘 𝗗𝗔𝗥𝗞 𝗕𝗟𝗨𝗘 𝗝𝗔𝗖𝗞𝗘𝗧 𝗢𝗡 𝗧𝗢𝗣 𝗔𝗡𝗗 
+𝗜𝗦𝗧𝗚 𝗜𝗦 𝗧𝗛𝗘 𝗚𝗟𝗔𝗦𝗦𝗘𝗦 𝗟𝗜𝗞𝗘 𝗛𝗘𝗥𝗘𝗜𝗠𝗔 𝗢𝗥 𝗪𝗔𝗦 𝗜 𝗧𝗪𝗘𝗔𝗞𝗜𝗡𝗚
+🥀
+𝗣𝗼𝗻𝘆𝘁𝗮𝗶𝗹
+𝗢𝗸 𝗯𝗹𝗮𝗰𝗸 𝘀𝗹𝗶𝗽𝗽𝗲𝗿𝘀
+Ok mf gone ts the end gng tuition ends less than 5 days. Idk if ruzz will join literature. 
+It's the end...
+
+15th May 2025
+i) Arrived early, no ruzz alr. She wasn't absent, I don't know what time she arrived. When sir brought homework, I turned around to see if it was ruzz, took the chance js looked at her bench she was there :
+𝗣𝗶𝗻𝗸 𝘀𝗵𝗶𝗿𝘁
+ii) Okay after tuition I js stood there... She came blah blah nothing special today... I can't tell if her glasses were the rectangular or the circular... 
+iii) Ruzz and I left at the same time... She put on her pink helmet, gone... 
+This is the end fr. Tuition ends in like 3 days...
+
+
+16th May 2025
+i) so gng I js turned around to see if sir was coming boom ruzz was there didn't even see her coming gng
+ii) after tuition, standing infront of squid game gate, outside tuition gate her dad was waiting boom mf she and her friend walked past me right? 
+Wow those who js stood still a lil away from me and said something in a voice... Like it's like that one fucking voice "eidi homework twrkeeeeee 🤭" Yk ts??? Kinda like that I'm sure  near me, stood there, then left. 
+iii) She was waiting for her friend's, those who know ruzz dad saying "lak o" 😈
+So yk the lil thingy at the end of bags? Below the strap? Those who know ruzz playing with those straps, two hands one strap (ts name so ligma, two hands one strap hairiye 🥀)
+iv) Ok
+Pink shirt, black pants, THE BLACK SLIPPERS 🥀
+Bro I still don't understand her glasses shape I'm scared to look in th eyes, looks circle, looks like Hereima I'm confused 💔
+v) Ok those who dad came, left same time. Vro
+I don't even get the
+"Jump scare oo scared heart beat" Anymore I get the
+Sudden "sad strike feeling thing in the heart" Thingy when I see her 😔✌💔
+The typa sad strike thigny when u hear some bad news/rejecyed decision thingy very sad the heart thingy that js makes u wanna drop wtv u holding. Btw golden necklace, the typa necklace that's like... Very thin and small stones? (Not like us, ours is the ⛓️looking one right?)
+
+17thMay=ab
+18thMay=Sunday
+19thMay=Idk💔
+20thMay=ab...
+21st May 2025
+i) Ok I js go by vehicle, then namaimath I saw that friend of ruzz. That friend whom she comes out after tuition , sit together yk? Namaimath those who ts kekma but I js thought ruzz not gonna join literature
+ii) Bro when I reached tuition gate NAMAIMATH RUZZ DAD WAS STANDING NEAR HIS VEHICLE, OUTSIDE TUITION CAMPUS DONE BRO 
+iii) Ok didn't look cuz new and few ppl only cuz class 10 , all class 9 gone
+iv) Those who some kekma Josephite asked me aren't I class 9? I said I'm joining class 10 literature
+v) Ok dad came very early (for giving admission money, class 10 literature) and those who stayed near sir, looked in girls bench, no one was there, looked at the last rows, SAW RUZZ AND HER FRIEND LEAVING THROUGH THE BACK some kekma. Ok I came out after giving money, ruzz js walkin towards me and I walk towards exit. Me and her dad vehicle parked next to each other. 
+Ok
+𝗣𝗶𝗻𝗸 𝘀𝗵𝗶𝗿𝘁, 𝗕𝗹𝗮𝗰𝗸 𝗣𝗮𝗻𝘁𝘀
+Still don't know glasses, those who scared to look
+Lol ts kekma.
+22nd, 23rd = Bandh
+24th=ab
+25th=Sunday
+26th May 2025:
+i) Js sat and suddenly saw someone coming in, and then enter the squid game gate (Can see it from my seat) , that person's shirt was bright pink and light reflecting off her glasses, boom already knew it was Ruzz. 
+ii) Nothing happened js came out stood in front of squid game gate while dad gari mamai leithokpa Ruzz walked past and I js looked down, and looked up a bit (yk ts right) and I'm still tweaking if she's taller than me or not bru. Bru idk if she was looking at me (I forgot) but yes she looked like those "No emotions on the face, but looks like they wanna kill you"
+iii) BRO HER SLIPPERS NOT THE BLACK ONES, IT'S SIMILAR, BUT IT'S KINDA
+white/pink/skin color
+AND BRO YK THE SLIPPERS FOR GIRLS WHERE THERE'S A BIG "🎀" THINGY SLIPPERS YES BRO SO KEKMA 💗💖
+27th May 2025:
+i) So my first bench was not in the class (moved somewhere) so I js waited outside a bit and saw Ruzz enter squid game gate ok I js went in and asked if I could sit with the 2nd bench guy yes I sat. 
+ii) Lol dad didn't come very early I js stood in front of squid game gate, and ruzz's dad was parked all the way to the other side and damn I couldn't look because Ruzz was looking somewhere towards the opposite direction thingy (ok diagram below) 
+iii) Ok she was smiling and shi 😔 while going to her vehicle, but when driving past? Naww looked like the "no emotion but looks like wanna kill smn"
+iv) Pink shirt, blue pants, and glasses are still confusing, let's js say "It's like Hereima's" And same shoes as yesterday
+28th May 2025:
+i) Ok I reached early, no ruzz. When sir came I looked behind, and saw a lil purple shirt with some design on, im sure that was ruzz... Didn't see her come tho today
+ii) Ok after tuition I got picked up very early so didn't see, this is sad kekma.
+29th May 2025:
+i) Ok bro didn't see her coming tuition finished and I just sat in the waiting shed and there mf came out, 
+Purple shirt, smiling, with those glasses reflecting light. 
+ii) It was raining but mf js went and I also went and I looked to my left, after coming out, and saw her in the distance, with that purple shirt, with someone holding an umbrella for her. 
+Ok nothing much
+***
+"I thought she wasn't coming cuz it was raining. 
+But she did, didn't know she came in tho. 
+Damn my smile came back instantly when I saw her coming out of the classroom, purple shirt, those glasses reflecting light, and a friend accompanying her as usual, smiling, joyful."
+
+This is the real Shakespeare writing ✍️
+
+30th May 2025: Absent... (?)
+31st May 2025: Holiday;Flood
+1st June 2025: Sunday
+
+
+{
+:gsub() 
+
+1. MotherKnows{Purple:Class}
+2. CircularMaroonVanHOW
+3. IsThatTheNH?{Pink:Class}
+4. I forgot what happened here {Pink}
+5. WaitingShed{Purple:Beside}
+}
+
+2-7th June:absent
+(One of these days, "the maroon unknown blah blah" Btw)
+8thJune:Sunday
+9th10thJune:Bandh
++++
+16thJune:Yellow(first)! 
+17th:Surgery
+18th:Holiday cuz June18
+19th:Bright white;makeup
+20th:Absent
+21st:Skthu ruzz
+Red shirt (New, texture also new)
+Black long pants
+The slippers r the "pinkish-skin colorish" One
+And a black mask
+No glasses
+22nd:Sunday
+
+23June
+"
+Arrived approx: 4:10pm
+Yellow shirt, no glasses, black mask, black pants, slippers Im sure it's the pink-skin color one. 
+I don't get some scared-excited stuff when I look at her/see her anymore, I js feel... sad
+
+Btw ruzz era really ending soon 4/7 chapters 
+(Sir finished 2 today)
+/Ruzz way my way\ Road
+New bag"
+24th:FakeHoliday
+25th:Holiday
+26th=Yesterday{BackToGlowUp}
+27th=Holiday(Kang) 
+
+
+28th: TheEnd (tomorrow)
+28thJune:
+i) Ok I saw her arrive at 4:30pm... Black mask and them big glasses alr
+ii) Dad waited whole tuition... Yk what that means, no chance to look. 
+iii) Those who know sir said "noi hannadagi yaoba knna hotnaroko" And those who said to me "ng di fei" 💗💐
+iv) 𝗣𝗶𝗻𝗸 𝘀𝗵𝗶𝗿𝘁, 𝗯𝗹𝘂𝗲 𝗷𝗲𝗮𝗻𝘀 𝗜'𝗺 𝘀𝘂𝗿𝗲 𝗮𝗻𝗱 𝘀𝗹𝗶𝗽𝗽𝗲𝗿𝘀 𝗜 𝗰𝗼𝘂𝗹𝗱𝗻'𝘁 𝘀𝗲𝗲. Let's js say the glasses r like yours alr? 
+v) After tuition ok she took long to come out I couldn't look ppl were blocking her (like couldn't see cuz ppl were near her, blocking me) I saw her for like less than a second, she was smiling, no mask after tuition tho lol, while talking to her friends alr? I couldn't look. I was scared... and... 
+---
+The End
+---
+
+Tuition ended around 5:22pm;cri;
+
+3-5th(approx): started forgor 
+6th:Just the pink now;
+
+Jul13
+3:22PM
+(last update);
+
+9th Aug = 0.1
+10th Aug = meh 5? 
+
+
+

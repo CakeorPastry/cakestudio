@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Final Exam Notes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: #0d0d0d;
+            font-family: Arial, sans-serif;
+            color: white;
+            overflow-x: hidden;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 25px;
+            font-size: 2.3rem;
+            font-weight: 700;
+            color: #eaeaea;
+        }
+
+        .btn-container {
+            margin-top: 35px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .dl-btn {
+            width: 260px;
+            padding: 14px;
+            border-radius: 7px;
+            border: none;
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: #1c1c1c;
+            color: #fff;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 8px #000;
+        }
+
+        /* Disable button styling - pure black and no hover effects */
+        .dl-btn:disabled {
+            background: black;
+            cursor: not-allowed;
+        }
+
+        .dl-btn:hover {
+            background: #2b2b2b;
+        }
+
+        #captchaBox {
+            width: 330px;
+            margin: 25px auto;
+            padding: 18px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            display: none;
+            box-shadow: 0 0 12px #000;
+        }
+
+        .cf-like {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .fake-checkbox {
+            width: 30px;
+            height: 30px;
+            border: 2px solid #6b6b6b;
+            border-radius: 4px;
+            cursor: pointer;
+            position: relative;
+            background: #111;
+        }
+
+        .loading-spinner {
+            border: 3px solid #444;
+            border-top: 3px solid #09f;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+            top: 0; left: 0;
+            right: 0; bottom: 0;
+            margin: auto;
+            display: none;
+        }
+
+        .checkmark {
+            color: #00ff6a;
+            font-size: 22px;
+            position: absolute;
+            top: -4px; right: 4px;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% {transform: rotate(0deg);}
+            100% {transform: rotate(360deg);}
+        }
+
+        #captchaText {
+            margin-top: 12px;
+            font-size: 0.95rem;
+            color: red;
+        }
+
+        .logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            opacity: 0.85;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Final Exam Notes</h1>
+
+<div id="captchaBox">
+    <div class="cf-like">
+        <div class="fake-checkbox" id="verifyBox">
+            <div class="loading-spinner" id="spinner"></div>
+            <div class="checkmark" id="checkmark">✔</div>
+        </div>
+        <div style="text-align:left; margin-left:10px;">
+            <div>Verify you are human</div>
+        </div>
+        <b class="logo">🎂</b>
+    </div>
+    <div id="captchaText">Complete captcha to download.</div>
+</div>
+
+<div class="btn-container">
+    <button class="dl-btn" id="civicsBtn" onclick="startCaptcha('civics')">📘 Civics</button>
+    <button class="dl-btn" id="historyBtn" onclick="startCaptcha('history')">📕 History</button>
+    <button class="dl-btn" id="economicsBtn" onclick="startCaptcha('economics')">📗 Economics</button>
+</div>
+
+<img src="/TEMPORARY/ThoseWhoKnow.png" style="margin: 50px; height: 150px;width: 150px;">
+
+<script>
+// =========================
+// EASY CHANGEABLE PATHS LIST
+// =========================
+const paths = {
+    civics: "/TEMPORARY/L.txt",
+    history: "/TEMPORARY/L.txt",
+    economics: "/TEMPORARY/L.txt",
+    sound1: "/TEMPORARY/Angaoba.mp3",  // This is the sound when captcha starts
+    sound2: "/TEMPORARY/Crazy.mp3", // Updated: sound when download starts
+};
+
+// =========================
+// INTERNAL STATE
+// =========================
+let activeDownload = null;
+let captchaPassed = false;
+let buttonsDisabled = false; // Track if buttons should be disabled after captcha starts
+
+// =========================
+// FAKE SCARY URL GENERATOR
+// =========================
+function generateFakeURL() {
+    const words = ["src", "examFile", "secure", "proto", "cfShield", "gateway", "nodeX", "enclave", "hash", "asRtqop","axism"];
+    const pick = () => words[Math.floor(Math.random() * words.length)];
+
+    const makeHUID = () =>
+        Math.floor(Math.random() * 1e14).toString(36) + "-" +
+        Math.floor(Math.random() * 1e14).toString(36);
+
+    const params = new URLSearchParams({
+        id: "finalExam",
+        session: makeHUID(),
+        cf_id: makeHUID(),
+        verifyToken: makeHUID(),
+        cloudTrack: makeHUID(),
+        status: "pending"
+    });
+
+    return `/${pick()}/${pick()}/${pick()}/cf_gate/${pick()}?${params.toString()}`;
+}
+
+// =========================
+// START CAPTCHA FLOW
+// =========================
+function startCaptcha(type) {
+    if (buttonsDisabled || captchaPassed) return;  // Prevent re-triggering captcha
+
+    activeDownload = type;
+    captchaPassed = false;
+
+    // Update scary fake URL
+    history.pushState({}, "", generateFakeURL());
+
+    // Show captcha
+    document.getElementById("captchaBox").style.display = "block";
+    document.getElementById("captchaText").style.color = "red";
+    document.getElementById("captchaText").textContent = "Complete captcha to download.";
+
+    // Reset animations
+    document.getElementById("spinner").style.display = "none";
+    document.getElementById("checkmark").style.display = "none";
+
+    // Play start sound
+    new Audio(paths.sound1).play();
+
+    // Disable buttons once captcha starts
+    disableButtons(true);
+}
+
+function disableButtons(x) {
+    const buttons = document.querySelectorAll(".dl-btn");
+    buttons.forEach(btn => btn.disabled = x);
+    buttonsDisabled = x;
+}
+
+document.getElementById("verifyBox").addEventListener("click", function () {
+    if (captchaPassed) return;
+    
+    new Audio(paths.sound2).play();
+
+    const spinner = document.getElementById("spinner");
+    const checkmark = document.getElementById("checkmark");
+
+    // Show spinner when captcha starts
+    spinner.style.display = "block";
+
+    // Generate a random number between 1000 and 10000 for delay
+    const randomNumber = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+
+    // Disable all download buttons during captcha
+    disableButtons(true);
+
+    // Handle spinner and checkmark display
+    setTimeout(() => {
+        spinner.style.display = "none";
+        checkmark.style.display = "block";
+        captchaPassed = true;
+
+        // Change the text after verification
+        document.getElementById("captchaText").style.color = "lime";
+        document.getElementById("captchaText").textContent = "Verified! You may download now.";
+
+        // Enable buttons after captcha finishes
+        disableButtons(false);
+
+        // Update URL with a fake verification status
+        const oldURL = new URL(window.location.href);
+        oldURL.searchParams.set("status", "verified");
+        history.pushState({}, "", oldURL.toString());
+    }, randomNumber);
+});
+
+// =========================
+// DOWNLOAD WHEN VERIFIED
+// =========================
+document.querySelectorAll(".dl-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+        if (!captchaPassed || !activeDownload) return; // Prevent download if not verified or no file selected
+
+        const file = paths[activeDownload];
+        const link = document.createElement("a");
+        link.href = file;
+        link.download = file.split("/").pop();
+        link.click();
+
+        // Play success sound when download starts
+        new Audio(paths.sound2).play();
+    });
+});
+</script>
+</body>
+</html>

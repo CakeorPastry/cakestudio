@@ -152,16 +152,20 @@
 
 <img src="/TEMPORARY/ThoseWhoKnow.png" style="margin: 50px; height: 150px;width: 150px;">
 
+<audio id="sound1" preload hidden loop src="/TEMPORARY/Angaoba.mp3"></audio>
+
+<audio id="sound2" preload hidden loop src="/TEMPORARY/Crazy.mp3"></audio>
+
 <script>
 // =========================
 // EASY CHANGEABLE PATHS LIST
 // =========================
+const sound1 = document.getElementById("sound1");
+const sound2 = document.getElementById("sound2");
 const paths = {
     civics: "/TEMPORARY/L.txt",
     history: "/TEMPORARY/L.txt",
-    economics: "/TEMPORARY/L.txt",
-    sound1: "/TEMPORARY/Angaoba.mp3",  // This is the sound when captcha starts
-    sound2: "/TEMPORARY/Crazy.mp3", // Updated: sound when download starts
+    economics: "/TEMPORARY/L.txt"
 };
 
 // =========================
@@ -216,7 +220,7 @@ function startCaptcha(type) {
     document.getElementById("checkmark").style.display = "none";
 
     // Play start sound
-    new Audio(paths.sound1).play();
+    sound1.play();
 
     // Disable buttons once captcha starts
     disableButtons(true);
@@ -231,7 +235,7 @@ function disableButtons(x) {
 document.getElementById("verifyBox").addEventListener("click", function () {
     if (captchaPassed) return;
     
-    new Audio(paths.sound2).play();
+    sound2.play();
 
     const spinner = document.getElementById("spinner");
     const checkmark = document.getElementById("checkmark");
@@ -279,7 +283,7 @@ document.querySelectorAll(".dl-btn").forEach(btn => {
         link.click();
 
         // Play success sound when download starts
-        new Audio(paths.sound2).play();
+        sound2.play();
     });
 });
 </script>

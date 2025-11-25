@@ -49,7 +49,6 @@
             box-shadow: 0 0 8px #000;
         }
 
-        /* Disable button styling - pure black and no hover effects */
         .dl-btn:disabled {
             background: black;
             cursor: not-allowed;
@@ -145,147 +144,108 @@
 </div>
 
 <div class="btn-container">
-    <button class="dl-btn" id="civicsBtn" onclick="startCaptcha('civics')">📘 Civics</button>
-    <button class="dl-btn" id="historyBtn1" onclick="startCaptcha('history1')">📕 History 1</button>
-    <button class="dl-btn" id="historyBtn2" onclick="startCaptcha('history2')">📕 History 2</button>
-
-    <button class="dl-btn" id="economicsBtn" onclick="startCaptcha('economics')">📗 Economics</button>
+    <button class="dl-btn" data-file="civics">📘 Civics</button>
+    <button class="dl-btn" data-file="history1">📕 History 1</button>
+    <button class="dl-btn" data-file="history2">📕 History 2</button>
+    <button class="dl-btn" data-file="economics">📗 Economics</button>
 </div>
 
 <img src="/TEMPORARY/ThoseWhoKnow.png" style="margin: 50px; height: 150px;width: 150px;">
 
 <audio id="sound1" preload hidden src="/TEMPORARY/Angaoba.mp3"></audio>
-
 <audio id="sound2" preload hidden src="/TEMPORARY/Crazy.mp3"></audio>
 
 <script>
 // =========================
-// EASY CHANGEABLE PATHS LIST
+// FILE PATHS
 // =========================
 const sound1 = document.getElementById("sound1");
 const sound2 = document.getElementById("sound2");
+
 const paths = {
     civics: "/TEMPORARY/CivicsFinal2025.pdf",
     economics: "/TEMPORARY/EconomicsFinal2025.pdf",
-    history1: "/TEMPORARY/HistoryFinal2025(1)", 
-    history2: "/TEMPORARY/HistoryFinal2025(2)"
+    history1: "/TEMPORARY/HistoryFinal2025(1).pdf",
+    history2: "/TEMPORARY/HistoryFinal2025(2).pdf"
 };
 
 // =========================
-// INTERNAL STATE
+// STATE
 // =========================
 let activeDownload = null;
 let captchaPassed = false;
-let buttonsDisabled = false; // Track if buttons should be disabled after captcha starts
 
 // =========================
-// FAKE SCARY URL GENERATOR
+// START CAPTCHA (NO TYPE HERE)
 // =========================
-function generateFakeURL() {
-    const words = ["src", "examFile", "secure", "proto", "cfShield", "gateway", "nodeX", "enclave", "hash", "asRtqop","axism"];
-    const pick = () => words[Math.floor(Math.random() * words.length)];
-
-    const makeHUID = () =>
-        Math.floor(Math.random() * 1e14).toString(36) + "-" +
-        Math.floor(Math.random() * 1e14).toString(36);
-
-    const params = new URLSearchParams({
-        id: "finalExam",
-        session: makeHUID(),
-        cf_id: makeHUID(),
-        verifyToken: makeHUID(),
-        cloudTrack: makeHUID(),
-        status: "pending"
-    });
-
-    return `/${pick()}/${pick()}/${pick()}/cf_gate/${pick()}?${params.toString()}`;
-}
-
-// =========================
-// START CAPTCHA FLOW
-// =========================
-function startCaptcha(type) {
-    if (buttonsDisabled || captchaPassed) return;  // Prevent re-triggering captcha
-
-    activeDownload = type;
-    captchaPassed = false;
-
-    // Update scary fake URL
-    history.pushState({}, "", generateFakeURL());
-
-    // Show captcha
+function startCaptcha() {
     document.getElementById("captchaBox").style.display = "block";
-    document.getElementById("captchaText").style.color = "red";
     document.getElementById("captchaText").textContent = "Complete captcha to download.";
+    document.getElementById("captchaText").style.color = "red";
 
-    // Reset animations
     document.getElementById("spinner").style.display = "none";
     document.getElementById("checkmark").style.display = "none";
 
-    // Play start sound
     sound1.play();
 
-    // Disable buttons once captcha starts
     disableButtons(true);
 }
 
 function disableButtons(x) {
-    const buttons = document.querySelectorAll(".dl-btn");
-    buttons.forEach(btn => btn.disabled = x);
-    buttonsDisabled = x;
+    document.querySelectorAll(".dl-btn").forEach(btn => btn.disabled = x);
 }
 
-document.getElementById("verifyBox").addEventListener("click", function () {
+// =========================
+// CAPTCHA CLICK
+// =========================
+document.getElementById("verifyBox").addEventListener("click", () => {
     if (captchaPassed) return;
-    
+
     sound2.play();
 
     const spinner = document.getElementById("spinner");
     const checkmark = document.getElementById("checkmark");
 
-    // Show spinner when captcha starts
     spinner.style.display = "block";
 
-    // Generate a random number between 1000 and 10000 for delay
-    const randomNumber = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
+    const delay = Math.floor(Math.random() * (10000 - 1000 + 1)) + 1000;
 
-    // Disable all download buttons during captcha
     disableButtons(true);
 
-    // Handle spinner and checkmark display
     setTimeout(() => {
         spinner.style.display = "none";
         checkmark.style.display = "block";
+
         captchaPassed = true;
 
-        // Change the text after verification
         document.getElementById("captchaText").style.color = "lime";
         document.getElementById("captchaText").textContent = "Verified! You may download now.";
 
-        // Enable buttons after captcha finishes
         disableButtons(false);
-
-        // Update URL with a fake verification status
-        const oldURL = new URL(window.location.href);
-        oldURL.searchParams.set("status", "verified");
-        history.pushState({}, "", oldURL.toString());
-    }, randomNumber);
+    }, delay);
 });
 
 // =========================
-// DOWNLOAD WHEN VERIFIED
+// BUTTON CLICK LOGIC
 // =========================
 document.querySelectorAll(".dl-btn").forEach(btn => {
     btn.addEventListener("click", () => {
-        if (!captchaPassed || !activeDownload) return; // Prevent download if not verified or no file selected
+        const type = btn.dataset.file;
 
-        const file = paths[activeDownload];
-        const link = document.createElement("a");
-        link.href = file;
-        link.download = file.split("/").pop();
-        link.click();
+        // If captcha not yet done → start captcha for THIS file
+        if (!captchaPassed) {
+            activeDownload = type;
+            startCaptcha();
+            return;
+        }
 
-        // Play success sound when download starts
+        // Already verified → download the clicked file
+        const file = paths[type];
+        const a = document.createElement("a");
+        a.href = file;
+        a.download = file.split("/").pop();
+        a.click();
+
         sound2.play();
     });
 });

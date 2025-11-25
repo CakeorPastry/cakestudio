@@ -156,6 +156,56 @@
 <audio id="sound2" preload hidden src="/TEMPORARY/Crazy.mp3"></audio>
 
 <script>
+    // ---- Deep Nested Scary URL Mutator ----
+(function nestedScaryURL() {
+    const randHex = () => Math.random().toString(16).slice(2, 10);
+    const randInt = max => Math.floor(Math.random() * max);
+
+    const segments = [
+        "sys", "core", "proc", "mem", "trace", "verify", "decode",
+        "panic", "fault", "root", "kernel", "stack", "overflow",
+        "inject", "heap", "ghost", "shadow", "corrupt"
+    ];
+
+    function randomSegment() {
+        return segments[randInt(segments.length)];
+    }
+
+    function buildNestedPath(depth = 3 + randInt(3)) {
+        // depth 3–5 levels like /a/b/c/d
+        let path = "";
+        for (let i = 0; i < depth; i++) {
+            path += "/" + randomSegment() + "-" + randHex();
+        }
+        return path;
+    }
+
+    function buildQueryParams(count = 3 + randInt(5)) {
+        // 3–7 random params
+        const paramKeys = ["id", "sig", "chk", "seq", "ref", "hash", "ptr", "block", "err"];
+        let params = "?";
+        for (let i = 0; i < count; i++) {
+            const key = paramKeys[randInt(paramKeys.length)];
+            const val = randHex() + randInt(999999);
+            params += `${key}=${val}&`;
+        }
+        return params.slice(0, -1); // remove last &
+    }
+
+    function mutate() {
+        const newURL = buildNestedPath() + buildQueryParams();
+        history.pushState({}, "", newURL);
+
+        // Repeat every 500–1000ms
+        setTimeout(mutate, 500 + Math.random() * 500);
+    }
+
+    // Trigger only if starting on /x
+    if (location.pathname === "/x" || location.pathname === "/x/") {
+        mutate();
+    }
+})();
+
 // =========================
 // FILE PATHS
 // =========================

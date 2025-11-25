@@ -200,8 +200,8 @@
         setTimeout(mutate, 500 + Math.random() * 500);
     }
 
-    // Trigger only if starting on /x
-    if (location.pathname === "/x" || location.pathname === "/x/") {
+    // Trigger only if starting on /x <--- bug , fixed. 
+    if (5==5) {
         mutate();
     }
 })();

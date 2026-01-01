@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 function signJWT(payload, options = {}) {
-    const secret = process.env.JWT_SECRETZZZ;
+    const secret = process.env.JWT_SECRET;
 
     if (!secret) {
         throw new Error('JWT_SECRET is not defined');

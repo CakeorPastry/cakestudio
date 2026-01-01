@@ -55,3 +55,5 @@ function sanitize(text, defaultText, limit) {
 
     return text;
 }
+
+module.exports = sanitize;

@@ -1,12 +1,7 @@
 const express = require('express');
-const cors = require('cors');
 require('dotenv').config();
-const fetch = require('node-fetch');
-const jwt = require('jsonwebtoken');
 const path = require('path');
-const unidecode = require('unidecode');
 const favicon = require('serve-favicon');
-const rateLimit = require('express-rate-limit');
 const session = require('express-session');
 
 const app = express();
@@ -28,372 +23,63 @@ app.use(session({
     cookie: { secure: false }
 }));
 
+// Environment config
+process.env.YTDL_NO_UPDATE = "1";
 
+// Global CORS middleware
+const restrictedCors = require('./middleware/cors');
+app.use(restrictedCors());
+
+// Error handlers
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
-//HELPME ⬆️⬆️(later) 
 
-
+// Utilities
 const requestError = require('./auxiliary/requestError');
-app.get("/NIKHIL", cors(), (req, res) => {
 
+// Route imports
+const ytRoutes = require('./routes/yt');
+const authRoutes = require('./routes/auth');
+const apiRoutes = require('./routes/api');
 
-  
+// Root/test routes
+app.get("/NIKHIL", (req, res) => {
   requestError({
     req,
     res,
-    message: "NOT ACCEPTABLE 💀", 
-    minimessage: "Sorry, you're not a mastermind. This is for testing purposes.", 
+    message: "NOT ACCEPTABLE 💀",
+    minimessage: "Sorry, you're not a mastermind. This is for testing purposes.",
     errorCode: 406,
     debugMessage: "Unexpected Manipur Nibba",
     image: ""
   });
 });
 
-
-
-process.env.YTDL_NO_UPDATE = "1";
-
-// cookie: { secure: process.env.NODE_ENV === 'production' }
-
-const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
-
-function restrictedCors(req, res, next) {
-    const origin = req.get('origin');
-    if (allowedOrigins.includes(origin)) {
-        cors()(req, res, next);
-    } else {
-        console.log(`Blocked request from origin: ${origin}`);
-        res.status(403).json({ error: 'CORS Error: This origin is not allowed by CORS policy.' });
-    }
-}
-
-const ytRoutes = require("./routes/yt");
-
-app.use("/api/yt", cors(), ytRoutes); 
-// All YouTube API under /api/yt
-
-function sanitizeUsername(username) {
-    // Store the original username for logging
-    const originalUsername = username;
-
-    // Step 1: Normalize and remove diacritical marks
-    username = username.normalize('NFKC').replace(/[\u0300-\u036f]/g, '');
-
-    // Step 2: Remove unsupported Unicode ranges (e.g., emojis, symbols)
-    username = username.replace(/[\u2000-\u2BFF\u3000-\uD7FF\uE000-\uF8FF\uFFF0-\uFFFF]/g, '');
-
-    // Step 3: Apply unidecode to remove special Unicode characters
-    username = unidecode(username);
-
-    // Step 4: Replace duplicate spaces with a single space
-    username = username.replace(/\s+/g, ' ');
-
-    // Step 5: Final cleanup to allow only alphanumeric characters and spaces
-    username = username.replace(/[^A-Za-z0-9 ]/g, '');
-
-    // Step 6: Trim leading and trailing spaces
-    username = username.trim();
-
-    // Log original and sanitized usernames
-    console.log(`Original: "${originalUsername}",
-Sanitized: "${username}"`);
-
-    if (username == '') {
-    username = "Empty Name";
-}
-
-    if (username.length > 29) {
-    username = username.slice(0, 29) + '...';
-}
-
-    return username;
-}
-
-function validateJWT(req, res, next) {
-    const token = req.query.token;
-
-    if (!token) {
-        return res.status(403).json({ error: 'Token is required for authentication' });
-    }
-
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-        if (err) {
-console.error(`Failed to verify JWT. 
-Error : ${err}
-Decoded JWT : ${decoded}
-Token : ${token}`)
-            return res.status(401).json({ error: 'Invalid or expired token' });
-        }
-        req.user = decoded;
-        next();
-    });
-}
-
-app.get('/', cors(), (req, res) => {
+app.get('/', (req, res) => {
     res.status(200).json({ error: 'Nice try diddy.' });
 });
 
-app.get('/api', cors(), (req, res) => {
+app.get('/api', (req, res) => {
     res.status(400).json({ error: 'Please provide a valid API endpoint.' });
 });
 
-const decancerLimiter = rateLimit({
-    windowMs: 10 * 1000, // 10 seconds
-    max: 10, // 10 requests per 10 seconds
-    message: { error: 'Too many requests. Please wait a few seconds.' },
-});
-
-app.get('/api/decancer', cors(), decancerLimiter, (req, res) => {
-    const username = req.query.username;
-
-    if (!username) {
-        return res.status(400).json({ error: 'Username parameter is required.' });
-    }
-
-    const sanitizedUsername = sanitizeUsername(username);
-    res.json({ username: sanitizedUsername });
-});
-
-const dehoistLimiter = rateLimit({
-    windowMs: 10 * 1000, // 10 seconds
-    max: 5, // 2 requests per 10 seconds
-    message: { error: 'Too many requests. Please wait a few seconds.' },
-});
-
-app.get('/api/dehoist', cors(), dehoistLimiter, (req, res) => {
-    const queryParams = req.query;
-
-    if (Object.keys(queryParams).length === 0) {
-        return res.status(400).json({ error: 'At least one username parameter is required.' });
-    }
-
-    const sanitizedUsernames = {};
-
-    for (const [key, value] of Object.entries(queryParams)) {
-        // Handle array values by joining them into a single string
-        const safeValue = Array.isArray(value) ? value.join(' ') : value || '';
-        sanitizedUsernames[key] = sanitizeUsername(safeValue);
-    }
-
-    res.json(sanitizedUsernames);
-});
-
-app.get('/api/auth/discord', cors(), (req, res) => {
-    const redirectUri = process.env.DISCORD_REDIRECT_URI;
-    const clientId = process.env.DISCORD_CLIENT_ID;
-    const scope = 'identify email';
-    const redirect = req.query.redirect || '/';
-    req.session.redirect = redirect;
-    const discordAuthUrl = `https://discord.com/api/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=${scope}`;
-    res.redirect(discordAuthUrl);
-});
-
-app.get('/api/auth/discord/callback', cors(), async (req, res) => {
-    const code = req.query.code;
-
-    const tokenResponse = await fetch('https://discord.com/api/oauth2/token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({
-            client_id: process.env.DISCORD_CLIENT_ID,
-            client_secret: process.env.DISCORD_CLIENT_SECRET,
-            grant_type: 'authorization_code',
-            code: code,
-            redirect_uri: process.env.DISCORD_REDIRECT_URI,
-        })
-    });
-
-    const tokenData = await tokenResponse.json();
-
-    if (tokenResponse.ok) {
-        const userResponse = await fetch('https://discord.com/api/users/@me', {
-            headers: {
-                Authorization: `Bearer ${tokenData.access_token}`
-            }
-        });
-        const userData = await userResponse.json();
-
-        const accessToken = jwt.sign(
-            { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
-            process.env.JWT_SECRET,
-            { expiresIn: '1d' }
-        );
-        
-        const redirectPath = req.session.redirect || '/';
-        const frontendUrl = 'https://cakeorpastry.netlify.app/auth/callback';
-        res.redirect(`${frontendUrl}/?token=${encodeURIComponent(accessToken)}&redirect=${encodeURIComponent(redirectPath)}`);
-    } else {
-        res.status(500).json({ error: 'Failed to authenticate with Discord' });
-    }
-});
-
-app.get('/api/auth/validatetoken', restrictedCors, validateJWT, (req, res) => {
-    res.json({ message: 'Token is valid', user: req.user });
-});
-
-app.get('/api/testgpt', restrictedCors, validateJWT, async (req, res) => {
-    const question = req.query.question;
-    const apiUrl = process.env.API_URL;
-
-    if (!question) {
-        return res.status(400).json({ error: 'Question parameter is required.' });
-    }
-
-    try {
-        const response = await fetch(`${apiUrl}${encodeURIComponent(question)}`);
-        if (!response.ok) {
-            const errorText = await response.text();
-            console.error(`Non-OK response from API: ${errorText}`);
-            return res.status(response.status).json({ error: 'Error from API endpoint.', details: errorText });
-        }
-
-        const data = await response.json();
-
-        // Check for expected structure and return the formatted response
-        if (data.status && Array.isArray(data.result) && data.result[0]?.response) {
-            return res.json({ reply: data.result[0].response });
-        } else {
-            console.error('Unexpected API response structure:', data);
-            return res.status(500).json({ error: 'Unexpected API response structure.' });
-        }
-    } catch (error) {
-        console.error('Error fetching TestGPT response:', error);
-        res.status(500).json({ error: 'Failed to fetch response from TestGPT.' });
-    }
-});
-
-app.get('/api/webhooksend', restrictedCors, async (req, res) => {
-    const { title, description, color } = req.query;
-    const webhookUrl = process.env.WEBHOOK_URL;
-
-    if (!title || !description || !color) {
-        return res.status(400).json({ error: 'Title, description, and color are required.' });
-    }
-
-    const embedMessage = {
-        title: title,
-        description: description,
-        color: parseInt(color, 10)
-    };
-
-    try {
-        const response = await fetch(webhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ embeds: [embedMessage] })
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Error sending webhook: ${errorText}`);
-        }
-
-        res.json({ message: 'Webhook sent successfully.' });
-    } catch (error) {
-        console.error('Error sending webhook:', error);
-        res.status(500).json({ error: 'Failed to send webhook message.' });
-    }
-});
-
-app.get('/api/ipinfo', restrictedCors, async (req, res) => {
-    const ipInfoLink = 'https://ipinfo.io/json?token=' + process.env.IPINFO_TOKEN;
-    try {
-        const response = await fetch(ipInfoLink);
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        console.error('Error fetching IP info:', error);
-        res.status(500).json({ error: 'Failed to fetch IP information.' });
-    }
-});
-
-app.get('/assets', cors(), (req, res) => {
+app.get('/assets', (req, res) => {
      res.status(400).json({ error: 'Please provide a valid asset name.' });
 });
 
-/*
-
-app.get('/test-error', cors(), (req, res) => {
-  res.render('error', {
-    title: 'Test - Cake\'s Studio',
-    errorCode: 'TEST',
-    message: 'This is a test page',
-    minimessage: 'Testing error.ejs rendering'
-  });
-});
-
-FIXME
-*/
-
-app.get('/err', cors(), (req, res) => {
+app.get('/err', (req, res) => {
     console.log(LOL);
 });
 
+// Mount API routes
+app.use('/api/yt', ytRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api', apiRoutes);
 
-app.use(notFoundHandler); // Handles 404
-app.use(errorHandler); // Handles thrown errors
+// Error handlers (must be last)
+app.use(notFoundHandler);
+app.use(errorHandler);
 
-
-/*
-app.use((err, req, res, next) => {
-    console.error(err.stack); // Log the error details for debugging
-    const message = 'Internal Server Error';
-    const minimessage = 'The server encountered an unexpected error which prevented it from fulfilling the request.';
-
-    res.status(statusCode).render('error', { 
-        title: `${statusCode} - Cake\'s Studio`, 
-        errorCode: statusCode,
-        message: message,
-        minimessage: minimessage, 
-image: "/assets/privateSussyBotError.jpg"
-    });
-});*/
-
-/*
-const fs = require('fs');
-// const path = require('path'); // you need this for path.join, path.relative
-
-app.get('/test', (req, res) => {
-  const walk = (dir) => {
-    let results = [];
-    const list = fs.readdirSync(dir);
-    list.forEach((file) => {
-      const fullPath = path.join(dir, file);
-      const stat = fs.statSync(fullPath);
-      if (stat && stat.isDirectory()) {
-        results = results.concat(walk(fullPath));
-      } else {
-        results.push(path.relative(process.cwd(), fullPath)); // 👈 get relative to where script was launched
-      }
-    });
-    return results;
-  };
-
-  res.json(walk(process.cwd())); // 👈 walk from CWD, not __dirname
-});
-*/
-/*
-app.get('*', cors(), (req, res) => {
-  console.log(`Wildcard route triggered for URL: ${req.originalUrl}`);
-  res.status(404).render('error', {
-    title: '404 - Cake\'s Studio',
-    errorCode: '404',
-    message: 'Page Not Found',
-    minimessage: 'The page you are looking for does not exist.',
-    
-
-    image: "/assets/privateSussyBotError.jpg"
-
-
-
-  });
-});*/
-
-/*
- Old API_URL = "https://hercai.onrender.com/v3/hercai?question="
-*/
-
-
+// Start server
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });

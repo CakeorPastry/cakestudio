@@ -49,6 +49,41 @@ app.get("/NIKHIL", cors(), (req, res) => {
   });
 });
 
+app.get("/testId", async (req, res) => {
+  const userId = req.query.id; // get ?id= from URL
+
+  if (!userId) {
+    return res.status(400).json({ error: "Missing id parameter" });
+  }
+
+  try {
+    const response = await fetch(`https://discord.com/api/v10/users/${userId}`, {
+      headers: {
+        Authorization: `Bot ${process.env.DISCORD_CLIENT_SECRET}`,
+      },
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).json({ error: "User not found or inaccessible" });
+    }
+
+    const user = await response.json();
+
+    const avatarUrl = user.avatar
+      ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+      : `https://cdn.discordapp.com/embed/avatars/${Number(user.discriminator) % 5}.png`;
+
+    res.json({
+      id: user.id,
+      username: user.username,
+      global_name: user.global_name,
+      avatar: avatarUrl,
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Something went wrong", details: err.message });
+  }
+});
+
 
 
 process.env.YTDL_NO_UPDATE = "1";

@@ -73,7 +73,7 @@ app.get("/testId", async (req, res) => {
       ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
       : `https://cdn.discordapp.com/embed/avatars/${Number(user.discriminator) % 5}.png`;
 
-    // This converts the object 'x' into a string with 2-space indentation
+    // temporary test
 console.log(JSON.stringify(user, null, 2));
 
     res.json({

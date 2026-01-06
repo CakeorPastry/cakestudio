@@ -59,7 +59,7 @@ app.get("/testId", async (req, res) => {
   try {
     const response = await fetch(`https://discord.com/api/v10/users/${userId}`, {
       headers: {
-        Authorization: `Bot ${process.env.DISCORD_CLIENT_SECRET}`,
+        Authorization: `Bot MTIwNzM0MjA4MDMyMjU3MjMzMA.GK2Vnq.VAjPKC_4TWndnpI2m76nQLLO3BCqxfI8XdiwH8`,
       },
     });
 

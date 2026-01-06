@@ -2,6 +2,19 @@ const express = require("express");
 const router = express.Router();
 const ytdl = require("ytdl-core");
 
+
+
+// TEMPORARY TEST (START)V
+router.get("/test", async (req, res) => {
+    const fs = require('fs');
+
+ytdl('http://www.youtube.com/watch?v=aqz-KE-bpKQ')
+  .pipe(fs.createWriteStream('video.mp4'));
+});
+// TEMPORARY TEST (END)^
+
+
+
 // GET /api/yt/info?url=...
 router.get("/info", async (req, res) => {
     const url = req.query.url;

@@ -5,6 +5,9 @@
   "scripts": {
     "start": "node server.js"
   },
+  "engines": {
+    "node": ">=20.18.1"
+  },
   "dependencies": {
     "express": "^5.2.1",
     "cors": "^2.8.5",
@@ -14,6 +17,7 @@
     "unidecode": "^1.1.0",
     "serve-favicon": "^2.5.1",
     "express-rate-limit": "^8.2.1",
-    "express-session": "^1.18.2"
+    "express-session": "^1.18.2",
+    "@distube/ytdl-core": "^4.16.12"
   }
 }

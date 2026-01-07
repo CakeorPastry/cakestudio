@@ -9,15 +9,12 @@
     "express": "^5.2.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
-    "node-fetch": "^3.3.2",
-    "passport": "^0.7.0",
-    "passport-discord": "^0.1.4",
-    "jsonwebtoken": "^9.0.3", 
+    "jsonwebtoken": "^9.0.3",
     "ejs": "^3.1.10",
-    "unidecode": "^1.1.0", 
+    "unidecode": "^1.1.0",
     "serve-favicon": "^2.5.1",
-    "express-rate-limit": "^8.2.1", 
-    "express-session": "^1.18.2", 
-    "ytdl-core": "^4.11.5"
+    "express-rate-limit": "^8.2.1",
+    "express-session": "^1.18.2",
+    "@distube/ytdl-core": "^5.0.4"
   }
 }

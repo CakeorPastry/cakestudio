@@ -19,8 +19,11 @@ app.use(favicon(path.join(__dirname, 'public', 'assets', 'favicon.png')));
 app.use(session({
     secret: process.env.SESSION_SECRET,
     resave: false,
-    saveUninitialized: true,
-    cookie: { secure: false }
+    saveUninitialized: false,  // Don't save empty sessions
+    cookie: {
+        secure: false,  // Set to true in production with HTTPS
+        maxAge: 5 * 60 * 1000  // 5 minutes expiry
+    }
 }));
 
 // Environment config

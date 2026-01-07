@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const fetch = require('node-fetch');
-const jwt = require('jsonwebtoken');
-const { validateJWT } = require('../middleware/jwt');
+const { signJWT, validateJWT } = require('../middleware/jwt');
 const restrictedCors = require('../middleware/cors');
 
 // GET /api/auth/login - Initiate Discord OAuth (public)
@@ -42,13 +40,13 @@ router.get('/callback', async (req, res) => {
         });
         const userData = await userResponse.json();
 
-        const accessToken = jwt.sign(
+        const accessToken = signJWT(
             { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
-            process.env.JWT_SECRET,
-            { expiresIn: '1d' }
+            '1d'
         );
 
         const redirectPath = req.session.redirect || '/';
+        // req.session.destroy();  // Optional: Immediately free memory (maxAge handles expiry)
         const frontendUrl = 'https://cakeorpastry.netlify.app/auth/callback';
         res.redirect(`${frontendUrl}/?token=${encodeURIComponent(accessToken)}&redirect=${encodeURIComponent(redirectPath)}`);
     } else {

@@ -1,6 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const fetch = require('node-fetch');
 const { validateJWT } = require('../middleware/jwt');
 const restrictedCors = require('../middleware/cors');
 const createRateLimiter = require('../middleware/rateLimiter');

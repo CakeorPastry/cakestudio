@@ -1,0 +1,13 @@
+<html>
+<head><title>Cake's Studio</title></head>
+<body bgcolor="black" text="white">
+<pre id="ok" style="white-space: pre-wrap; overflow-wrap: anywhere;"></pre>
+<script>
+const bytes = new Uint8Array(64);
+crypto.getRandomValues(bytes);
+document.querySelector("#ok").innerText = 
+  Array.from(bytes)
+    .map(b => b.toString(16).padStart(2, "0"))
+    .join("")
+</script>
+</html>

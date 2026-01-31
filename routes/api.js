@@ -108,7 +108,7 @@ router.get('/webhooksend', restrictedCors(true), async (req, res) => {
 
 // GET /api/ipinfo - Get IP information (protected)
 router.get('/ipinfo', restrictedCors(true), async (req, res) => {
-    const clientIP = req.ip || req.socket.remoteAddress; // req.connection is deprecated. 
+    const clientIP = req.ip || req.socket.remoteAddress; // req.connection.remoteAddress is deprecated. 
     const ipInfoLink = `https://ipinfo.io/${clientIP}/json?token=${process.env.IPINFO_TOKEN}`;
     try {
         const response = await fetch(ipInfoLink);

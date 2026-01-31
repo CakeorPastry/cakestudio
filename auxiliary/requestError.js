@@ -2,20 +2,20 @@ const DEFAULT_IMAGE = '/assets/privateSussyBotError.jpg';
 
 const errorDictionary = {
   400: {
-    message: 'The server couldn't understand your request.',
-    miniMessage: 'You might have sent something weird or malformed.'
+    message: "The server couldn't understand your request.",
+    miniMessage: "You might have sent something weird or malformed."
   },
   403: {
-    message: 'You do not have permission to access this resource.',
-    miniMessage: 'The server understood the request but refuses to authorize it.'
+    message: "You do not have permission to access this resource.",
+    miniMessage: "The server understood the request but refuses to authorize it."
   },
   404: {
-    message: 'Page Not Found',
-    miniMessage: 'The page you are looking for does not exist.'
+    message: "Page Not Found",
+    miniMessage: "The page you are looking for does not exist."
   },
   500: {
-    message: 'Something went wrong on our end.',
-    miniMessage: 'The server encountered an unexpected error.'
+    message: "Something went wrong on our end.",
+    miniMessage: "The server encountered an unexpected error."
   }
 };
 

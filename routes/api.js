@@ -6,8 +6,9 @@ const createRateLimiter = require('../middleware/rateLimiter');
 const sanitize = require('../auxiliary/sanitizer');
 
 // GET /api/decancer - Sanitize single username (public, rate limited)
-const decancerLimiter = createRateLimiter({ windowMs: 10 * 1000, max: 10 });
-router.get('/decancer', decancerLimiter, (req, res) => {
+router.get('/decancer',
+  createRateLimiter({ windowMs: 10 * 1000, max: 10 }),
+  (req, res) => {
     const username = req.query.username;
 
     if (!username) {
@@ -19,8 +20,9 @@ router.get('/decancer', decancerLimiter, (req, res) => {
 });
 
 // GET /api/dehoist - Sanitize multiple usernames (public, rate limited)
-const dehoistLimiter = createRateLimiter({ windowMs: 10 * 1000, max: 5 });
-router.get('/dehoist', dehoistLimiter, (req, res) => {
+router.get('/dehoist',
+  createRateLimiter({ windowMs: 10 * 1000, max: 5 }),
+  (req, res) => {
     const queryParams = req.query;
 
     if (Object.keys(queryParams).length === 0) {
@@ -106,7 +108,8 @@ router.get('/webhooksend', restrictedCors(true), async (req, res) => {
 
 // GET /api/ipinfo - Get IP information (protected)
 router.get('/ipinfo', restrictedCors(true), async (req, res) => {
-    const ipInfoLink = 'https://ipinfo.io/json?token=' + process.env.IPINFO_TOKEN;
+    const clientIP = req.ip || req.connection.remoteAddress;
+    const ipInfoLink = `https://ipinfo.io/${clientIP}/json?token=${process.env.IPINFO_TOKEN}`;
     try {
         const response = await fetch(ipInfoLink);
         const data = await response.json();

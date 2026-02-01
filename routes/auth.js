@@ -40,6 +40,8 @@ router.get('/callback', async (req, res) => {
         });
         const userData = await userResponse.json();
 
+        console.log(JSON.stringify(userData, null, 2));
+
         const accessToken = signJWT(
             { id: userData.id, username: userData.username, email: userData.email, avatar: userData.avatar },
             '1d'

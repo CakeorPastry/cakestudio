@@ -1,118 +1,73 @@
-<!DOCTYPE html>
-<HTML>
-<HEAD>
-<!-- META TAGS -->
-<meta property="og:title" content="Cake's Studio">
-<meta property="og:description" content="A website made for the funny testing lol. This was made for learning basic coding and has only a few projects.">
-<meta property="og:url" content="https://cakeorpastry.netlify.app/testgpt">
-<meta property="og:image" content="https://cakestudio.onrender.com/assets/favicon.png">
-<meta property="og:type" content="website">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- FAVICON -->
-<LINK REL="icon" HREF="/Assets/Studio/favicon.png" TYPE="image/png">
-<!-- STYLESHEETS -->
-<LINK REL="stylesheet" HREF="/CSS/style.css">
-<!-- SCRIPTS -->
-<SCRIPT SRC="/Javascript/script.js"></SCRIPT>
-<SCRIPT SRC="/Javascript/account.js"></SCRIPT>
-<SCRIPT SRC="/Javascript/ip.js"></SCRIPT>
-<SCRIPT SRC="/Javascript/scripttestgpt.js"></SCRIPT>
-<SCRIPT SRC="/Javascript/dark-mode.js"></SCRIPT>
-<!-- TITLE -->
-<TITLE>TestGPT - Cake's Studio</TITLE>
-</HEAD>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="TestGPT - Cake's Studio">
+  <meta property="og:description" content="AI Chat Interface powered by OpenAI">
+  <meta property="og:url" content="https://cakeorpastry.netlify.app/testgpt">
+  <meta property="og:image" content="https://cakestudio.onrender.com/assets/favicon.png">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="/Assets/Studio/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/CSS/style.css">
+  <title>TestGPT - Cake's Studio</title>
+</head>
+<body>
+  <div class="chat-page">
+    <!-- Top Bar with Logo and User Profile -->
+    <header class="top-bar">
+      <div class="logo">TestGPT</div>
+      <div class="user-profile">
+        <img src="https://cdn.discordapp.com/emojis/1285189009722839060.png" alt="Profile" class="avatar" id="profilePicture">
+        <span id="username">Guest</span>
+        <button class="dropdown-toggle" id="profileDropdownToggle">▼</button>
+        <div class="profile-dropdown hidden" id="profileDropdown">
+          <button class="primary-button" id="loginButton">Login</button>
+          <button class="danger-button" id="logoutButton">Logout</button>
+        </div>
+      </div>
+    </header>
 
-<BODY BGCOLOR="PINK" TEXT="BLACK">
+    <!-- Chat Messages Container -->
+    <div class="chat-container" id="chatContainer">
+      <!-- Messages will be dynamically added here -->
+    </div>
 
-<DIV CLASS="header" ID="top">
-<A HREF="https://cakeorpastry.netlify.app" CLASS="emoji">
-<SPAN CLASS="logo">
-<IMG SRC="/Assets/Studio/favicon.png">
-</SPAN>
-</A>
-<H2>Cake's Studio</H2>
-<BUTTON ID="toggleDarkModeButton" CLASS="emoji-button">
-🌙
-</BUTTON>
-</DIV>
+    <!-- Disclaimer -->
+    <div class="disclaimer">
+      <p>⚠️ Don't misuse this tool. Be respectful.</p>
+      <p>ℹ️ Note: Chat history is visual only. The AI doesn't remember previous messages.</p>
+    </div>
 
-<IMG SRC="https://cakeorpastry.netlify.app/Assets/Icons/Error.png" ALT="Error" STYLE="position: fixed; top: 50%; left: 30%; transform: translate(-50%, -50%); height: 150px; width: 150px; display: none; opacity: 0; transition: opacity 1s;" 
-CLASS="animate-bounce" ID="errorIndicatorImage">
+    <!-- Input Area -->
+    <div class="input-area">
+      <input type="text" id="questionInput" placeholder="Ask me anything..." disabled>
+      <button class="primary-button" id="sendButton" disabled>Send</button>
+    </div>
 
-<H2 STYLE="text-align: left;">
-This is the first version of this project, a lot of bugs are expected! 
-This project will be updated.
-Don't misuse this.
-</H2>
+    <!-- Request Logs Dropdown -->
+    <div class="logs-dropdown">
+      <button class="logs-toggle" id="logsToggle">📊 Logs</button>
+      <div class="logs-panel hidden" id="logsPanel">
+        <div id="logsContainer">
+          <!-- Log entries will be added here -->
+          <div class="log-entry">
+            <span class="status-icon">⏳</span>
+            <span class="status-text">No requests yet</span>
+          </div>
+        </div>
+        <div class="session-stats">
+          <p>Time on site today: <span id="timeToday">0s</span></p>
+          <p>Live: <span id="liveCounter">0s</span></p>
+        </div>
+        <button class="danger-button" id="clearHistoryButton">Clear Chat History</button>
+      </div>
+    </div>
+  </div>
 
-<DIV CLASS="container">
-<input type="text" id="questionInput" placeholder="Type your question here...">
-
-<DIV STYLE="overflow-x: auto; white-space: nowrap; display: none; flex-direction: column; gap: 10px; font-weight: bold;">
-<DIV STYLE="display: flex; align-items: center; gap: 10px;">
-<IMG SRC="https://cakeorpastry.netlify.app/Assets/Icons/Error.png" STYLE="height: 20px; width: 20px;">
-<SPAN ID="minorErrorMessage" STYLE="text-shadow: 0 0 1px white, 0 0 2px white;">No Errors!</SPAN>
-</DIV>
-</DIV>
-
-<BUTTON ID="sendButton" CLASS="primary-button" DISABLED>Send</BUTTON>
-</DIV>
-
-<H4>
-
-<DIV CLASS="box">
-<H2>Response</H2>
-<DIV STYLE="overflow-x: auto; white-space: pre">
-<P ALIGN="LEFT" ID="responseContainer">
-When you ask a question, 
-the API's response will appear here.
-</P>
-</DIV>
-<BUTTON ID="copyResponseToClipboard" CLASS="secondary-button" onclick="copyTextToClipboard('responseContainer', this)">Copy To Clipboard</BUTTON>
-</DIV>
-
-<DIV CLASS="box">
-<H2>Status</H2>
-<DIV STYLE="overflow-x: auto; white-space: nowrap; display: flex; flex-direction: column; gap: 10px;">
-<DIV STYLE="display: flex; align-items: center; gap: 10px;">
-<svg height="20" width="20" xmlns="http://www.w3.org/2000/svg">
-<circle r="10" cx="10" cy="10" fill="gray" id="statusCodeSymbol" />
-</svg>
-<span>HTTP Code: <span id="statusCode">Loading...</span></span>
-</DIV>
-<DIV STYLE="display: flex; align-items: center; gap: 10px;">
-<img src="https://cakeorpastry.netlify.app/Assets/Icons/Check.png" alt="Status Image" id="statusImage" />
-<span>Status Message: <span id="statusMessage">Waiting for the server to load...</span></span>
-</DIV>
-</DIV>
-</DIV>
-
-<!-- Account -->
-
-<DIV CLASS="box" STYLE="gap: 10px;">
-
-<H2>My Account</H2>
-
-<DIV ID="profileInfo">
-<IMG SRC="https://cdn.discordapp.com/emojis/1285189009722839060.png" ALT="Profile Picture" ID="profilePicture">
-<B ID="username">Username</B>
-</DIV>
-
-<BUTTON ID="loginButton" CLASS="primary-button" DISABLED>
-<IMG SRC="https://cdn.discordapp.com/emojis/1267398812557774848.png" ALT="enter">
-Login
-</BUTTON>
-<BUTTON ID="logoutButton" CLASS="danger-button" DISABLED>
-<IMG SRC="https://cdn.discordapp.com/emojis/1267384023257321572.png" ALT="exit">
-Logout
-</BUTTON>
-
-</DIV>
-
-</H4>
-
-</DIV>
-
-</BODY>
-</HTML>
+  <!-- Scripts -->
+  <script src="/Javascript/account.js"></script>
+  <script src="/Javascript/ip.js"></script>
+  <script src="/Javascript/scripttestgpt.js"></script>
+</body>
+</html>

@@ -1,205 +1,131 @@
-<!DOCTYPE html>
-<HTML>
-<HEAD>
-<!-- META TAGS -->
-<meta property="og:title" content="Cake's Studio">
-<meta property="og:description" content="A website made for the funny testing lol. This was made for learning basic coding and has only a few projects.">
-<meta property="og:url" content="https://cakeorpastry.netlify.app/bgcolor">
-<meta property="og:image" content="https://cakestudio.onrender.com/assets/favicon">
-<meta property="og:type" content="website">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- FAVICON -->
-<LINK REL="icon" HREF="/Assets/Studio/favicon.png" TYPE="image/png">
-<!-- STYLESHEETS -->
-<LINK REL="stylesheet" HREF="/CSS/style.css">
-<!-- SCRIPTS -->
-<SCRIPT SRC="/Javascript/script.js"></SCRIPT>
-<SCRIPT SRC="/Javascript/scriptbgcolor.js"></SCRIPT>
-<SCRIPT SRC="/Javascript/dark-mode.js"></SCRIPT>
-<!-- TITLE -->
-<TITLE>BGCOLOR - Cake's Studio</TITLE>
-</HEAD>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Background Color Tester - Cake's Studio">
+  <meta property="og:description" content="Test and save background colors for web pages">
+  <meta property="og:url" content="https://cakeorpastry.netlify.app/bgcolor">
+  <meta property="og:image" content="https://cakestudio.onrender.com/assets/favicon.png">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="/Assets/Studio/favicon.png" type="image/png">
+  <link rel="stylesheet" href="/CSS/style.css">
+  <title>BG Color Tester - Cake's Studio</title>
+</head>
+<body>
+  <div id="fullBody">
+    <div class="header">
+      <a href="https://cakeorpastry.netlify.app" class="emoji">
+        <span class="logo">
+          <img src="/Assets/Studio/favicon.png" alt="Logo">
+        </span>
+      </a>
+      <h2>Cake's Studio</h2>
+    </div>
 
-<BODY BGCOLOR="PINK" TEXT="BLACK">
+    <hr style="margin-top: 50px;">
 
-<DIV ID="fullBody">
+    <div class="box" style="margin-top: 50px;">
+      <p>
+        <strong>
+          This is a random project I made. You can test different background colors and gradients. Now you can even save your favorite colors!
+          <br><br>
+          Navigation:
+        </strong>
+      </p>
+      <ul>
+        <li><a href="#BGCOLOR">Background Color Tester</a></li>
+        <li><a href="#urlParams">URL Parameters</a></li>
+        <li><a href="#URIComponent">URI Encode/Decode Tools</a></li>
+      </ul>
+    </div>
 
-<DIV CLASS="header" ID="top">
-<A HREF="https://cakeorpastry.netlify.app" CLASS="emoji">
-<SPAN CLASS="logo">
-<IMG SRC="/Assets/Studio/favicon.png">
-</SPAN>
-</A>
-<H2>Cake's Studio</H2>
-<BUTTON ID="toggleDarkModeButton" CLASS="emoji-button">
-🌙
-</BUTTON>
-</DIV>
+    <div id="BGCOLOR" class="box" style="gap: 10px;">
+      <h2>Background Color Tester</h2>
+      <p>
+        <strong>
+          Type a color name, hex, RGB, or gradient below to change the background color.
+          <br><br>
+          Examples:
+          <br>
+          • Name: <span style="color: red;">RED</span>
+          <br>
+          • Hex: <span style="color: #2aff00;">#2aff00</span>
+          <br>
+          • RGB: <span style="color: rgb(0, 0, 255);">rgb(0, 0, 255)</span>
+          <br>
+          • Gradient: <span style="background: radial-gradient(circle at top left, red, green, blue); padding: 2px 8px;">red, green, blue</span>
+        </strong>
+      </p>
 
-<HR SIZE="5" WIDTH="100%" COLOR="BLUE" STYLE="margin-top: 50px;">
+      <strong>Color Name</strong>
+      <input type="text" id="colorInput" placeholder="RED" value="">
 
-<DIV CLASS="box" STYLE="margin-top: 50px;">
-<P>
-<B>
-This is a random project I made.
-Lol you do nothing but select BGCOLOR (Background color) and see what they look like.
-<BR><BR>
-Navigation :
-<UL TYPE="DISC">
-<LI><A HREF="#BGCOLOR">BGCOLOR</A></LI>
-<LI><A HREF="#urlParams">URL Params</A></LI>
-<LI><A HREF="#howToUseUrlParams">How To Use URL Params?</A></LI>
-<LI><A HREF="#URIComponent">URI Component</A></LI>
-</UL>
-</P>
-</B>
-</P>
-</DIV>
+      <strong>Radial Gradient Position</strong>
+      <input type="text" id="radialGradientPositionInput" placeholder="circle at top left" value="">
 
-<DIV ID="BGCOLOR" CLASS="box" STYLE="gap: 10px;">
-<H2>BGCOLOR</H2>
-<P>
-<B>
-Type a color name, hex, rgb etc. below to change the background color of this webpage.
-<BR>
-<BR>
-Examples :
-<BR>
-Name : <SPAN STYLE="color: red;">RED</SPAN>
-<BR>
-Hex : <SPAN STYLE="color: #2aff00">#2aff00</SPAN>
-<BR>
-RGB : <SPAN STYLE="color: rgb(0, 0, 255);">rgb(0, 0, 255)</SPAN>
-<BR>
-Radial-Gradient (Circle At Top Left) : <BR><SPAN STYLE="background: radial-gradient(circle at top left, red, green, blue);">red, green, blue</SPAN>
-<BR>
-Radial-Gradient (Circle At Top Right) : <BR><SPAN STYLE="background: radial-gradient(circle at top right, black, blue, green);">black, blue, green</SPAN>
-</B>
-</P>
-<B>Color Name</B>
-<INPUT TYPE="text" ID="colorInput" PLACEHOLDER="RED" VALUE="">
-<B>Radial Gradient Position</B>
-<INPUT TYPE="text" ID="radialGradientPositionInput" PLACEHOLDER="circle at top left" VALUE="">
-<BUTTON ID="colorButton" CLASS="primary-button">Send</BUTTON>
-<BUTTON ID="resetButton" CLASS="danger-button">Reset</BUTTON>
-</DIV>
-<DIV ID="urlParams" CLASS="box">
-<H2>URL Params</H2>
-<P>
-<B>
-<TABLE>
-<TR>
-<TH>Name</TH>
-<TH>Type</TH>
-</TR>
-<TR>
-<TD>color</TD>
-<TD STYLE="color: rgb(0, 255, 0);">String</TD>
-</TR>
-<TR>
-<TD>radialgradientposition</TD>
-<TD STYLE="color: rgb(0, 255, 0);">String</TD>
-</TR>
-<TR>
-<TD>hideui</TD>
-<TD STYLE="color: #fff155;">Boolean</TD>
-</TR>
-</TABLE>
-<SECTION STYLE="font-size: 15px;">
-<FONT STYLE="color: rgb(0, 255, 0);">color :</FONT>
-<BR>
-The colour to be displayed when the website loads.
-<BR>
-<FONT STYLE="color: #00ffff;">Example :</FONT>
-<BR>
-<CODE STYLE="background: black;">
-• ?color=red
-<BR>
-<FONT STYLE="color: red;">• Woohoo</FONT>
-<BR>
-• ?color=red, green, blue
-<BR>
-<FONT STYLE="background: radial-gradient(circle at top left, red, green, blue);">• Woohoo</FONT>
-</CODE>
-<BR><BR>
-<FONT STYLE="color: rgb(0, 255, 0);">radialgradientpositon :</FONT>
-<BR>
-The position of the radial gradient which is to be displayed when the website loads. This will work only if the <CODE CLASS="blackBackground">color</CODE> param has more than one color.
-<BR>
-<FONT STYLE="color: #00ffff;">Example :</FONT> 
-<BR>
-<CODE CLASS="blackBackground">
-• ?radialgradientposition=circle at top left
-<BR>
-<FONT STYLE="background: radial-gradient(circle at top left, red, silver, gold);">• Example Of Circle At Top Left</FONT>
-<BR>
-• ?radialgradientposition=circle at bottom right
-<BR>
-<FONT STYLE="background: radial-gradient(circle at bottom right, red, silver, gold);">• Example Of Circle At Bottom Right</FONT>
-</CODE>
-<BR><BR>
-<FONT STYLE="color: #fff155;">hideui :</FONT>
-<BR>
-Customize whether all website elements will be hidden when the website gets loaded. Use this to see what the webpage will look like with the colors you want.
-<BR>
-<FONT STYLE="color: #00ffff;">Example :</FONT> 
-<BR>
-<CODE CLASS="blackBackground">
-• ?hideui=true
-<BR>
-<SECTION STYLE="background: radial-gradient(circle at top left, red, silver, gold);">•</SECTION>
-<BR>
-</CODE>
-</SECTION>
-<!-- <HR SIZE="5" WIDTH="100%" COLOR="BLUE"> -->
-</DIV>
-<DIV ID="howToUseUrlParams" CLASS="box">
-<SECTION>
-<H2>
-How To Use URL Params?
-</H2><BR>
-<FONT CLASS="blackBackground" STYLE="font-size: 12px">
-https://website.com<FONT COLOR="#00ffff">?firstparam=value</FONT><FONT COLOR="#2aff00">&second=value</FONT>...
-</FONT>
-<BR>
-<FONT COLOR="#00ffff">Cyan = First param with it's value</FONT>
-<BR>
-<FONT COLOR="#2aff00">Green = Second param with it's value</FONT>
-<BR>
-... = You can add more params. They can go in any order. The rule is that the first param starts with <CODE CLASS="blackBackground">?</CODE><BR>and the remaining params (i.e. second, third, fourth and so on...) will start with <CODE CLASS="blackBackground">&</CODE>
-<BR><BR>
-<FONT COLOR="#00ffff" STYLE="font-size: 20px">Example :</FONT><BR>
-<FONT STYLE="font-size: 18px">These are hyperlinks :</FONT><BR>
-<FONT STYLE="font-size: 20px;">
-Single URL Param
-</FONT><BR><BR>
-<A STYLE="text-decoration: none; color: white;" CLASS="blackBackground" HREF="?color=red">
-<FONT STYLE="font-size: 12px;">https://cakeorpastry.netlify.app/bgcolor<FONT COLOR="#00ffff">?color=red</FONT></FONT></A>
-<FONT STYLE="font-size: 20px;">
-Double URL Param
-</FONT><BR><BR>
-<A STYLE="text-decoration: none; color: white;" CLASS="blackBackground" HREF="?color=red&hideui=true">
-<FONT STYLE="font-size: 10px;">https://cakeorpastry.netlify.app/bgcolor<FONT COLOR="#00ffff">?color=red</FONT><FONT COLOR="#2aff00">&hideui=true</FONT></FONT></A><BR><BR>
-</SECTION>
-</DIV>
-<DIV CLASS="box" ID="URIComponent" STYLE="gap: 10px;">
-<H2>URI Component</H2><BR>
-<B>Encode URI Component</B>
-<INPUT ID="encodeURIComponentInput" TYPE="TEXT" PLACEHOLDER="Text goes here ⭐">
-<B>Result</B>
-<INPUT ID="encodeURIComponentResult" DISABLED PLACEHOLDER="Text%20goes%20here%20%E2%AD%90"</INPUT>
-<SPAN ID="encodeURIComponentError"></SPAN>
-<BUTTON ID="encodeURIComponentButton" CLASS="primary-button">Encode</BUTTON><BR><BR>
-<B>Decode URI Component</B>
-<INPUT ID="decodeURIComponentInput" TYPE="TEXT" PLACEHOLDER="Text%20goes%20here%20%E2%AD%90">
-<B>Result</B>
-<INPUT ID="decodeURIComponentResultInput" PLACEHOLDER="Text goes here ⭐" DISABLED>
-<SPAN ID="decodeURIComponentError"></SPAN>
-<BUTTON ID="decodeURIComponentButton" CLASS="primary-button">Decode</BUTTON>
-</DIV>
-</B>
-</P>
-</DIV>
-</BODY>
-</HTML>
+      <button id="colorButton" class="primary-button">Apply</button>
+      <button id="saveButton" class="success-button">💾 Save to Browser</button>
+      <button id="resetButton" class="danger-button">Reset to Default</button>
+    </div>
+
+    <div id="urlParams" class="box">
+      <h2>URL Parameters</h2>
+      <table>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+        <tr>
+          <td>color</td>
+          <td style="color: rgb(0, 255, 0);">String</td>
+          <td>Color to apply on page load</td>
+        </tr>
+        <tr>
+          <td>radialgradientposition</td>
+          <td style="color: rgb(0, 255, 0);">String</td>
+          <td>Gradient position (only for gradients)</td>
+        </tr>
+        <tr>
+          <td>hideui</td>
+          <td style="color: #fff155;">Boolean</td>
+          <td>Hide UI to preview colors only</td>
+        </tr>
+      </table>
+
+      <p style="margin-top: 20px;">
+        <strong style="color: #00ffff;">Examples:</strong>
+        <br><br>
+        <a href="?color=red" style="display: block; margin: 10px 0;">?color=red</a>
+        <a href="?color=red, green, blue" style="display: block; margin: 10px 0;">?color=red, green, blue</a>
+        <a href="?color=red&hideui=true" style="display: block; margin: 10px 0;">?color=red&hideui=true</a>
+      </p>
+    </div>
+
+    <div class="box" id="URIComponent" style="gap: 10px;">
+      <h2>URI Encode/Decode Tools</h2>
+
+      <strong>Encode URI Component</strong>
+      <input id="encodeURIComponentInput" type="text" placeholder="Text goes here ⭐">
+
+      <strong>Result</strong>
+      <input id="encodeURIComponentResult" disabled placeholder="Text%20goes%20here%20%E2%AD%90">
+      <span id="encodeURIComponentError" style="color: var(--color-red);"></span>
+      <button id="encodeURIComponentButton" class="primary-button">Encode</button>
+
+      <br>
+
+      <strong>Decode URI Component</strong>
+      <input id="decodeURIComponentInput" type="text" placeholder="Text%20goes%20here%20%E2%AD%90">
+
+      <strong>Result</strong>
+      <input id="decodeURIComponentResultInput" placeholder="Text goes here ⭐" disabled>
+      <span id="decodeURIComponentError" style="color: var(--color-red);"></span>
+      <button id="decodeURIComponentButton" class="primary-button">Decode</button>
+    </div>
+  </div>
+
+  <script src="/Javascript/scriptbgcolor.js"></script>
+</body>
+</html>

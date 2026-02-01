@@ -1,5 +1,44 @@
-# [[redirects]]
-#   from = "/testgpt"
-#   to = "/503.html"
-#   status = 503
-#   force = true
+# Netlify Configuration for Cake's Studio
+
+[build]
+  publish = "."
+  command = ""
+
+# Security headers for all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    X-XSS-Protection = "1; mode=block"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Cache CSS for 1 day
+[[headers]]
+  for = "/CSS/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Cache JavaScript for 1 day
+[[headers]]
+  for = "/Javascript/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Cache Assets (images, favicon) for 1 day
+[[headers]]
+  for = "/Assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Don't cache HTML pages (so updates show immediately)
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"

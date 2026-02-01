@@ -1,34 +1,76 @@
-<!DOCTYPE html>
-<HTML>
-<HEAD>
-<!-- META TAGS -->
-<meta property="og:title" content="Cake's Studio">
-<meta property="og:description" content="A website made for the funny testing lol. This was made for learning basic coding and has only a few projects.">
-<meta property="og:url" content="https://cakeorpastry.netlify.app/auth/logout">
-<meta property="og:image" content="https://cakestudio.onrender.com/assets/favicon.png">
-<meta property="og:type" content="website">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- FAVICON -->
-<LINK REL="icon" HREF="/Assets/Studio/favicon.png" TYPE="image/png">
-<!-- STYLESHEETS -->
-<!-- None -->
-<!-- SCRIPTS -->
-<!-- None -->
-<!-- TITLE -->
-<TITLE>Cake's Studio</TITLE>
-</HEAD>
-<BODY STYLE="background: white; color: black;">
-<SCRIPT>
-const urlParams = new URLSearchParams(window.location.search);
-const redirectParamRaw = urlParams.get("redirect") || "/";
-const redirectParam = (redirectParamRaw.startsWith("/") ? redirectParamRaw : "/" + redirectParamRaw);
-const jwtToken = localStorage.getItem("token");
-if (jwtToken) {
-    // localStorage.removeItem("jwtToken");
-    localStorage.removeItem("token");
-};
-window.location.href = `https://cakeorpastry.netlify.app${redirectParam}`;
-</SCRIPT>
-</BODY>
-</HTML>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta property="og:title" content="Cake's Studio - Logging Out">
+  <meta property="og:description" content="Logging out from Cake's Studio">
+  <meta property="og:url" content="https://cakeorpastry.netlify.app/auth/logout">
+  <meta property="og:image" content="https://cakestudio.onrender.com/assets/favicon.png">
+  <meta property="og:type" content="website">
+  <link rel="icon" href="/Assets/Studio/favicon.png" type="image/png">
+  <title>Logging Out - Cake's Studio</title>
+  <style>
+    body {
+      background: black;
+      color: white;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .message {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="message">
+    <h2>Logging out...</h2>
+    <p>Please wait</p>
+  </div>
+
+  <script>
+    const apiUrl = "https://cakestudio.onrender.com/api";
+    const frontendUrl = "https://cakeorpastry.netlify.app";
+
+    /* Get redirect parameter */
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectParamRaw = urlParams.get("redirect") || "/";
+    const redirectParam = redirectParamRaw.startsWith("/") ? redirectParamRaw : "/" + redirectParamRaw;
+
+    /* Get token from localStorage */
+    const jwtToken = localStorage.getItem("token");
+
+    /* Perform logout */
+    async function performLogout() {
+      if (jwtToken) {
+        try {
+          /* Call backend logout endpoint to invalidate token */
+          await fetch(`${apiUrl}/auth/logout`, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${jwtToken}`,
+              'Content-Type': 'application/json'
+            }
+          });
+        } catch (err) {
+          console.error('Logout API call failed:', err);
+          /* Continue anyway - still clear local storage */
+        }
+
+        /* Clear token from localStorage */
+        localStorage.removeItem("token");
+      }
+
+      /* Redirect to original page */
+      window.location.href = `${frontendUrl}${redirectParam}`;
+    }
+
+    /* Execute logout */
+    performLogout();
+  </script>
+</body>
+</html>

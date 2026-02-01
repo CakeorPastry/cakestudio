@@ -54,7 +54,7 @@ app.get("/NIKHIL", (req, res) => {
     minimessage: "Sorry, you're not a mastermind. This is for testing purposes.",
     errorCode: 406,
     debugMessage: "Unexpected Manipur Nibba",
-    image: ""
+    image: "https://cakeorpastry.netlify.app/Assets/Images/janko.png"
   });
 });
 

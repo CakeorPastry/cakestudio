@@ -1,10 +1,9 @@
 /* IP Logging Module */
 /* Sends visitor IP to backend for logging */
 
-const apiUrl = "https://cakestudio.onrender.com/api";
-
 /* Log visitor IP address to backend */
 async function logVisitorIP() {
+  const apiUrl = "https://cakestudio.onrender.com/api";
   try {
     /* Get token if it exists */
     const token = localStorage.getItem("token");

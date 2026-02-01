@@ -33,8 +33,20 @@ function requestError({ req, res, errorCode = 500, title, message, miniMessage, 
 
   // Log error details to console (excluding 404s)
   if (numericErrorCode !== 404) {
-    const timestamp = new Date().toISOString();
-    const method = req.method;
+    const iso = new Date().toISOString();
+    const timestamp = new Date(iso).toLocaleString('en-US', {
+  timeZone: 'Asia/Kolkata',
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+  weekday: 'long',
+  hour: 'numeric',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: true,
+});
+
+const method = req.method;
     const url = req.originalUrl || req.url;
     const queryString = JSON.stringify(req.query);
     const logLevel = numericErrorCode >= 500 ? 'ERROR' : 'WARN';

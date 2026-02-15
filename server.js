@@ -120,6 +120,45 @@ console.log(JSON.stringify(user, null, 2));
 });
 // ---
 
+
+app.get("/math", (req, res) => {
+  res.send(`
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"
+      onload="renderMathInElement(document.body);"></script>
+    <style>
+      body {
+        background: #0f172a;
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-size: 3rem;
+      }
+      .math {
+        animation: float 2s ease-in-out infinite alternate;
+      }
+      @keyframes float {
+        from { transform: translateY(-10px); }
+        to   { transform: translateY(10px); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="math">
+      \\[ e^{i\\pi} + 1 = 0 \\]
+    </div>
+  </body>
+  </html>
+  `);
+});
+
+
 // Error handlers (must be last)
 app.use(notFoundHandler);
 app.use(errorHandler);
